@@ -8,10 +8,6 @@ import "../index.css"
 const USE_MOCK = false; //CHANGE TO TRUE IF U ARE JERROLD
 const ESP_IP = '192.168.100.66';
 
-
-
-
-
 export default function FigureScreen() {
   const [flexAngle, setFlexAngle] = useState(0);
   const [gyroY, setGyroY] = useState(0);
