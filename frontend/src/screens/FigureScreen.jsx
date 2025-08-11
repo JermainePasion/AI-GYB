@@ -5,7 +5,7 @@ import axios from 'axios';
 import SensorGauge from '../components/SensorGauge';
 import "../index.css"
 
-const USE_MOCK = false; //CHANGE TO TRUE IF U ARE JERROLD
+const USE_MOCK = true; //CHANGE TO TRUE IF U ARE JERROLD
 const ESP_IP = '192.168.100.66';
 
 export default function FigureScreen() {
@@ -46,7 +46,7 @@ export default function FigureScreen() {
     <div className="min-h-screen bg-background text-gray-800 py-10 px-4 flex flex-col items-center space-y-10">
 
          <button
-        onClick={() => navigate('/home')}
+        onClick={() => navigate('/')}
         className="self-start mb-4 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition"
       >
         <h3>Back</h3>

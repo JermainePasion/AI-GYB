@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ESP_IP = '192.168.100.66';
 const BACKEND_IP = '192.168.100.8';
-const USE_MOCK = false; //CHANGE TO TRUE IF U ARE JERROLD
+const USE_MOCK = true; //CHANGE TO TRUE IF U ARE JERROLD
 
 function HomeScreen() {
   const [data, setData] = useState(null);
