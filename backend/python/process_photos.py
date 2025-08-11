@@ -1,68 +1,72 @@
-import sys
-import json
-import cv2
+import sys, os, json, cv2, math
 import mediapipe as mp
-import os
 
-# Input image paths from Node.js
 image_paths = sys.argv[1:]
-
-# Output directory for processed images
-output_dir = "uploads/processed/"
-os.makedirs(output_dir, exist_ok=True)
-
-mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
+mp_drawing = mp.solutions.drawing_utils
 
-angles = []
-processed_files = []
+results_data = {
+    "flex_sensor_angles": [],
+    "gyroY_angles": [],
+    "gyroZ_angles": [],
+    "processed_images": []
+}
 
-def calculate_angle(a, b, c):
-    import math
+def angle_from_points(a, b, c):
     ang = math.degrees(
         math.atan2(c[1] - b[1], c[0] - b[0]) -
         math.atan2(a[1] - b[1], a[0] - b[0])
     )
     return abs(ang)
 
-with mp_pose.Pose(static_image_mode=True, min_detection_confidence=0.5) as pose:
+with mp_pose.Pose(static_image_mode=True) as pose:
     for path in image_paths:
-        image = cv2.imread(path)
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        results = pose.process(image_rgb)
+        img = cv2.imread(path)
+        h, w, _ = img.shape
+        rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        res = pose.process(rgb)
 
-        if results.pose_landmarks:
-            # Draw skeleton on image
-            mp_drawing.draw_landmarks(
-                image,
-                results.pose_landmarks,
-                mp_pose.POSE_CONNECTIONS,
-                mp_drawing.DrawingSpec(color=(0, 255, 0), thickness=2, circle_radius=2),
-                mp_drawing.DrawingSpec(color=(0, 0, 255), thickness=2, circle_radius=2),
-            )
+        if res.pose_landmarks:
+            lm = res.pose_landmarks.landmark
 
-            lm = results.pose_landmarks.landmark
-            shoulder = [lm[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                        lm[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            hip = [lm[mp_pose.PoseLandmark.LEFT_HIP.value].x,
-                   lm[mp_pose.PoseLandmark.LEFT_HIP.value].y]
-            ear = [lm[mp_pose.PoseLandmark.LEFT_EAR.value].x,
-                   lm[mp_pose.PoseLandmark.LEFT_EAR.value].y]
+            # Get relevant coordinates (convert to pixels)
+            shoulder = [lm[mp_pose.PoseLandmark.LEFT_SHOULDER].x * w,
+                        lm[mp_pose.PoseLandmark.LEFT_SHOULDER].y * h]
+            hip = [lm[mp_pose.PoseLandmark.LEFT_HIP].x * w,
+                   lm[mp_pose.PoseLandmark.LEFT_HIP].y * h]
+            ear = [lm[mp_pose.PoseLandmark.LEFT_EAR].x * w,
+                   lm[mp_pose.PoseLandmark.LEFT_EAR].y * h]
+            r_shoulder = [lm[mp_pose.PoseLandmark.RIGHT_SHOULDER].x * w,
+                          lm[mp_pose.PoseLandmark.RIGHT_SHOULDER].y * h]
 
-            tilt_angle = calculate_angle(hip, shoulder, ear)
-            angles.append(tilt_angle)
+            # FLEX SENSOR (front/back)
+            flex_angle = angle_from_points(hip, shoulder, ear)
+            results_data["flex_sensor_angles"].append(flex_angle)
 
-            # Save processed image with skeleton overlay
-            filename = os.path.basename(path)
-            output_path = os.path.join(output_dir, filename)
-            cv2.imwrite(output_path, image)
-            processed_files.append(output_path)
+            # GYRO Y (forward/back tilt)
+            dy = shoulder[1] - hip[1]
+            dx = shoulder[0] - hip[0]
+            gyroY_angle = math.degrees(math.atan2(dx, dy))
+            results_data["gyroY_angles"].append(gyroY_angle)
 
-# Average threshold
-baseline_threshold = sum(angles) / len(angles) if angles else 0
+            # GYRO Z (side tilt)
+            dy_shoulder = r_shoulder[1] - shoulder[1]
+            dx_shoulder = r_shoulder[0] - shoulder[0]
+            gyroZ_angle = math.degrees(math.atan2(dy_shoulder, dx_shoulder))
+            results_data["gyroZ_angles"].append(gyroZ_angle)
 
-# Output JSON with thresholds + processed image paths
-print(json.dumps({
-    "tilt_angle": baseline_threshold,
-    "processed_images": processed_files
-}))
+            # Draw landmarks
+            mp_drawing.draw_landmarks(img, res.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+            out_dir = "uploads/processed"
+            os.makedirs(out_dir, exist_ok=True)
+            out_path = os.path.join(out_dir, os.path.basename(path))
+            cv2.imwrite(out_path, img)
+            results_data["processed_images"].append(out_path)
+
+# Average values
+results_data["flex_sensor_baseline"] = sum(results_data["flex_sensor_angles"]) / len(results_data["flex_sensor_angles"])
+results_data["gyroY_baseline"] = sum(results_data["gyroY_angles"]) / len(results_data["gyroY_angles"])
+results_data["gyroZ_baseline"] = sum(results_data["gyroZ_angles"]) / len(results_data["gyroZ_angles"])
+
+print(json.dumps(results_data))

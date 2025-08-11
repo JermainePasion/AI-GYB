@@ -3,8 +3,8 @@ import axios from "axios";
 
 export default function UploadPhotos({ userId }) {
   const [files, setFiles] = useState([]);
-  const [processedImages, setProcessedImages] = useState([]); // <-- Added state for processed images
-  const [tiltAngle, setTiltAngle] = useState(null); // optional: store threshold
+  const [processedImages, setProcessedImages] = useState([]);
+  const [resultData, setResultData] = useState(null); // store all backend results
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,9 +26,9 @@ export default function UploadPhotos({ userId }) {
 
       console.log("Server Response:", res.data);
 
-      // Save returned data to state
+      // Store everything in state
+      setResultData(res.data);
       setProcessedImages(res.data.processed_images || []);
-      setTiltAngle(res.data.tilt_angle || null);
 
     } catch (err) {
       console.error(err);
@@ -47,11 +47,18 @@ export default function UploadPhotos({ userId }) {
         <button type="submit">Upload</button>
       </form>
 
-      {tiltAngle && <p>Detected Tilt Angle: {tiltAngle.toFixed(2)}°</p>}
+      {/* Show raw JSON from backend */}
+      {resultData && (
+        <div style={{ background: "#f4f4f4", padding: "10px", marginTop: "20px" }}>
+          <h3 className="text-black">Posture Baseline Data:</h3>
+          <pre className="text-black">{JSON.stringify(resultData, null, 2)}</pre>
+        </div>
+      )}
 
+      {/* Show processed skeleton images */}
       <div>
         {processedImages.map((img, i) => (
-          <img key={i} src={img} alt={`Processed ${i}`} style={{ width: '300px', margin: '10px' }} />
+          <img key={i} src={img} alt={`Processed ${i}`} style={{ width: '300px', margin: '10px', color: 'blue'}} />
         ))}
       </div>
     </div>
