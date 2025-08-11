@@ -1,17 +1,23 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const photoRoutes = require('./routes/photoRoutes');
 
 const app = express();
 const PORT = 3000;
 
-// To allow React Native to connect
+app.use(cors({
+  origin: 'http://localhost:5173', // your React app URL
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-
+// Routes
+app.use('/api', photoRoutes);
+app.use('/uploads', express.static('uploads'));
 
 
 app.listen(PORT, () => {
