@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const photoRoutes = require('./routes/photoRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Load env variables
 dotenv.config();
@@ -23,11 +24,14 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-app.use("/api/users", require("./routes/userRoutes"));
 app.use('/api', photoRoutes);
+app.use('/api/users', userRoutes);
 
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

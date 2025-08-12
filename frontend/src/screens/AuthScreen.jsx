@@ -115,7 +115,7 @@ export default function AuthScreen() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 text-black rounded px-3 py-2 focus:outline-none text-black focus:ring-2 focus:ring-[#A4CCD9]"
+              className="w-full border border-gray-300  rounded px-3 py-2 focus:outline-none text-black focus:ring-2 focus:ring-[#A4CCD9]"
             />
           </div>
 

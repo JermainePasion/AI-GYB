@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
+const { protect } = require('../middleware/authMiddleware'); 
 
 const router = express.Router();
 
@@ -66,6 +67,27 @@ router.post(
     } else {
       res.status(401);
       throw new Error("Invalid email or password");
+    }
+  })
+
+  
+);
+
+router.get(
+  "/profile",
+  protect,
+  asyncHandler(async (req, res) => {
+    // req.user is populated by protect middleware (with user data excluding password)
+    if (req.user) {
+      res.json({
+        _id: req.user._id,
+        username: req.user.username,
+        email: req.user.email,
+        role: req.user.role,
+      });
+    } else {
+      res.status(404);
+      throw new Error("User not found");
     }
   })
 );
