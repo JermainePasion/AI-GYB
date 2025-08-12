@@ -3,16 +3,37 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { UserContext } from '../context/UserContext';
+
 const ESP_IP = '192.168.100.66';
-const BACKEND_IP = '192.168.100.8';
-const USE_MOCK = true; //CHANGE TO TRUE IF U ARE JERROLD
+const BACKEND_IP = 'localhost'; // try localhost first for testing
+const USE_MOCK = true; // CHANGE TO TRUE IF U ARE JERROLD
 
 function HomeScreen() {
   const [data, setData] = useState(null);
   const [baseline, setBaseline] = useState(null);
+  const [thresholds, setThresholds] = useState(null);
   const navigate = useNavigate();
-  const { user, loading } = useContext(UserContext);
+  const { user, loading, token } = useContext(UserContext);
 
+  // Fetch thresholds from backend
+  const fetchThresholds = async () => {
+    if (!token) {
+      console.warn("No token yet, skipping thresholds fetch");
+      return;
+    }
+    try {
+      console.log("Fetching thresholds with token:", token);
+      const res = await axios.get(`http://${BACKEND_IP}:3000/api/users/thresholds`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log("Thresholds response:", res.data);
+      setThresholds(res.data);
+    } catch (err) {
+      console.error("Error fetching thresholds", err.response?.data || err.message || err);
+    }
+  };
+
+  // Fetch mock or real sensor data
   const fetchSensorData = async () => {
     if (USE_MOCK) {
       const mockData = {
@@ -40,6 +61,12 @@ function HomeScreen() {
   };
 
   useEffect(() => {
+    if (token) {
+      fetchThresholds();
+    }
+  }, [token]);
+
+  useEffect(() => {
     fetchSensorData();
     const interval = setInterval(fetchSensorData, 1500);
     return () => clearInterval(interval);
@@ -60,7 +87,7 @@ function HomeScreen() {
   };
 
   const handleClick = () => {
-    navigate('/figures'); 
+    navigate('/figures');
   };
 
   const DataCard = ({ label, value }) => (
@@ -70,7 +97,6 @@ function HomeScreen() {
     </div>
   );
 
-  // Now do conditional rendering AFTER all hooks have been called
   if (loading) {
     return (
       <DashboardLayout>
@@ -94,6 +120,15 @@ function HomeScreen() {
                 <DataCard label="Angle Z" value={`${data.angleZ.toFixed(2)}°`} />
                 <DataCard label="Flex Angle" value={`${data.flexAngle.toFixed(1)}°`} />
               </div>
+
+              {thresholds && (
+                <div className="mt-4 space-y-2 text-sm">
+                  <p className="text-yellow-300">Current Thresholds:</p>
+                  <pre className="bg-black/20 p-2 rounded">
+                    {JSON.stringify(thresholds, null, 2)}
+                  </pre>
+                </div>
+              )}
 
               <button
                 onClick={handleSetBaseline}

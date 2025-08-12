@@ -69,8 +69,6 @@ router.post(
       throw new Error("Invalid email or password");
     }
   })
-
-  
 );
 
 router.get(
@@ -89,6 +87,17 @@ router.get(
       res.status(404);
       throw new Error("User not found");
     }
+  })
+);
+
+router.get(
+  "/thresholds",
+  protect,
+  asyncHandler(async (req, res) => {
+    if (!req.user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(req.user.posture_thresholds || {});
   })
 );
 
