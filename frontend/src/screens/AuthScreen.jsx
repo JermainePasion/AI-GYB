@@ -62,7 +62,7 @@ export default function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
         <div className="mb-6 flex justify-center space-x-4">
           <button
@@ -130,7 +130,7 @@ export default function AuthScreen() {
               value={formData.password}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 text-black rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+              className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
             />
           </div>
 

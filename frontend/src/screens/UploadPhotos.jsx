@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import DashboardLayout from "../layouts/DashboardLayout";
 
 export default function UploadPhotos({ userId }) {
   const [files, setFiles] = useState([]);
@@ -36,31 +37,33 @@ export default function UploadPhotos({ userId }) {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={(e) => setFiles([...e.target.files])}
-        />
-        <button type="submit">Upload</button>
-      </form>
-
-      {/* Show raw JSON from backend */}
-      {resultData && (
-        <div style={{ background: "#f4f4f4", padding: "10px", marginTop: "20px" }}>
-          <h3 className="text-black">Posture Baseline Data:</h3>
-          <pre className="text-black">{JSON.stringify(resultData, null, 2)}</pre>
-        </div>
-      )}
-
-      {/* Show processed skeleton images */}
+    <DashboardLayout>
       <div>
-        {processedImages.map((img, i) => (
-          <img key={i} src={img} alt={`Processed ${i}`} style={{ width: '300px', margin: '10px', color: 'blue'}} />
-        ))}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => setFiles([...e.target.files])}
+          />
+          <button type="submit">Upload</button>
+        </form>
+
+        {/* Show raw JSON from backend */}
+        {resultData && (
+          <div style={{ background: "#f4f4f4", padding: "10px", marginTop: "20px" }}>
+            <h3 className="text-black">Posture Baseline Data:</h3>
+            <pre className="text-black">{JSON.stringify(resultData, null, 2)}</pre>
+          </div>
+        )}
+
+        {/* Show processed skeleton images */}
+        <div>
+          {processedImages.map((img, i) => (
+            <img key={i} src={img} alt={`Processed ${i}`} style={{ width: '300px', margin: '10px', color: 'blue'}} />
+          ))}
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

@@ -1,8 +1,11 @@
 import React from 'react'
+import DashboardLayout from '../layouts/DashboardLayout'
 
 function ScoreScreen() {
   return (
-    <div>ScoreScreen</div>
+    <DashboardLayout>
+      <div>ScoreScreen</div>
+    </DashboardLayout>
   )
 }
 

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import DashboardLayout from '../layouts/DashboardLayout';
 
 const ESP_IP = '192.168.100.66';
 const BACKEND_IP = '192.168.100.8';
@@ -64,7 +65,7 @@ function HomeScreen() {
     navigate('/figures'); 
   };
  const DataCard = ({ label, value }) => (
-  <div className="flex justify-between items-center bg-background px-4 py-3 rounded-lg shadow-sm text-sm">
+  <div className="flex justify-between items-center bg-background  px-4 py-3 rounded-lg shadow-sm text-sm">
     <span className="text-gray-300">{label}</span>
     <span className="font-medium">{value}</span>
   </div>
@@ -72,42 +73,44 @@ function HomeScreen() {
 
 
   return (
-    
-    <div className="min-h-screen bg-background text-white flex items-center justify-center px-2">
-  <div className=" max-w-md bg-secondary rounded-2xl p-6 shadow-xl bg-blue-900">
-    <h1 className="text-2xl font-bold text-center text-primary mb-6">
-      PostureSense Web App
-    </h1>
+    <DashboardLayout>
+      <div className="min-h-screen bg-background text-white flex items-center justify-center px-2">
+    <div className=" max-w-md bg-secondary rounded-2xl p-6 shadow-xl bg-blue-900">
+      <h1 className="text-2xl font-bold text-center text-primary mb-6">
+        PostureSense Web App
+      </h1>
 
-    {data ? (
-      <>
-        <div className="space-y-4">
-          <DataCard label="Angle Y" value={`${data.angleY.toFixed(2)}°`} />
-          <DataCard label="Angle Z" value={`${data.angleZ.toFixed(2)}°`} />
-          <DataCard label="Flex Angle" value={`${data.flexAngle.toFixed(1)}°`} />
-        </div>
+      {data ? (
+        <>
+          <div className="space-y-4">
+            <DataCard label="Angle Y" value={`${data.angleY.toFixed(2)}°`} />
+            <DataCard label="Angle Z" value={`${data.angleZ.toFixed(2)}°`} />
+            <DataCard label="Flex Angle" value={`${data.flexAngle.toFixed(1)}°`} />
+          </div>
 
-        <button
-          onClick={handleSetBaseline}
-          className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
-        >
-          Set Baseline
-        </button>
-      </>
-    ) : (
-      <p className="text-center text-gray-400 text-sm">Loading sensor data...</p>
-    )}
+          <button
+            onClick={handleSetBaseline}
+            className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
+          >
+            Set Baseline
+          </button>
+        </>
+      ) : (
+        <p className="text-center text-gray-400 text-sm">Loading sensor data...</p>
+      )}
 
-    <div className="p-6">
-  <button
-      onClick={handleClick}
-      className=" w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
-    >
-      Go to Figures Page
-    </button>
-</div>
+      <div className="p-6">
+    <button
+        onClick={handleClick}
+        className=" w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
+      >
+        Go to Figures Page
+      </button>
   </div>
-</div>
+    </div>
+  </div>
+
+</DashboardLayout>
 
 
   );

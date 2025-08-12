@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import SensorGauge from '../components/SensorGauge';
 import "../index.css"
+import DashboardLayout from '../layouts/DashboardLayout';
 
 const USE_MOCK = true; //CHANGE TO TRUE IF U ARE JERROLD
 const ESP_IP = '192.168.100.66';
@@ -43,18 +44,13 @@ export default function FigureScreen() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-gray-800 py-10 px-4 flex flex-col items-center space-y-10">
+    <DashboardLayout>
+      <div className="min-h-screen bg-background text-gray-800 py-10 px-4 flex flex-col items-center space-y-10">
 
-         <button
-        onClick={() => navigate('/')}
-        className="self-start mb-4 px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition"
-      >
-        <h3>Back</h3>
-      </button>
-
-      <SensorGauge title="Flex Sensor" angle={flexAngle} maxAngle={45} sensor="flex" />
-      <SensorGauge title="Gyro Y (Front/Back)" angle={gyroY} maxAngle={70} sensor="gyroY" />
-      <SensorGauge title="Gyro Z (Side Tilt)" angle={gyroZ} maxAngle={40} sensor="gyroZ" />
-    </div>
+        <SensorGauge title="Flex Sensor" angle={flexAngle} maxAngle={45} sensor="flex" />
+        <SensorGauge title="Gyro Y (Front/Back)" angle={gyroY} maxAngle={70} sensor="gyroY" />
+        <SensorGauge title="Gyro Z (Side Tilt)" angle={gyroZ} maxAngle={40} sensor="gyroZ" />
+      </div>
+    </DashboardLayout>
   );
 }

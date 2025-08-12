@@ -1,8 +1,11 @@
 import React from 'react'
+import DashboardLayout from '../layouts/DashboardLayout'
 
 function ControlScreen() {
   return (
-    <div>ControlScreen</div>
+    <DashboardLayout>
+      <div>ControlScreen</div>
+    </DashboardLayout>
   )
 }
 
