@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react"; // <-- added useContext
 import axios from "axios";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { UserContext } from '../context/UserContext';
 
 export default function UploadPhotos({ userId }) {
   const [files, setFiles] = useState([]);
   const [processedImages, setProcessedImages] = useState([]);
   const [resultData, setResultData] = useState(null); // store all backend results
+  const { token } = useContext(UserContext); // <-- get token from context
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,8 +24,11 @@ export default function UploadPhotos({ userId }) {
 
     try {
       const res = await axios.post("http://localhost:3000/api/upload-photos", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+  headers: {
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}` // << important
+  }
+});
 
       console.log("Server Response:", res.data);
 
@@ -60,7 +65,12 @@ export default function UploadPhotos({ userId }) {
         {/* Show processed skeleton images */}
         <div>
           {processedImages.map((img, i) => (
-            <img key={i} src={img} alt={`Processed ${i}`} style={{ width: '300px', margin: '10px', color: 'blue'}} />
+            <img
+              key={i}
+              src={img}
+              alt={`Processed ${i}`}
+              style={{ width: '300px', margin: '10px' }}
+            />
           ))}
         </div>
       </div>

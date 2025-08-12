@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const thresholdSchema = new mongoose.Schema({
-  flex_min: Number,
-  flex_max: Number,
-  gyroY_min: Number,
-  gyroY_max: Number,
-  gyroZ_min: Number,
-  gyroZ_max: Number
+  flex_min: { type: Number, default: null },
+  flex_max: { type: Number, default: null },
+  gyroY_min: { type: Number, default: null },
+  gyroY_max: { type: Number, default: null },
+  gyroZ_min: { type: Number, default: null },
+  gyroZ_max: { type: Number, default: null }
 });
 
 const userSchema = new mongoose.Schema({
@@ -16,11 +16,11 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role:     { type: String, enum: ["user", "doctor"], default: "user" },
   posture_baseline: {
-    flex_sensor_baseline: Number,
-    gyroY_baseline: Number,
-    gyroZ_baseline: Number
+    flex_sensor_baseline: { type: Number, default: null },
+    gyroY_baseline: { type: Number, default: null },
+    gyroZ_baseline: { type: Number, default: null }
   },
-  posture_thresholds: thresholdSchema
+  posture_thresholds: { type: thresholdSchema, default: () => ({}) } // default empty object
 }, { timestamps: true });
 
 // Hash password before save
