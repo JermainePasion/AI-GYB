@@ -112,7 +112,7 @@ export default function AuthScreen() {
 
                 <div>
                   <label className="block mb-1 font-medium text-black" htmlFor="email">
-                    Email
+                    Email!!!
                   </label>
                   <input
                     type="email"
