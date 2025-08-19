@@ -94,7 +94,7 @@ export default function AuthScreen() {
                   <>
                     <div>
                       <label className="block mb-1 font-medium text-black" htmlFor="username">
-                        UsernameMEME
+                        Username
                       </label>
                       <input
                         type="text"
