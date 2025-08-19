@@ -8,23 +8,73 @@ import ScoreScreen from "./screens/ScoreScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import UploadPhotos from "./screens/UploadPhotos";
 import AuthScreen from "./screens/AuthScreen";
-
+import PrivateRoute from "./components/PrivateRoute";
 
 
 function App() {
-  return (
+   return (
+    <Routes>
+      {/* Public */}
+      <Route path="/" element={<AuthScreen />} />
 
-      <Routes>
-        <Route path="/home" element={<HomeScreen />} />
-        <Route path="/figures" element={<FigureScreen/>} />
-        <Route path="/control" element={<ControlScreen/>}/>
-        <Route path="/connection" element={<ConnectionScreen/>}/>
-        <Route path="/score" element={<ScoreScreen/>}/>
-        <Route path="/upload" element={<UploadPhotos/>}/>
-        <Route path="/settings" element={<SettingsScreen/>}/>
-        <Route path="/" element={<AuthScreen/>}/>
-      </Routes>
-
+      {/* Protected */}
+      <Route
+        path="/home"
+        element={
+          <PrivateRoute>
+            <HomeScreen />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/figures"
+        element={
+          <PrivateRoute>
+            <FigureScreen />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/control"
+        element={
+          <PrivateRoute>
+            <ControlScreen />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/connection"
+        element={
+          <PrivateRoute>
+            <ConnectionScreen />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/score"
+        element={
+          <PrivateRoute>
+            <ScoreScreen />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/upload"
+        element={
+          <PrivateRoute>
+            <UploadPhotos />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute>
+            <SettingsScreen />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
   );
 }
 
