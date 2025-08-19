@@ -77,7 +77,7 @@ export default function AuthScreen() {
                   className={`px-4 py-2 font-semibold rounded ${
                     isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
                   }`}>
-                  Logen
+                  Logen!!!
                 </button>
 
                 <button
@@ -94,7 +94,7 @@ export default function AuthScreen() {
                   <>
                     <div>
                       <label className="block mb-1 font-medium text-black" htmlFor="username">
-                        UsernameMEME
+                        Username
                       </label>
                       <input
                         type="text"
