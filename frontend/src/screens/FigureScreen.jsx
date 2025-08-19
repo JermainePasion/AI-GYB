@@ -13,7 +13,7 @@ export default function FigureScreen() {
   const [flexAngle, setFlexAngle] = useState(0);
   const [gyroY, setGyroY] = useState(0);
   const [gyroZ, setGyroZ] = useState(0);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const fetchData = async () => {
     try {
