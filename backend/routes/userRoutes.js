@@ -82,6 +82,7 @@ router.get(
         username: req.user.username,
         email: req.user.email,
         role: req.user.role,
+        posture_thresholds: req.user.posture_thresholds || {}
       });
     } else {
       res.status(404);

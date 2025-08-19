@@ -215,70 +215,128 @@ useEffect(() => {
   }
 
   return (
-    <DashboardLayout>
-      <div className="min-h-screen bg-background text-white flex items-center justify-center px-2">
-        <div className="max-w-md bg-secondary rounded-2xl p-6 shadow-xl bg-blue-900">
-          <h1>Hello, {user?.username || 'Guest'}!</h1>
+<DashboardLayout>
+  <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start gap-6 p-4">
+    <h1 className="text-6xl font-extrabold text-white opacity-0 animate-fadeIn text-center">
+      Hello, {user?.username}!
+    </h1>
 
-          {/* Bluetooth status */}
-          <p className="mt-2 text-sm text-gray-300">
-            Bluetooth Status: <span className="font-bold">{connectionStatus}</span>
+
+    {/* Sensor Data Card */}
+    <div className="flex-1 max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] h-full flex flex-col animate-fadeIn">
+
+      {/* Bluetooth status */}
+      <p className="mt-2 text-sm text-gray-300">
+        Bluetooth Status: <span className="font-bold">{connectionStatus}</span>
+      </p>
+      <div className="flex gap-2 mt-2">
+        <button
+          onClick={connectBluetooth}
+          className="px-3 py-1 rounded bg-blue-500 text-sm hover:bg-blue-600"
+        >
+          🔗 Connect
+        </button>
+        <button
+          onClick={sendThresholds}
+          disabled={!btServer}
+          className="px-3 py-1 rounded bg-green-500 text-sm hover:bg-green-600 disabled:opacity-50"
+        >
+          ⬆ Upload Thresholds
+        </button>
+      </div>
+
+      <div className="flex-1 flex flex-col justify-between">
+        {data ? (
+          <>
+            <div className="space-y-4 mt-4">
+              <DataCard label="Angle Y" value={`${data.angleY.toFixed(2)}°`} />
+              <DataCard label="Angle Z" value={`${data.angleZ.toFixed(2)}°`} />
+              <DataCard label="Flex Angle" value={`${data.flexAngle.toFixed(1)}°`} />
+            </div>
+
+            <button
+              onClick={handleSetBaseline}
+              className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
+            >
+              Set Baseline
+            </button>
+          </>
+        ) : (
+          <p className="text-center text-gray-400 text-sm mt-6">
+            Loading sensor data...
           </p>
-          <div className="flex gap-2 mt-2">
-            <button
-              onClick={connectBluetooth}
-              className="px-3 py-1 rounded bg-blue-500 text-sm hover:bg-blue-600"
-            >
-              🔗 Connect
-            </button>
-            <button
-              onClick={sendThresholds}
-              disabled={!btServer}
-              className="px-3 py-1 rounded bg-green-500 text-sm hover:bg-green-600 disabled:opacity-50"
-            >
-              ⬆ Upload Thresholds
-            </button>
-          </div>
+        )}
 
-          {data ? (
-            <>
-              <div className="space-y-4 mt-4">
-                <DataCard label="Angle Y" value={`${data.angleY.toFixed(2)}°`} />
-                <DataCard label="Angle Z" value={`${data.angleZ.toFixed(2)}°`} />
-                <DataCard label="Flex Angle" value={`${data.flexAngle.toFixed(1)}°`} />
-              </div>
-
-              {thresholds && (
-                <div className="mt-4 space-y-2 text-sm">
-                  <p className="text-yellow-300">Current Thresholds:</p>
-                  <pre className="bg-black/20 p-2 rounded">
-                    {JSON.stringify(thresholds, null, 2)}
-                  </pre>
-                </div>
-              )}
-
-              <button
-                onClick={handleSetBaseline}
-                className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
-              >
-                Set Baseline
-              </button>
-            </>
-          ) : (
-            <p className="text-center text-gray-400 text-sm">Loading sensor data...</p>
-          )}
-
-          <div className="p-6">
-            <button
-              onClick={handleClick}
-              className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
-            >
-              Go to Figures Page
-            </button>
-          </div>
+        <div className="pt-6">
+          <button
+            onClick={handleClick}
+            className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
+          >
+            Go to Figures Page
+          </button>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
+
+    {/* Thresholds Card */}
+    {user?.posture_thresholds && (
+      <div className="flex-1 max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] h-full flex flex-col animate-fadeIn">
+        <p className="text-black mb-4 font-semibold text-center">
+          Your Saved Thresholds
+        </p>
+
+        <div className="flex-1">
+          {Object.entries({
+            "Spine": {
+              min: user.posture_thresholds.flex_min,
+              max: user.posture_thresholds.flex_max,
+            },
+            "Left": {
+              min: user.posture_thresholds.gyroY_min,
+              max: user.posture_thresholds.gyroY_max,
+            },
+            "Right": {
+              min: user.posture_thresholds.gyroZ_min,
+              max: user.posture_thresholds.gyroZ_max,
+            },
+          }).map(([label, { min, max }]) => (
+            <div
+              key={label}
+              className="bg-[#c4e1e6] p-4 rounded-lg shadow text-center mb-4"
+            >
+              <h4 className="text-lg font-bold text-blue-300">{label}</h4>
+
+              {/* Numbers */}
+              <div className="flex justify-between text-sm mb-2">
+                <span>
+                  Min: <span className="font-semibold">{min.toFixed(1)}°</span>
+                </span>
+                <span>
+                  Max: <span className="font-semibold">{max.toFixed(1)}°</span>
+                </span>
+              </div>
+
+              {/* Visual Range Bar */}
+              <div className="relative w-full h-3 bg-gray-600 rounded-full overflow-hidden">
+                <div
+                  className="absolute top-0 h-3 bg-[#ebffd8]"
+                  style={{
+                    left: `${(Math.min(min, max) + 90) / 180 * 100}%`,
+                    width: `${Math.abs(max - min) / 180 * 100}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Range: {min.toFixed(1)}° – {max.toFixed(1)}°
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</DashboardLayout>
+
   );
 }
 
