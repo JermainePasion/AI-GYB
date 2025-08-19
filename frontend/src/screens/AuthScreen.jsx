@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import AuthNavbar from "../layouts/AuthNavbar";
 
 export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
@@ -62,88 +63,96 @@ export default function AuthScreen() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-        <div className="mb-6 flex justify-center space-x-4">
-          <button
-            onClick={() => setIsLogin(true)}
-            className={`px-4 py-2 font-semibold rounded ${
-              isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            Login
-          </button>
-          <button
-            onClick={() => setIsLogin(false)}
-            className={`px-4 py-2 font-semibold rounded ${
-              !isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
-            }`}
-          >
-            Register
-          </button>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <>
-              <div>
-                <label className="block mb-1 font-medium text-black" htmlFor="username">
-                  Username
-                </label>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required
-                  className="w-full border border-gray-300 rounded text-black px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
-                />
+    <div>
+      <AuthNavbar/>
+
+        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+
+            <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
+
+              <div className="mb-6 flex justify-center space-x-4">
+                <button
+                  onClick={() => setIsLogin(true)}
+                  className={`px-4 py-2 font-semibold rounded ${
+                    isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
+                  }`}>
+                  Login
+                </button>
+
+                <button
+                  onClick={() => setIsLogin(false)}
+                  className={`px-4 py-2 font-semibold rounded ${
+                    !isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
+                  }`} >
+                  Register
+                </button>
               </div>
-              
-            </>
-          )}
 
-          <div>
-            <label className="block mb-1 font-medium text-black" htmlFor="email">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300  rounded px-3 py-2 focus:outline-none text-black focus:ring-2 focus:ring-[#A4CCD9]"
-            />
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isLogin && (
+                  <>
+                    <div>
+                      <label className="block mb-1 font-medium text-black" htmlFor="username">
+                        Username
+                      </label>
+                      <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded text-black px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+                      />
+                    </div>
+                    
+                  </>
+                )}
+
+                <div>
+                  <label className="block mb-1 font-medium text-black" htmlFor="email">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full border border-gray-300  rounded px-3 py-2 focus:outline-none text-black focus:ring-2 focus:ring-[#A4CCD9]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-medium text-black" htmlFor="password">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+                  />
+                </div>
+
+                {error && <p className="text-red-600 text-sm">{error}</p>}
+
+                <button
+                  type="submit"
+                  className="w-full bg-[#A4CCD9] text-white py-2 rounded font-semibold hover:bg-red-700 transition"
+                >
+                  {isLogin ? "Login" : "Register"}
+                </button>
+              </form>
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium text-black" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
-            />
-          </div>
-
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-
-          <button
-            type="submit"
-            className="w-full bg-[#A4CCD9] text-white py-2 rounded font-semibold hover:bg-red-700 transition"
-          >
-            {isLogin ? "Login" : "Register"}
-          </button>
-        </form>
-      </div>
     </div>
+
   );
 }
