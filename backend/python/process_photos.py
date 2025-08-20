@@ -47,13 +47,29 @@ with mp_pose.Pose(static_image_mode=True) as pose:
             flex_angle = raw_flex_angle if raw_flex_angle > 0 else 0
             flex_angles.append(flex_angle)
 
-            # GYRO Y baseline (forward/back tilt)
-            dyY = shoulder[1] - hip[1]
+            # GYRO Y baseline (forward/back tilt, reference = vertical line)
             dxY = shoulder[0] - hip[0]
-            gyroY_angle = math.degrees(math.atan2(dxY, dyY))
+            dyY = shoulder[1] - hip[1]
+
+            # Reference vector for upright posture (straight up in image coords)
+            refY = (0, -1)
+
+            dot = dxY * refY[0] + dyY * refY[1]
+            mag1 = math.sqrt(dxY**2 + dyY**2)
+            mag2 = math.sqrt(refY[0]**2 + refY[1]**2)
+
+            cos_theta = dot / (mag1 * mag2 + 1e-6)
+            angle = math.degrees(math.acos(max(-1, min(1, cos_theta))))
+
+            # Sign: forward lean = positive, backward lean = negative
+            cross = dxY * refY[1] - dyY * refY[0]
+            if cross < 0:
+                angle = -angle
+
+            gyroY_angle = angle
             gyroY_angles.append(gyroY_angle)
 
-            # GYRO Z baseline (side tilt)
+            # GYRO Z baseline (side tilt, reference = horizontal line between shoulders)
             dyZ = r_shoulder[1] - shoulder[1]
             dxZ = r_shoulder[0] - shoulder[0]
             gyroZ_angle = math.degrees(math.atan2(dyZ, dxZ))
