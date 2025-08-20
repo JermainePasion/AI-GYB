@@ -12,11 +12,11 @@ export default function AuthScreen() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-    setError(null);
-    setFormData({ username: "", email: "", password: ""});
-  };
+  // const toggleForm = () => {
+  //   setIsLogin(!isLogin);
+  //   setError(null);
+  //   setFormData({ username: "", email: "", password: ""});
+  // };
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
