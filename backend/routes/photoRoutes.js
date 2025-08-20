@@ -15,7 +15,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// POST: Upload photos, process posture, and save thresholds
+// ✅ Utility to make URLs safely
+const makeUrl = (req, p) => {
+  if (!p) return null;
+  if (p.startsWith("http")) return p; // already a full URL, return as-is
+  const rel = p.replace(/\\/g, "/").replace(/^(\.\/)+/, "");
+  return `${req.protocol}://${req.get("host")}/${rel}`;
+};
+
 router.post("/upload-photos", protect, upload.array("photos", 5), async (req, res) => {
   try {
     if (!req.user) {
@@ -39,9 +46,9 @@ router.post("/upload-photos", protect, upload.array("photos", 5), async (req, re
     pythonProcess.on("close", async () => {
       try {
         console.log("Raw Python output:", dataString);
-        const result = JSON.parse(dataString); // first version already outputs thresholds
+        const result = JSON.parse(dataString);
 
-        // Save thresholds directly to user
+        // Save thresholds to user
         const updatedUser = await User.findByIdAndUpdate(
           req.user._id,
           {
@@ -51,7 +58,7 @@ router.post("/upload-photos", protect, upload.array("photos", 5), async (req, re
               gyroZ_baseline: result.gyroZ_baseline
             },
             posture_thresholds: {
-              flex_min: result.flex_sensor_baseline - 5, // example: +/- 5 deg tolerance
+              flex_min: result.flex_sensor_baseline - 5,
               flex_max: result.flex_sensor_baseline + 5,
               gyroY_min: result.gyroY_baseline - 5,
               gyroY_max: result.gyroY_baseline + 5,
@@ -62,13 +69,14 @@ router.post("/upload-photos", protect, upload.array("photos", 5), async (req, re
           { new: true }
         );
 
-        const processedImageUrls = (result.processed_images || []).map(imgPath =>
-          `${req.protocol}://${req.get('host')}/${imgPath.replace(/\\/g, '/')}`
-        );
+        // ✅ Convert local paths → full URLs
+        const processedImageUrls = (result.processed_images || []).map(p => makeUrl(req, p));
+        const skeletalImageUrls  = (result.skeletal_images  || []).map(p => makeUrl(req, p));
 
         res.json({
           message: "Photos processed & thresholds saved",
           processed_images: processedImageUrls,
+          skeletal_images: skeletalImageUrls,
           thresholds: updatedUser.posture_thresholds
         });
 
