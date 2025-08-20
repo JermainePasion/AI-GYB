@@ -51,7 +51,6 @@ export default function AuthScreen() {
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
       login(data.token, data);
-      alert(`Welcome, ${data.username}!`);
       navigate("/home");
     } catch (err) {
       setError(err.message);
@@ -74,7 +73,7 @@ export default function AuthScreen() {
                   : "bg-gray-200 text-gray-700"
               }`}
             >
-              Sign In
+              Login
             </button>
             <button
               onClick={() => setIsLogin(false)}
@@ -84,7 +83,7 @@ export default function AuthScreen() {
                   : "bg-gray-200 text-gray-700"
               }`}
             >
-              Sign Up
+              Register
             </button>
           </div>
 
@@ -161,7 +160,7 @@ export default function AuthScreen() {
                   type="submit"
                   className="w-full bg-[#A4CCD9] text-white py-2 rounded-lg font-semibold hover:bg-[#7daebd] transition"
                 >
-                  {isLogin ? "Login" : "Register"}
+                  {isLogin ? "Sign in" : "Sign up"}
                 </button>
               </form>
             </motion.div>
