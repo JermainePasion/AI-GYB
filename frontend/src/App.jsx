@@ -8,6 +8,7 @@ import ScoreScreen from "./screens/ScoreScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import UploadPhotos from "./screens/UploadPhotos";
 import AuthScreen from "./screens/AuthScreen";
+import LandingScreen from "./screens/LandingScreen";
 import PrivateRoute from "./components/PrivateRoute";
 
 
@@ -15,7 +16,8 @@ function App() {
    return (
     <Routes>
       {/* Public */}
-      <Route path="/" element={<AuthScreen />} />
+      <Route path="/signup" element={<AuthScreen />} />
+      <Route path="/" element={<LandingScreen />} />
 
       {/* Protected */}
       <Route
