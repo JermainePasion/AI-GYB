@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import AuthNavbar from "../layouts/AuthNavbar";
+import { UserContext } from "../context/UserContext";
+import { useContext } from "react";
 
 export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,6 +13,7 @@ export default function AuthScreen() {
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { login } = useContext(UserContext);
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -52,11 +55,10 @@ export default function AuthScreen() {
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
       // On success, save token & redirect or do something
-      localStorage.setItem("token", data.token);
+      login(data.token, data);
+
       alert(`Welcome, ${data.username}!`);
-      navigate("/home");
-      // For example, redirect to dashboard:
-      // window.location.href = "/dashboard";
+      navigate("/home"); // ✅ Redirect now works
     } catch (err) {
       setError(err.message);
     }
