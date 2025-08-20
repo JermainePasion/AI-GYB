@@ -15,11 +15,11 @@ export default function AuthScreen() {
   const navigate = useNavigate();
   const { login } = useContext(UserContext);
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-    setError(null);
-    setFormData({ username: "", email: "", password: ""});
-  };
+  // const toggleForm = () => {
+  //   setIsLogin(!isLogin);
+  //   setError(null);
+  //   setFormData({ username: "", email: "", password: ""});
+  // };
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
