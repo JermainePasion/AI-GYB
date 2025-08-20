@@ -62,7 +62,7 @@ export default function AuthScreen() {
     <div>
       <AuthNavbar />
 
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#A4CCD9] to-[#e7f3e0] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#8dbcc7] px-4">
         <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-lg relative overflow-hidden">
           {/* Toggle buttons */}
           <div className="mb-6 flex justify-center space-x-4">
