@@ -1,25 +1,20 @@
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import AuthNavbar from "../layouts/AuthNavbar";
 import { UserContext } from "../context/UserContext";
-import { useContext } from "react";
+
 
 export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
-    password: ""
+    password: "",
   });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { login } = useContext(UserContext);
-
-  // const toggleForm = () => {
-  //   setIsLogin(!isLogin);
-  //   setError(null);
-  //   setFormData({ username: "", email: "", password: ""});
-  // };
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -29,9 +24,10 @@ export default function AuthScreen() {
     e.preventDefault();
     setError(null);
 
-    const endpoint = isLogin ? "http://localhost:3000/api/users/login" : "http://localhost:3000/api/users/register";
+    const endpoint = isLogin
+      ? "http://localhost:3000/api/users/login"
+      : "http://localhost:3000/api/users/register";
 
-    // Prepare payload (for register, username and role needed)
     const payload = isLogin
       ? {
           email: formData.email,
@@ -54,67 +50,83 @@ export default function AuthScreen() {
 
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
-      // On success, save token & redirect or do something
       login(data.token, data);
-
-      alert(`Welcome, ${data.username}!`);
-      navigate("/home"); // ✅ Redirect now works
+      navigate("/home");
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-
     <div>
-      <AuthNavbar/>
+      <AuthNavbar />
 
-        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#8dbcc7] px-4">
+        <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-lg relative overflow-hidden">
+          {/* Toggle buttons */}
+          <div className="mb-6 flex justify-center space-x-4">
+            <button
+              onClick={() => setIsLogin(true)}
+              className={`px-5 py-2 rounded-lg font-semibold transition ${
+                isLogin
+                  ? "bg-[#A4CCD9] text-white shadow"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              Login
+            </button>
+            <button
+              onClick={() => setIsLogin(false)}
+              className={`px-5 py-2 rounded-lg font-semibold transition ${
+                !isLogin
+                  ? "bg-[#e7f3e0] text-black shadow"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              Register
+            </button>
+          </div>
 
-            <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
+          {/* AnimatePresence for sliding effect */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isLogin ? "login" : "register"}
+              initial={{ x: 100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -100, opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+                {isLogin ? "Welcome Back " : "Create Your Account "}
+              </h2>
+              <p className="text-center text-gray-500 mb-6">
+                {isLogin
+                  ? "Please login to access your dashboard."
+                  : "Sign up to get started with your journey."}
+              </p>
 
-              <div className="mb-6 flex justify-center space-x-4">
-                <button
-                  onClick={() => setIsLogin(true)}
-                  className={`px-4 py-2 font-semibold rounded ${
-                    isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
-                  }`}>
-                  Logen!!!
-                </button>
-
-                <button
-                  onClick={() => setIsLogin(false)}
-                  className={`px-4 py-2 font-semibold rounded ${
-                    !isLogin ? "bg-[#e7f3e0] text-black" : "bg-gray-200 text-gray-700"
-                  }`} >
-                  Register
-                </button>
-              </div>
-
+              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 {!isLogin && (
-                  <>
-                    <div>
-                      <label className="block mb-1 font-medium text-black" htmlFor="username">
-                        Username
-                      </label>
-                      <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        required
-                        className="w-full border border-gray-300 rounded text-black px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
-                      />
-                    </div>
-                    
-                  </>
+                  <div>
+                    <label className="block mb-1 font-medium text-black" htmlFor="username">
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      id="username"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+                    />
+                  </div>
                 )}
 
                 <div>
                   <label className="block mb-1 font-medium text-black" htmlFor="email">
-                    Email!!!
+                    Email
                   </label>
                   <input
                     type="email"
@@ -123,7 +135,7 @@ export default function AuthScreen() {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300  rounded px-3 py-2 focus:outline-none text-black focus:ring-2 focus:ring-[#A4CCD9]"
+                    className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
                   />
                 </div>
 
@@ -146,15 +158,15 @@ export default function AuthScreen() {
 
                 <button
                   type="submit"
-                  className="w-full bg-[#A4CCD9] text-white py-2 rounded font-semibold hover:bg-red-700 transition"
+                  className="w-full bg-[#A4CCD9] text-white py-2 rounded-lg font-semibold hover:bg-[#7daebd] transition"
                 >
-                  {isLogin ? "Login" : "Register"}
+                  {isLogin ? "Sign in" : "Sign up"}
                 </button>
               </form>
-            </div>
-          </div>
-
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
-
   );
 }
