@@ -113,11 +113,11 @@ export default function FigureScreen() {
           {/* Right: Two Human Models */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full md:w-2/3">
             <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
-              <h2 className="text-lg font-semibold mb-2">Front View</h2>
+              <h2 className="text-lg font-semibold mb-2">Front  View</h2>
               <FrontViewHuman flexAngle={flexAngle} gyroZ={gyroZ} />
             </div>
             <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
-              <h2 className="text-lg font-semibold mb-2">Side View</h2>
+              <h2 className="text-lg font-semibold mb-2">Side  View</h2>
               <SideViewHuman flexAngle={flexAngle} gyroY={gyroY} />
             </div>
           </div>
