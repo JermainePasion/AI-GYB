@@ -100,26 +100,31 @@ export default function FigureScreen() {
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background text-gray-800 py-10 px-4 flex flex-col items-center space-y-10">
-        
-        {/* Two Human Models */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="flex flex-col items-center">
-            <h2 className="text-lg font-semibold mb-2">Front View</h2>
-            <FrontViewHuman flexAngle={flexAngle} gyroZ={gyroZ} />
-          </div>
-          <div className="flex flex-col items-center">
-            <h2 className="text-lg font-semibold mb-2">Side View</h2>
-            <SideViewHuman flexAngle={flexAngle} gyroY={gyroY} />
-          </div>
-        </div>
+        <h1 className="text-2xl font-bold mb-6">Live Posture Tracking</h1>
 
-        {/* Gauges */}
-        <div className="flex flex-col md:flex-row gap-6 mt-10 w-full max-w-4xl">
-          <SensorGauge title="Flex Sensor" angle={flexAngle} maxAngle={45} sensor="flex" />
-          <SensorGauge title="Gyro Y (Front/Back)" angle={gyroY} maxAngle={70} sensor="gyroY" />
-          <SensorGauge title="Gyro Z (Side Tilt)" angle={gyroZ} maxAngle={40} sensor="gyroZ" />
+        <div className="flex flex-col md:flex-row gap-10 w-full max-w-6xl">
+          {/* Left: Gauges */}
+          <div className="flex flex-col gap-6 w-full md:w-1/3">
+            <SensorGauge title="Flex Sensor" angle={flexAngle} maxAngle={45} sensor="flex" />
+            <SensorGauge title="Gyro Y (Front/Back)" angle={gyroY} maxAngle={70} sensor="gyroY" />
+            <SensorGauge title="Gyro Z (Side Tilt)" angle={gyroZ} maxAngle={40} sensor="gyroZ" />
+          </div>
+
+          {/* Right: Two Human Models */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full md:w-2/3">
+            <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
+              <h2 className="text-lg font-semibold mb-2">Front View</h2>
+              <FrontViewHuman flexAngle={flexAngle} gyroZ={gyroZ} />
+            </div>
+            <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
+              <h2 className="text-lg font-semibold mb-2">Side View</h2>
+              <SideViewHuman flexAngle={flexAngle} gyroY={gyroY} />
+            </div>
+          </div>
         </div>
       </div>
     </DashboardLayout>
   );
+
+
 }
