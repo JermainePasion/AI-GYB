@@ -187,7 +187,7 @@ export default function UploadPhotos({ userId }) {
                     {/* Posture Baseline Thresholds */}
                     <div className="w-full ml-20 md:w-1/3 bg-white shadow-lg rounded-xl p-6 border border-gray-200">
                       <h3 className="text-xl font-bold mb-4 border-b pb-2 text-gray-700">
-                        Posture Baseline Thresholds
+                        Posture Baseline
                       </h3>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         {/* Flex */}
