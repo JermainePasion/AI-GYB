@@ -100,7 +100,7 @@ export default function FigureScreen() {
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background text-gray-800 py-10 px-4 flex flex-col items-center space-y-10">
-        <h1 className="text-2xl font-bold mb-6">Live Posture Tracking</h1>
+        <h1 className="text-2xl font-bold mb-6">Live Posture</h1>
 
         <div className="flex flex-col md:flex-row gap-10 w-full max-w-6xl">
           {/* Left: Gauges */}
