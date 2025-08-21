@@ -117,7 +117,7 @@ function Navbar() {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="block py-2 px-3 text-red-600 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700"
+                  className="block py--1 px-1 text-red-600 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700"
                 >
                   Logout
                 </button>
