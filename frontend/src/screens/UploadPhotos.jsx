@@ -67,7 +67,7 @@ export default function UploadPhotos({ userId }) {
       <div>
         {/* Only show Upload Photos container if no results yet */}
         {!resultData && (
-          <div className="border-2 border-gray-400 rounded-lg p-4 text-2xl font-bold mt-15 ml-100 mr-100 h-120 justify-center items-center text-center">
+          <div className="border-2 border-gray-400 rounded-lg p-4 text-2xl font-bold mt-15 max-w-200 mx-auto h-120 justify-center items-center text-center">
             Upload Photos
             <form
               onSubmit={handleSubmit}
