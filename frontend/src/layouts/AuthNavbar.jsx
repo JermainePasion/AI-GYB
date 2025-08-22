@@ -5,10 +5,10 @@ function AuthNavbar() {
     
 
 <nav class="bg-white border-gray-200 dark:bg-gray-900">
-  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p--1">
     <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-        <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">AI-GYB</span>
+        <img src="/ai-gyb-logo.png" class="h-25" alt="AI-GYB-logo" />
+        <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">AI-Got Your Back</span>
     </a>
 
             <div class="hidden w-full md:block md:w-auto" id="navbar-default">

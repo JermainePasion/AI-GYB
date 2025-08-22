@@ -3,15 +3,15 @@ import React from 'react'
 function LandingNavbar() {
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed h-25 w-full top-0 z-50 shadow-md">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p--1">
         <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
           <img
             src="/ai-gyb-logo.png" // ✅ replace with your logo
-            className="h-20 w-auto"
+            className="h-25 w-auto"
             alt="AI-GYB Logo"
           />
           <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            AI-GYB
+            AI-Got Your Back
           </span>
         </a>
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
