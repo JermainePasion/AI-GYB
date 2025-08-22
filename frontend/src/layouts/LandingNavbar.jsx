@@ -25,12 +25,12 @@ function LandingNavbar() {
               </a>
             </li>
             <li>
-              <a href="#about" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white md:p-0">
+              <a href="/about" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white md:p-0">
                 About us
               </a>
             </li>
             <li>
-              <a href="#contact" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white md:p-0">
+              <a href="/#contact" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white md:p-0">
                 Contact us
               </a>
             </li>

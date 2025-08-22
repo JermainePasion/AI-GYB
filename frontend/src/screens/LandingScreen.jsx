@@ -79,7 +79,6 @@ export default function LandingScreen() {
 
         {/* Benefits Section */}
       <section
-        id="about"
         className="flex items-center justify-center h-screen px-6 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/benifit-image.jpg')" }} // ✅ Replace with your image path
       >
