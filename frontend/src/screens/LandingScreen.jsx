@@ -9,7 +9,7 @@ export default function LandingScreen() {
       <section
         id="home"
         style={{
-          backgroundImage: "url('/posture-bg.webp')", // ✅ no need for /public prefix
+          backgroundImage: "url('/posture-bg.webp')", // no need for /public prefix
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -46,7 +46,7 @@ export default function LandingScreen() {
             {/* Product Image */}
             <div className="flex justify-center">
               <img
-                src="/posture-vest.jpg" // ✅ replace with your product image
+                src="/posture-vest.jpg" //replace with your product image
                 alt="PostureSense Wearable"
                 className="w-80 h-auto rounded-xl shadow-md"
               />
@@ -66,7 +66,7 @@ export default function LandingScreen() {
 
               {/* Buy Now Button */}
               <a
-                href="https://yourshoplink.com" // ✅ replace with your shop link
+                href="https://yourshoplink.com" //  replace with your shop link
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition-all duration-300"
@@ -79,8 +79,9 @@ export default function LandingScreen() {
 
         {/* Benefits Section */}
       <section
+
         className="flex items-center justify-center h-screen px-6 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/benifit-image.jpg')" }} // ✅ Replace with your image path
+        style={{ backgroundImage: "url('/benifit-image.jpg')" }} //  Replace with your image path
       >
         <div className="max-w-4xl w-full p-10 text-center bg-white/40">
           <h2 className="text-3xl font-bold text-black drop-shadow-lg mb-6">
@@ -120,7 +121,7 @@ export default function LandingScreen() {
             {/* Blog Post 1 */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <img
-                src="/blog-1-image.webp" // ✅ replace with your image
+                src="/blog-1-image.webp" // replace with your image
                 alt="3 Surprising Risks of Poor Posture"
                 className="w-full h-48 object-cover"
               />
@@ -145,7 +146,7 @@ export default function LandingScreen() {
             {/* Blog Post 2 */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <img
-                src="/blog-2-image.webp" // ✅ replace with your image
+                src="/blog-2-image.webp" //  replace with your image
                 alt="How Posture Affects Productivity"
                 className="w-full h-48 object-cover"
               />
@@ -169,7 +170,7 @@ export default function LandingScreen() {
             {/* Blog Post 3 */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
               <img
-                src="/blog-3-image.webp" // ✅ replace with your image
+                src="/blog-3-image.webp" // replace with your image
                 alt="Tips for Better Posture"
                 className="w-full h-48 object-cover"
               />
