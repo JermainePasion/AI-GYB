@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   email:    { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role:     { type: String, enum: ["user", "doctor"], default: "user" },
+  role: { type: String, enum: ["user", "doctor", "admin"], default: "user" },
   posture_baseline: {
     flex_sensor_baseline: { type: Number, default: 0 },
     gyroY_baseline: { type: Number, default: 0 },

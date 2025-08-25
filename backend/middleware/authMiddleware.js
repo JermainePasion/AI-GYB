@@ -22,4 +22,13 @@ const protect = async (req, res, next) => {
 
 };
 
-module.exports = { protect };
+const authorize = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Forbidden: insufficient role" });
+    }
+    next();
+  };
+};
+
+module.exports = { protect, authorize };

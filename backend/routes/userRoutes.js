@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
-const { protect } = require('../middleware/authMiddleware'); 
+const { protect, authorize } = require('../middleware/authMiddleware'); 
 
 const router = express.Router();
 
@@ -103,3 +103,43 @@ router.get(
 );
 
 module.exports = router;
+
+router.post("/register-doctor", protect, authorize("admin"), async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+
+    // validate
+    if (!username || !email || !password) {
+      return res.status(400).json({ message: "Please provide all fields" });
+    }
+
+    // check if doctor already exists
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // create doctor user
+    const doctor = await User.create({
+      username,
+      email,
+      password,
+      role: "doctor", // 👈 force role to doctor
+    });
+
+    if (doctor) {
+      res.status(201).json({
+        _id: doctor._id,
+        username: doctor.username,
+        email: doctor.email,
+        role: doctor.role,
+      });
+    } else {
+      res.status(400).json({ message: "Invalid doctor data" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
