@@ -10,6 +10,7 @@ import UploadPhotos from "./screens/UploadPhotos";
 import AuthScreen from "./screens/AuthScreen";
 import LandingScreen from "./screens/LandingScreen";
 import PrivateRoute from "./components/PrivateRoute";
+import AboutUsScreen from "./screens/AboutUsScreen";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     <Routes>
       {/* Public */}
       <Route path="/signup" element={<AuthScreen />} />
+      <Route path="/about" element={<AboutUsScreen />} />
       <Route path="/" element={<LandingScreen />} />
 
       {/* Protected */}
