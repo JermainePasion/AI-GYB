@@ -194,13 +194,13 @@ export default function UploadPhotos({ userId }) {
                         <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
                           <p className="text-gray-500">Flex Min</p>
                           <p className="text-blue-600 font-semibold">
-                            {parseInt(resultData.flex_min, 10)}
+                            {parseInt(resultData.thresholds.flex_min, 10)}
                           </p>
                         </div>
                         <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
                           <p className="text-gray-500">Flex Max</p>
                           <p className="text-blue-600 font-semibold">
-                            {parseInt(resultData.flex_max, 10)}
+                            {parseInt(resultData.thresholds.flex_max, 10)}
                           </p>
                         </div>
 
@@ -208,13 +208,13 @@ export default function UploadPhotos({ userId }) {
                         <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
                           <p className="text-gray-500">GyroY Min</p>
                           <p className="text-green-600 font-semibold">
-                            {parseInt(resultData.gyroY_min, 10)}
+                            {parseInt(resultData.thresholds.gyroY_min, 10)}
                           </p>
                         </div>
                         <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
                           <p className="text-gray-500">GyroY Max</p>
                           <p className="text-green-600 font-semibold">
-                            {parseInt(resultData.gyroY_max, 10)}
+                            {parseInt(resultData.thresholds.gyroY_max, 10)}
                           </p>
                         </div>
 
@@ -222,13 +222,13 @@ export default function UploadPhotos({ userId }) {
                         <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
                           <p className="text-gray-500">GyroZ Min</p>
                           <p className="text-purple-600 font-semibold">
-                            {parseInt(resultData.gyroZ_min, 10)}
+                            {parseInt(resultData.thresholds.gyroZ_min, 10)}
                           </p>
                         </div>
                         <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
                           <p className="text-gray-500">GyroZ Max</p>
                           <p className="text-purple-600 font-semibold">
-                            {parseInt(resultData.gyroZ_max, 10)}
+                            {parseInt(resultData.thresholds.gyroZ_max, 10)}
                           </p>
                         </div>
                       </div>
