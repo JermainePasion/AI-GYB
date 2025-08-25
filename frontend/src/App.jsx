@@ -11,6 +11,7 @@ import AuthScreen from "./screens/AuthScreen";
 import LandingScreen from "./screens/LandingScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import AboutUsScreen from "./screens/AboutUsScreen";
+import AdminScreen from "./screens/AdminScreen";
 
 
 function App() {
@@ -75,6 +76,14 @@ function App() {
         element={
           <PrivateRoute>
             <SettingsScreen />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <PrivateRoute roles={["admin"]}>
+            <AdminScreen />
           </PrivateRoute>
         }
       />
