@@ -143,3 +143,13 @@ router.post("/register-doctor", protect, authorize("admin"), async (req, res) =>
   }
 });
 
+router.get(
+  "/",
+  protect,
+  authorize("admin"),
+  asyncHandler(async (req, res) => {
+    const users = await User.find().select("-password"); // exclude password
+    res.json(users);
+  })
+);
+
