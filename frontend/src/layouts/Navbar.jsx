@@ -1,19 +1,19 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
-import { useContext } from 'react';
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 function Navbar() {
+  const { token, logout, user } = useContext(UserContext); 
+  // make sure your UserContext has a `user` object with `role`
 
-  const { token, logout } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // <-- use the logout function from context
-    navigate("/"); // redirect to login/auth screen
+    logout();
+    navigate("/"); 
   };
 
-   return (
+  return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p--1">
         <a href="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -55,69 +55,40 @@ function Navbar() {
 
         {/* Menu links */}
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li>
-              <a
-                href="/home"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Home
-              </a>
-            </li>
-            <li>
-              <a
-                href="/upload"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Upload
-              </a>
-            </li>
-            <li>
-              <a
-                href="/figures"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Figures
-              </a>
-            </li>
-            <li>
-              <a
-                href="/control"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Control
-              </a>
-            </li>
-            <li>
-              <a
-                href="/connection"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Connection
-              </a>
-            </li>
-            <li>
-              <a
-                href="/score"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Score
-              </a>
-            </li>
-            <li>
-              <a
-                href="/settings"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Settings
-              </a>
-            </li>
+          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 
+            border border-gray-100 rounded-lg bg-gray-50 
+            md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 
+            md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+            
+            <li><a href="/home" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Home</a></li>
+            <li><a href="/upload" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Upload</a></li>
+            <li><a href="/figures" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Figures</a></li>
+            <li><a href="/control" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Control</a></li>
+            <li><a href="/connection" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Connection</a></li>
+            <li><a href="/score" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Score</a></li>
+            <li><a href="/settings" className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white">Settings</a></li>
+
+            {/* Admin link only for admin users */}
+            {user?.role === "admin" && (
+              <li>
+                <a
+                  href="/admin"
+                  className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 
+                    md:hover:bg-transparent md:border-0 md:hover:text-purple-700 
+                    md:p-0 dark:text-white md:dark:hover:text-purple-400 
+                    dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
+                >
+                  Admin
+                </a>
+              </li>
+            )}
 
             {token && (
               <li>
                 <button
                   onClick={handleLogout}
-                  className="block py--1 px-1 text-red-600 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700"
+                  className="block py--1 px-1 text-red-600 rounded-sm hover:bg-gray-100 
+                    md:hover:bg-transparent md:hover:text-red-700"
                 >
                   Logout
                 </button>
