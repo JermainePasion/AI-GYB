@@ -7,7 +7,7 @@ export default function AdminScreen() {
   const [users, setUsers] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const { token } = useContext(UserContext);
+  const { token, user } = useContext(UserContext); // ⬅️ grab user role too
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,14 +27,16 @@ export default function AdminScreen() {
     (u) => u.role === "doctor" && u.status === "pending"
   );
 
-  const filteredUsers = users.filter((u) =>
-    u.username?.toLowerCase().includes(searchTerm.toLowerCase())|| u.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (u) =>
+      u.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <DashboardLayout>
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* All Users */}
+        {/* All Users - visible to both admin and doctors */}
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold text-gray-800">All Users</h1>
@@ -124,48 +126,50 @@ export default function AdminScreen() {
           </div>
         </div>
 
-        {/* Pending Doctors */}
-        <div className="flex flex-col">
-          <h1 className="text-2xl font-bold mb-4 text-gray-800">
-            Pending Doctor Approvals
-          </h1>
-          <div className="overflow-y-auto max-h-[600px] pr-2 space-y-4">
-            {pendingDoctors.map((user) => (
-              <div
-                key={user._id}
-                className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="font-semibold text-gray-700">
-                      {user.username}
-                    </h2>
-                    <p className="text-sm text-gray-500">{user.email}</p>
-                    <p className="text-xs text-gray-400">
-                      Role: {user.role} | Status: {user.status}
-                    </p>
+        {/* Pending Doctors - only visible to admins */}
+        {user?.role === "admin" && (
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold mb-4 text-gray-800">
+              Pending Doctor Approvals
+            </h1>
+            <div className="overflow-y-auto max-h-[600px] pr-2 space-y-4">
+              {pendingDoctors.map((user) => (
+                <div
+                  key={user._id}
+                  className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="font-semibold text-gray-700">
+                        {user.username}
+                      </h2>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                      <p className="text-xs text-gray-400">
+                        Role: {user.role} | Status: {user.status}
+                      </p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        await axios.put(
+                          `http://localhost:3000/api/users/approve/${user._id}`,
+                          {},
+                          { headers: { Authorization: `Bearer ${token}` } }
+                        );
+                        window.location.reload();
+                      }}
+                      className="bg-green-500 text-white px-3 py-1 rounded text-sm"
+                    >
+                      Approve
+                    </button>
                   </div>
-                  <button
-                    onClick={async () => {
-                      await axios.put(
-                        `http://localhost:3000/api/users/approve/${user._id}`,
-                        {},
-                        { headers: { Authorization: `Bearer ${token}` } }
-                      );
-                      window.location.reload();
-                    }}
-                    className="bg-green-500 text-white px-3 py-1 rounded text-sm"
-                  >
-                    Approve
-                  </button>
                 </div>
-              </div>
-            ))}
-            {pendingDoctors.length === 0 && (
-              <p className="text-sm text-gray-500">No pending approvals 🎉</p>
-            )}
+              ))}
+              {pendingDoctors.length === 0 && (
+                <p className="text-sm text-gray-500">No pending approvals 🎉</p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </DashboardLayout>
   );

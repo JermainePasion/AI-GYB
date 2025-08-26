@@ -155,7 +155,7 @@ router.put(
 router.get(
   "/",
   protect,
-  authorize("admin"),
+  authorize("admin", "doctor"),
   asyncHandler(async (req, res) => {
     const users = await User.find().select("-password"); // exclude password
     res.json(users);
