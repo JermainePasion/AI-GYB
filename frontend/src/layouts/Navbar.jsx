@@ -1,131 +1,88 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { UserContext } from '../context/UserContext'
-import { useContext } from 'react';
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 function Navbar() {
-
-  const { token, logout } = useContext(UserContext);
+  const { token, logout, user } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // <-- use the logout function from context
-    navigate("/"); // redirect to login/auth screen
+    logout();
+    navigate("/");
   };
 
-   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p--1">
-        <a href="/home" className="flex items-center space-x-3 rtl:space-x-reverse">
-          <img
-            src="/ai-gyb-logo.png"
-            className="h-25 w-full "
-            alt="AI-GYB Logo"
-          />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-            AI-Got Your Back
-          </span>
-        </a>
-
-        {/* Mobile toggle button */}
-        <button
-          data-collapse-toggle="navbar-default"
-          type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-          aria-controls="navbar-default"
-          aria-expanded="false"
-        >
-          <span className="sr-only">Open main menu</span>
-          <svg
-            className="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 1h15M1 7h15M1 13h15"
-            />
-          </svg>
-        </button>
-
-        {/* Menu links */}
-        <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-          <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li>
-              <a
-                href="/home"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Home
-              </a>
-            </li>
-            <li>
-              <a
-                href="/upload"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Upload
-              </a>
-            </li>
-            <li>
-              <a
-                href="/figures"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Figures
-              </a>
-            </li>
-            <li>
-              <a
-                href="/control"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Control
-              </a>
-            </li>
-            <li>
-              <a
-                href="/connection"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Connection
-              </a>
-            </li>
-            <li>
-              <a
-                href="/score"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Score
-              </a>
-            </li>
-            <li>
-              <a
-                href="/settings"
-                className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-              >
-                Settings
-              </a>
-            </li>
-
-            {token && (
-              <li>
-                <button
-                  onClick={handleLogout}
-                  className="block py--1 px-1 text-red-600 rounded-sm hover:bg-gray-100 md:hover:bg-transparent md:hover:text-red-700"
-                >
-                  Logout
-                </button>
-              </li>
-            )}
-          </ul>
-        </div>
+  return (
+    <nav className="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 dark:bg-gray-900 shadow-md flex flex-col">
+      {/* Logo + Brand */}
+      <div className="flex items-center space-x-3 p-4 border-b border-gray-200 dark:border-gray-700">
+        <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" />
+        <span className="self-center text-xl font-bold whitespace-nowrap dark:text-white">
+          AI-Got Your Back
+        </span>
       </div>
+
+      {/* Menu links */}
+      <ul className="flex flex-col flex-grow p-4 space-y-2">
+        <li>
+          <a href="/home" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Home
+          </a>
+        </li>
+        <li>
+          <a href="/upload" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Upload
+          </a>
+        </li>
+        <li>
+          <a href="/figures" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Figures
+          </a>
+        </li>
+        <li>
+          <a href="/control" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Control
+          </a>
+        </li>
+        <li>
+          <a href="/connection" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Connection
+          </a>
+        </li>
+        <li>
+          <a href="/score" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Score
+          </a>
+        </li>
+        <li>
+          <a href="/settings" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
+            Settings
+          </a>
+        </li>
+
+        {/* Admin only */}
+        {user?.role === "admin" && (
+          <li>
+            <a
+              href="/admin"
+              className="block py-2 px-3 text-purple-700 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-purple-400"
+            >
+              Admin
+            </a>
+          </li>
+        )}
+      </ul>
+
+      {/* Logout at the bottom */}
+      {token && (
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <button
+            onClick={handleLogout}
+            className="w-full text-left py-2 px-3 text-red-600 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </nav>
   );
 }
