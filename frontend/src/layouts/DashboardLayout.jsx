@@ -1,24 +1,20 @@
-import React from 'react'
-import Navbar from './Navbar';
+import React from "react";
+import Navbar from "./Navbar";
 
-const DashboardLayout = ({children}) => {
-
-
+const DashboardLayout = ({ children }) => {
   return (
-    <div className=''>
+    <div className="flex">
+      {/* Sidebar */}
+      <div className="w-64">
         <Navbar />
-        
-            <div className='flex'>
-                <div className='hidden lg:block'>
-                </div>
+      </div>
 
-                <div className='grow mx-5'>
-                {children}
-                </div>
-            </div>
-
+      {/* Main Content */}
+      <div className="flex-1 p-6 min-h-screen">
+        {children}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;
