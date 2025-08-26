@@ -12,6 +12,7 @@ import LandingScreen from "./screens/LandingScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import AboutUsScreen from "./screens/AboutUsScreen";
 import AdminScreen from "./screens/AdminScreen";
+import DoctorRegisterScreen from "./screens/DoctorRegisterScreen";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
       <Route path="/signup" element={<AuthScreen />} />
       <Route path="/about" element={<AboutUsScreen />} />
       <Route path="/" element={<LandingScreen />} />
+      <Route path="/doctorsignup" element={<DoctorRegisterScreen />} />
 
       {/* Protected */}
       <Route

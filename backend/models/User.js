@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
   email:    { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ["user", "doctor", "admin"], default: "user" },
+  status: { type: String, enum: ["active", "pending"], default: "active" },
   posture_baseline: {
     flex_sensor_baseline: { type: Number, default: 0 },
     gyroY_baseline: { type: Number, default: 0 },

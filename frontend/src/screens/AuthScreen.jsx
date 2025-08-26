@@ -163,6 +163,16 @@ export default function AuthScreen() {
                   {isLogin ? "Sign in" : "Sign up"}
                 </button>
               </form>
+
+              <div className="mt-4 text-center">
+                <button
+                  onClick={() => navigate("/doctorsignup")}
+                  className="text-blue-600 hover:underline"
+                >
+                  Register as Doctor
+                </button>
+              </div>
+
             </motion.div>
           </AnimatePresence>
         </div>

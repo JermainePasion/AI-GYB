@@ -17,8 +17,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
   origin: 'http://localhost:5173', // React app URL
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type', 'Authorization'] // <-- Needed for JWT auth
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ✅ allow PUT, DELETE
+  allowedHeaders: ['Content-Type', 'Authorization'],    // ✅ allow JWT headers
 }));
 
 app.use(express.json());
@@ -29,9 +30,6 @@ app.use('/api/users', userRoutes);
 
 // Serve uploaded files
 app.use('/uploads', express.static('uploads'));
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
