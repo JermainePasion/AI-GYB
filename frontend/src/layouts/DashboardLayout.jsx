@@ -3,15 +3,13 @@ import Navbar from "./Navbar";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <div className="w-64">
-        <Navbar />
-      </div>
+    <div className="">
+      <Navbar />
 
-      {/* Main Content */}
-      <div className="flex-1 p-6 min-h-screen">
-        {children}
+      <div className="flex">
+        <div className="hidden lg:block"></div>
+
+        <div className="grow mx-5">{children}</div>
       </div>
     </div>
   );

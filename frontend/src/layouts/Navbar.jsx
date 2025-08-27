@@ -5,6 +5,7 @@ import { UserContext } from "../context/UserContext";
 function Navbar() {
   const { token, logout, user } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false); // 👈 menu toggle state
 
   const handleLogout = () => {
     logout();
@@ -12,77 +13,161 @@ function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 dark:bg-gray-900 shadow-md flex flex-col">
-      {/* Logo + Brand */}
-      <div className="flex items-center space-x-3 p-4 border-b border-gray-200 dark:border-gray-700">
-        <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" />
-        <span className="self-center text-xl font-bold whitespace-nowrap dark:text-white">
-          AI-Got Your Back
-        </span>
-      </div>
+    <nav className="bg-white border-gray-200 dark:bg-gray-900 shadow-md sticky top-0 z-50">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        {/* Logo + Brand */}
+        <a href="/home" className="flex items-center space-x-3">
+          <img
+            src="/ai-gyb-logo.png"
+            className="h-10 w-auto"
+            alt="AI-GYB Logo"
+          />
+          <span className="self-center text-xl font-bold whitespace-nowrap dark:text-white">
+            AI-Got Your Back
+          </span>
+        </a>
 
-      {/* Menu links */}
-      <ul className="flex flex-col flex-grow p-4 space-y-2">
-        <li>
-          <a href="/home" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Home
-          </a>
-        </li>
-        <li>
-          <a href="/upload" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Upload
-          </a>
-        </li>
-        <li>
-          <a href="/figures" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Figures
-          </a>
-        </li>
-        <li>
-          <a href="/control" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Control
-          </a>
-        </li>
-        <li>
-          <a href="/connection" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Connection
-          </a>
-        </li>
-        <li>
-          <a href="/score" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Score
-          </a>
-        </li>
-        <li>
-          <a href="/settings" className="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-white">
-            Settings
-          </a>
-        </li>
-
-        {/* Admin only */}
-        {user?.role === "admin" && (
-          <li>
-            <a
-              href="/admin"
-              className="block py-2 px-3 text-purple-700 rounded hover:bg-gray-100 dark:hover:bg-gray-800 dark:text-purple-400"
-            >
-              Admin
-            </a>
-          </li>
-        )}
-      </ul>
-
-      {/* Logout at the bottom */}
-      {token && (
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={handleLogout}
-            className="w-full text-left py-2 px-3 text-red-600 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+        {/* Mobile toggle button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          type="button"
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm 
+                     text-gray-500 rounded-lg md:hidden hover:bg-gray-100 
+                     focus:outline-none focus:ring-2 focus:ring-gray-200 
+                     dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          aria-controls="navbar-default"
+          aria-expanded={isOpen}
+        >
+          <span className="sr-only">Open main menu</span>
+          <svg
+            className="w-5 h-5"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
           >
-            Logout
-          </button>
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d={
+                isOpen
+                  ? "M4 4l9 9M4 13L13 4" // X icon when open
+                  : "M1 1h15M1 7h15M1 13h15" // Hamburger icon
+              }
+            />
+          </svg>
+        </button>
+
+        {/* Menu links */}
+        <div
+          className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
+          id="navbar-default"
+        >
+          <ul
+            className="flex flex-col items-center p-4 mt-4 border border-gray-100 
+             rounded-lg bg-gray-50 md:flex-row md:justify-between md:w-full 
+             md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 
+             md:dark:bg-transparent dark:border-gray-700"
+          >
+            <li>
+              <a
+                href="/home"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </a>
+            </li>
+            <li>
+              <a
+                href="/upload"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Upload
+              </a>
+            </li>
+            <li>
+              <a
+                href="/figures"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Figures
+              </a>
+            </li>
+            <li>
+              <a
+                href="/control"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Control
+              </a>
+            </li>
+            <li>
+              <a
+                href="/connection"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Connection
+              </a>
+            </li>
+            <li>
+              <a
+                href="/score"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Score
+              </a>
+            </li>
+            <li>
+              <a
+                href="/settings"
+                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
+                onClick={() => setIsOpen(false)}
+              >
+                Settings
+              </a>
+            </li>
+
+            {/* Admin only */}
+            {user?.role === "admin" && (
+              <li>
+                <a
+                  href="/admin"
+                  className="block py-2 px-3 text-purple-700 rounded-sm hover:bg-gray-100 
+                             md:hover:bg-transparent md:hover:text-purple-700 dark:text-white 
+                             md:dark:hover:text-purple-400 dark:hover:bg-gray-700"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Admin
+                </a>
+              </li>
+            )}
+
+            {/* Logout */}
+            {token && (
+              <li>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="block py-2 px-3 text-red-600 rounded-sm hover:bg-gray-100 
+                             md:hover:bg-transparent md:hover:text-red-700"
+                >
+                  Logout
+                </button>
+              </li>
+            )}
+          </ul>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
