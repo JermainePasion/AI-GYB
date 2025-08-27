@@ -102,54 +102,68 @@ router.get(
   })
 );
 
-module.exports = router;
+// @route POST /api/users/register-doctor
+router.post("/register-doctor", asyncHandler(async (req, res) => {
+  const { username, email, password } = req.body;
 
-router.post("/register-doctor", protect, authorize("admin"), async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-
-    // validate
-    if (!username || !email || !password) {
-      return res.status(400).json({ message: "Please provide all fields" });
-    }
-
-    // check if doctor already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "User already exists" });
-    }
-
-    // create doctor user
-    const doctor = await User.create({
-      username,
-      email,
-      password,
-      role: "doctor", // 👈 force role to doctor
-    });
-
-    if (doctor) {
-      res.status(201).json({
-        _id: doctor._id,
-        username: doctor.username,
-        email: doctor.email,
-        role: doctor.role,
-      });
-    } else {
-      res.status(400).json({ message: "Invalid doctor data" });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "Please provide all fields" });
   }
-});
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.status(400).json({ message: "User already exists" });
+  }
+
+  // Doctor will have "pending" status until admin approves
+  const doctor = await User.create({
+    username,
+    email,
+    password,
+    role: "doctor",
+    status: "pending"
+  });
+
+  if (doctor) {
+    res.status(201).json({
+      message: "Doctor registration submitted. Awaiting admin approval.",
+    });
+  } else {
+    res.status(400).json({ message: "Invalid doctor data" });
+  }
+}));
+
+// @route PUT /api/users/approve/:id
+router.put(
+  "/approve/:id",
+  protect,
+  authorize("admin"),
+  asyncHandler(async (req, res) => {
+    const doctor = await User.findById(req.params.id);
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    doctor.status = "active";
+    await doctor.save();
+
+    res.json({ message: "Doctor approved successfully", doctor });
+  })
+);
+
 
 router.get(
   "/",
   protect,
-  authorize("admin"),
+  authorize("admin", "doctor"),
   asyncHandler(async (req, res) => {
     const users = await User.find().select("-password"); // exclude password
     res.json(users);
   })
 );
+
+
+
+
+module.exports = router;
 
