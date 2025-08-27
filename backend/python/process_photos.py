@@ -3,8 +3,9 @@ import mediapipe as mp
 import numpy as np
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 
-drawing_spec_landmarks = mp_drawing.DrawingSpec(color=(217,204,164), thickness=4, circle_radius=3)
-drawing_spec_connections = mp_drawing.DrawingSpec(color=(255,0,0), thickness=3, circle_radius=2)
+# 🎨 Custom drawing colors
+drawing_spec_landmarks = mp_drawing.DrawingSpec(color=(217,204,164), thickness=4, circle_radius=3)  # beige
+drawing_spec_connections = mp_drawing.DrawingSpec(color=(255,0,0), thickness=3, circle_radius=2)   # red
 
 # Get photo paths from Node.js arguments
 image_paths = sys.argv[1:]
@@ -59,16 +60,27 @@ with mp_pose.Pose(static_image_mode=True) as pose:
             gyroZ_angle = math.degrees(math.atan2(dyZ, dxZ))
             gyroZ_angles.append(gyroZ_angle)
 
-            # --- Draw Overlay version ---
+            # --- Draw Overlay version (pose on original image) ---
             overlay_img = img.copy()
             mp_drawing.draw_landmarks(
                 overlay_img, res.pose_landmarks, mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=drawing_spec_landmarks,
                 connection_drawing_spec=drawing_spec_connections
             )
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            font_scale = 0.8
+            color = (255, 255, 255)   # white text
+            thickness = 2
 
-            # --- Draw Skeletal Only version ---
-            skeletal_img = 255 * np.ones_like(img)  # white background
+            cv2.putText(overlay_img, f"Flex Angle: {flex_angle:.2f}°", 
+            (10, 30), font, font_scale, color, thickness, cv2.LINE_AA)
+            cv2.putText(overlay_img, f"GyroY Angle: {angle:.2f}°", 
+            (10, 60), font, font_scale, color, thickness, cv2.LINE_AA)
+            cv2.putText(overlay_img, f"GyroZ Angle: {gyroZ_angle:.2f}°", 
+            (10, 90), font, font_scale, color, thickness, cv2.LINE_AA)
+
+            # --- Draw Skeletal Only version (black background) ---
+            skeletal_img = np.zeros_like(img)  # black background ✅
             mp_drawing.draw_landmarks(
                 skeletal_img, res.pose_landmarks, mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=drawing_spec_landmarks,
@@ -100,7 +112,7 @@ output_data = {
     "flex_sensor_baseline": sum(flex_angles) / len(flex_angles) if flex_angles else None,
     "gyroY_baseline": sum(gyroY_angles) / len(gyroY_angles) if gyroY_angles else None,
     "gyroZ_baseline": sum(gyroZ_angles) / len(gyroZ_angles) if gyroZ_angles else None,
-    "processed_images": overlay_images,   # local paths (already working)
+    "processed_images": overlay_images,   # local paths
     "skeletal_images": skeletal_images    # now full URLs
 }
 
