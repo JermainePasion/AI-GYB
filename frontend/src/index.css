@@ -20,6 +20,316 @@ body {
   color: var(--color-text);
 }
 
+/* Navbar background */
+.navbar-color {
+  background-color: #111827;
+  border-bottom: 1px solid #111827; /* same as border-gray-200 */
+}
+
+/* Brand text */
+.brand-color {
+  color: #ffffff; /* same as text-gray-900 */
+}
+
+/* Mobile toggle button */
+.toggle-color {
+  color: #6b7280; /* text-gray-500 */
+}
+.toggle-color:hover {
+  background-color: #111827; /* hover:bg-gray-100 */
+}
+
+/* Menu background */
+.menu-color {
+  background-color: #111827; /* bg-gray-50 */
+  border-color: #f3f4f6; /* border-gray-100 */
+}
+
+/* Nav links */
+.nav-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #ffffff; /* text-gray-900 */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.nav-link:hover {
+  color: #1d4ed8; /* hover:text-blue-700 */
+}
+
+/* Button */
+.nav-button {
+  display: block;
+  padding: 0.5rem 1rem;
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+.nav-button:hover {
+  background-color: #1d4ed8; /* blue-700 */
+}
+
+
+
+/* AuthNavbar background */
+.navbar-auth {
+  background-color: #111827;        /* light mode */
+  border-bottom: 1px solid #111827; /* border-gray-200 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .navbar-auth {
+    background-color: #111827; /* dark:bg-gray-900 */
+  }
+}
+#c4e1e6
+/* Brand text */
+.brand-auth {
+  color: #ffffff; /* text-gray-900 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .brand-auth {
+    color: white; /* dark:text-white */
+  }
+}
+
+/* Mobile toggle button */
+.toggle-auth {
+  color: #6b7280; /* text-gray-500 */
+}
+
+.toggle-auth:hover {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+
+.toggle-auth:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #e5e7eb; /* focus:ring-gray-200 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggle-auth {
+    color: #9ca3af; /* dark:text-gray-400 */
+  }
+  .toggle-auth:hover {
+    background-color: #374151; /* dark:hover:bg-gray-700 */
+  }
+  .toggle-auth:focus {
+    box-shadow: 0 0 0 2px #4b5563; /* dark:focus:ring-gray-600 */
+  }
+}
+
+/* Menu container */
+.menu-auth {
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+
+@media (min-width: 768px) {
+  .menu-auth {
+    border: none;              /* md:border-0 */
+    background-color: #111827;   /* md:bg-white */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .menu-auth {
+    background-color: #1f2937; /* dark:bg-gray-800 */
+    border-color: #374151;     /* dark:border-gray-700 */
+  }
+}
+
+@media (prefers-color-scheme: dark) and (min-width: 768px) {
+  .menu-auth {
+    background-color: #111827; /* md:dark:bg-gray-900 */
+  }
+}
+
+/* Menu links */
+.link-auth {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #ffffff; /* text-gray-900 */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link-auth:hover {
+  color: #1d4ed8; /* hover:text-blue-700 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .link-auth {
+    color: white; /* dark:text-white */
+  }
+}
+
+
+/* Navbar wrapper */
+.navbar-main {
+  background-color: #c4e1e6;                /* bg-white */
+  border-bottom: 1px solid #c4e1e6;       /* border-gray-200 */
+}
+@media (prefers-color-scheme: dark) {
+  .navbar-main {
+    background-color: #c4e1e6;            /* dark:bg-gray-900 */
+  }
+}
+
+/* Brand text */
+.navbar-brand {
+  color: #ffffff; /* text-gray-900 */
+}
+@media (prefers-color-scheme: dark) {
+  .navbar-brand {
+    color: #000000; /* dark:text-white */
+  }
+}
+
+/* Mobile toggle */
+.navbar-toggle {
+  color: #6b7280; /* text-gray-500 */
+}
+.navbar-toggle:hover {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+.navbar-toggle:focus {
+  box-shadow: 0 0 0 2px #e5e7eb; /* focus:ring-gray-200 */
+}
+@media (prefers-color-scheme: dark) {
+  .navbar-toggle {
+    color: #9ca3af; /* dark:text-gray-400 */
+  }
+  .navbar-toggle:hover {
+    background-color: #374151; /* dark:hover:bg-gray-700 */
+  }
+  .navbar-toggle:focus {
+    box-shadow: 0 0 0 2px #4b5563; /* dark:focus:ring-gray-600 */
+  }
+}
+
+
+/* Menu container */
+.navbar-menu {
+  border: 1px solid #111827; /* border-gray-100 */
+  background-color: #f9fafb; /* bg-gray-50 */
+}
+@media (min-width: 768px) {
+  .navbar-menu {
+    border: none; 
+    background: transparent; /* md:bg-transparent */
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .navbar-menu {
+    background-color: #1f2937; /* dark:bg-gray-800 */
+    border-color: #374151;     /* dark:border-gray-700 */
+  }
+}
+@media (prefers-color-scheme: dark) and (min-width: 768px) {
+  .navbar-menu {
+    background: transparent; /* md:dark:bg-transparent */
+  }
+}
+
+/* Standard nav links */
+.navbar-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: #ffffff; /* text-gray-900 */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.navbar-link:hover {
+  color: #1d4ed8; /* hover:text-blue-700 */
+}
+@media (prefers-color-scheme: dark) {
+  .navbar-link {
+    color: black; /* dark:text-white */
+  }
+}
+
+/* Admin link */
+.navbar-admin {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: #6b21a8; /* text-purple-700 */
+  border-radius: 0.125rem;
+  text-decoration: none;
+}
+.navbar-admin:hover {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+@media (min-width: 768px) {
+  .navbar-admin:hover {
+    background: transparent;
+    color: #6b21a8; /* md:hover:text-purple-700 */
+  }
+}
+@media (prefers-color-scheme: dark) {
+  .navbar-admin {
+    color: #8dbcc7; /* dark:text-white */
+  }
+  .navbar-admin:hover {
+    background-color: #374151; /* dark:hover:bg-gray-700 */
+  }
+}
+@media (prefers-color-scheme: dark) and (min-width: 768px) {
+  .navbar-admin:hover {
+    color: #6942e0; /* md:dark:hover:text-purple-400 */
+    background: transparent;
+  }
+}
+
+/* Logout button */
+.navbar-logout {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: #dc2626; /* text-red-600 */
+  border-radius: 0.125rem;
+  background: transparent;
+  cursor: pointer;
+}
+.navbar-logout:hover {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+}
+@media (min-width: 768px) {
+  .navbar-logout:hover {
+    background: transparent;
+    color: #e25e5e; /* md:hover:text-red-700 */
+  }
+}
+
+
+/* Base style for all nav links */
+.navbar-link {
+  @apply flex items-center h-full px-4 transition-colors duration-200 w-full md:w-auto;
+}
+/* Active state */
+.navbar-link-active {
+  @apply bg-blue-600 text-white;
+}
+
+/* Inactive but hoverable */
+.navbar-link-inactive:hover {
+  @apply bg-blue-100;
+}
+
+/* Special style for Admin (optional tweak if you want) */
+.navbar-admin-active {
+  @apply bg-red-600 text-white;
+}
+
+.navbar-admin-inactive:hover {
+  @apply bg-red-100;
+}
+
+
+
 
 @layer utilities {
   @keyframes fadeIn {

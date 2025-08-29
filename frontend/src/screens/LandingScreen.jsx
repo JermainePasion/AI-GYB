@@ -1,8 +1,9 @@
 import LandingNavbar from "../layouts/LandingNavbar";
 
 export default function LandingScreen() {
-  return (
-    <div className="bg-white min-h-screen scroll-smooth font-sans">
+    return (
+      <div className="bg-white min-h-screen scroll-smooth font-sans">
+
       <LandingNavbar />
 
       {/* Hero / Brief Intro */}

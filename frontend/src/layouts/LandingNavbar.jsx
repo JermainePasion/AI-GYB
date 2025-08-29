@@ -1,19 +1,20 @@
 import React, { useState } from "react";
+import "../index.css";
 
 function LandingNavbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 fixed w-full top-0 z-50 shadow-md">
+    <nav className="navbar-color fixed w-full top-0 z-50 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         {/* Logo + Brand */}
         <a href="/" className="flex items-center space-x-3">
-          <img
+          {/* <img
             src="/ai-gyb-logo.png"
             className="h-10 w-auto"
             alt="AI-GYB Logo"
-          />
-          <span className="self-center text-xl font-bold whitespace-nowrap dark:text-white">
+          /> */}
+          <span className="self-center text-xl font-bold whitespace-nowrap brand-color">
             AI-Got Your Back
           </span>
         </a>
@@ -22,7 +23,7 @@ function LandingNavbar() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm toggle-color md:hidden rounded-lg focus:outline-none"
           aria-controls="navbar-default"
           aria-expanded={isOpen}
         >
@@ -49,44 +50,24 @@ function LandingNavbar() {
           className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
           id="navbar-default"
         >
-          <ul
-            className="flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg 
-            bg-gray-50 md:flex-row md:items-center md:space-x-6 md:mt-0 
-            md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
-          >
+          <ul className="flex flex-col p-4 md:p-0 mt-4 border rounded-lg menu-color text-white-500 md:flex-row md:items-center md:space-x-6 md:mt-0 md:border-0">
             <li>
-              <a
-                href="/"
-                className="block py-2 px-4 text-gray-900 hover:text-blue-700 dark:text-white md:p-2"
-                onClick={() => setIsOpen(false)}
-              >
+              <a href="/" className="nav-link" onClick={() => setIsOpen(false)}>
                 Home
               </a>
             </li>
             <li>
-              <a
-                href="/about"
-                className="block py-2 px-4 text-gray-900 hover:text-blue-700 dark:text-white md:p-2"
-                onClick={() => setIsOpen(false)}
-              >
+              <a href="/about" className="nav-link" onClick={() => setIsOpen(false)}>
                 About us
               </a>
             </li>
             <li>
-              <a
-                href="/#contact"
-                className="block py-2 px-4 text-gray-900 hover:text-blue-700 dark:text-white md:p-2"
-                onClick={() => setIsOpen(false)}
-              >
+              <a href="/#contact" className="nav-link" onClick={() => setIsOpen(false)}>
                 Contact us
               </a>
             </li>
             <li>
-              <a
-                href="/signup"
-                className="block py-2 px-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 md:ml-2"
-                onClick={() => setIsOpen(false)}
-              >
+              <a href="/signup" className="nav-button" onClick={() => setIsOpen(false)}>
                 Sign in
               </a>
             </li>
