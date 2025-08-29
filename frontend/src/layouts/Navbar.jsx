@@ -1,11 +1,12 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import "../index.css";
 
 function Navbar() {
   const { token, logout, user } = useContext(UserContext);
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false); // 👈 menu toggle state
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -13,16 +14,12 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-white border-gray-200 dark:bg-gray-900 shadow-md sticky top-0 z-50">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <nav className="navbar-main sticky top-0 z-50 shadow-md">
+      <div className="max-w-screen-xl navbar-row flex flex-wrap items-center justify-between mx-auto px-4 py-4 md:py-0">
         {/* Logo + Brand */}
         <a href="/home" className="flex items-center space-x-3">
-          <img
-            src="/ai-gyb-logo.png"
-            className="h-10 w-auto"
-            alt="AI-GYB Logo"
-          />
-          <span className="self-center text-xl font-bold whitespace-nowrap dark:text-white">
+          {/* <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" /> */}
+          <span className="self-center text-xl font-bold whitespace-nowrap navbar-brand">
             AI-Got Your Back
           </span>
         </a>
@@ -31,10 +28,7 @@ function Navbar() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           type="button"
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm 
-                     text-gray-500 rounded-lg md:hidden hover:bg-gray-100 
-                     focus:outline-none focus:ring-2 focus:ring-gray-200 
-                     dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          className="navbar-toggle inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden"
           aria-controls="navbar-default"
           aria-expanded={isOpen}
         >
@@ -51,115 +45,105 @@ function Navbar() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d={
-                isOpen
-                  ? "M4 4l9 9M4 13L13 4" // X icon when open
-                  : "M1 1h15M1 7h15M1 13h15" // Hamburger icon
-              }
+              d={isOpen ? "M4 4l9 9M4 13L13 4" : "M1 1h15M1 7h15M1 13h15"}
             />
           </svg>
         </button>
 
         {/* Menu links */}
-        <div
-          className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`}
-          id="navbar-default"
-        >
-          <ul
-            className="flex flex-col items-center p-4 mt-4 border border-gray-100 
-             rounded-lg bg-gray-50 md:flex-row md:justify-between md:w-full 
-             md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 
-             md:dark:bg-transparent dark:border-gray-700"
-          >
-            <li>
-              <a
-                href="/home"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+        <div className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`} id="navbar-default">
+          <ul className="navbar-menu font-bold flex flex-col items-stretch p-0 mt-0 rounded-lg md:flex-row md:justify-between md:w-full md:mt-0 md:h-full">
+            <li className="md:h-full">
+              <NavLink
+                to="/home"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Home
-              </a>
+              </NavLink>
             </li>
-            <li>
-              <a
-                href="/upload"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+            <li className="md:h-full">
+              <NavLink
+                to="/upload"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Upload
-              </a>
+              </NavLink>
             </li>
-            <li>
-              <a
-                href="/figures"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+            <li className="md:h-full">
+              <NavLink
+                to="/figures"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Figures
-              </a>
+              </NavLink>
             </li>
-            <li>
-              <a
-                href="/control"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+            <li className="md:h-full">
+              <NavLink
+                to="/control"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Control
-              </a>
+              </NavLink>
             </li>
-            <li>
-              <a
-                href="/connection"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+            <li className="md:h-full">
+              <NavLink
+                to="/connection"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Connection
-              </a>
+              </NavLink>
             </li>
-            <li>
-              <a
-                href="/score"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+            <li className="md:h-full">
+              <NavLink
+                to="/score"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Score
-              </a>
+              </NavLink>
             </li>
-            <li>
-              <a
-                href="/settings"
-                className="block py-2 px-3 text-gray-900 hover:text-blue-700 dark:text-white"
-                onClick={() => setIsOpen(false)}
+            <li className="md:h-full">
+              <NavLink
+                to="/settings"
+                className={({ isActive }) =>
+                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+                }
               >
                 Settings
-              </a>
+              </NavLink>
             </li>
 
             {/* Admin only */}
             {user?.role === "admin" && (
-              <li>
-                <a
-                  href="/admin"
-                  className="block py-2 px-3 text-purple-700 rounded-sm hover:bg-gray-100 
-                             md:hover:bg-transparent md:hover:text-purple-700 dark:text-white 
-                             md:dark:hover:text-purple-400 dark:hover:bg-gray-700"
-                  onClick={() => setIsOpen(false)}
+              <li className="md:h-full">
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) =>
+                    `navbar-link ${isActive ? "navbar-admin-active" : "navbar-admin-inactive"}`
+                  }
                 >
                   Admin
-                </a>
+                </NavLink>
               </li>
             )}
 
-            {/* Logout */}
+            {/* Logout (unchanged) */}
             {token && (
               <li>
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsOpen(false);
-                  }}
-                  className="block py-2 px-3 text-red-600 rounded-sm hover:bg-gray-100 
-                             md:hover:bg-transparent md:hover:text-red-700"
+                  onClick={() => { handleLogout(); setIsOpen(false); }}
+                  className="navbar-logout"
                 >
                   Logout
                 </button>
