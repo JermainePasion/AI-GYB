@@ -3,6 +3,16 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { UserContext } from '../context/UserContext';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const ESP_IP = '192.168.100.66';
 const BACKEND_IP = 'localhost'; // try localhost first for testing
@@ -281,58 +291,54 @@ useEffect(() => {
     {/* Thresholds Card */}
     {user?.posture_thresholds && (
       <div className="flex-1 max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] h-full flex flex-col animate-fadeIn">
-        <p className="text-black mb-4 font-semibold text-center">
-          Your Saved Thresholds
-        </p>
+          <p className="text-black mb-4 font-semibold text-center">
+            Your Saved Thresholds
+          </p>
 
-        <div className="flex-1">
-          {Object.entries({
-            "Spine": {
-              min: user.posture_thresholds.flex_min,
-              max: user.posture_thresholds.flex_max,
-            },
-            "Left": {
-              min: user.posture_thresholds.gyroY_min,
-              max: user.posture_thresholds.gyroY_max,
-            },
-            "Right": {
-              min: user.posture_thresholds.gyroZ_min,
-              max: user.posture_thresholds.gyroZ_max,
-            },
-          }).map(([label, { min, max }]) => (
-            <div
-              key={label}
-              className="bg-[#c4e1e6] p-4 rounded-lg shadow text-center mb-4"
+          {/*Spine Thresholds Chart*/}
+          
+          <div>
+            <p className="text-center font-semibold mb-2">Spine</p>
+            {/* <responsiveContainer width="100%" height={100}> 
+              <LineChart>
+              </LineChart>
+            </responsiveContainer> */}
+          </div>
+
+
+
+
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={[
+                {
+                  name: "Spine",
+                  Min: user.posture_thresholds.flex_min.toFixed(1),
+                  Max: user.posture_thresholds.flex_max.toFixed(1),
+                },
+                {
+                  name: "Left",
+                  Min: user.posture_thresholds.gyroY_min.toFixed(1),
+                  Max: user.posture_thresholds.gyroY_max.toFixed(1),
+                },
+                {
+                  name: "Right",
+                  Min: user.posture_thresholds.gyroZ_min.toFixed(1),
+                  Max: user.posture_thresholds.gyroZ_max.toFixed(1),
+                },
+              ]}
+              margin={{ top: 20, right: 20, left: 0, bottom: 10 }}
             >
-              <h4 className="text-lg font-bold text-blue-300">{label}</h4>
-
-              {/* Numbers */}
-              <div className="flex justify-between text-sm mb-2">
-                <span>
-                  Min: <span className="font-semibold">{min.toFixed(1)}°</span>
-                </span>
-                <span>
-                  Max: <span className="font-semibold">{max.toFixed(1)}°</span>
-                </span>
-              </div>
-
-              {/* Visual Range Bar */}
-              <div className="relative w-full h-3 bg-gray-600 rounded-full overflow-hidden">
-                <div
-                  className="absolute top-0 h-3 bg-[#ebffd8]"
-                  style={{
-                    left: `${(Math.min(min, max) + 90) / 180 * 100}%`,
-                    width: `${Math.abs(max - min) / 180 * 100}%`,
-                  }}
-                />
-              </div>
-              <p className="text-xs text-gray-400 mt-1">
-                Range: {min.toFixed(1)}° – {max.toFixed(1)}°
-              </p>
-            </div>
-          ))}
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis unit="°" />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="Min" fill="#60a5fa" radius={[6, 6, 0, 0]} />
+              <Bar dataKey="Max" fill="#34d399" radius={[6, 6, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
-      </div>
     )}
   </div>
 </DashboardLayout>
