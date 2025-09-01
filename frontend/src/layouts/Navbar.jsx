@@ -9,6 +9,8 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+    if (!confirmLogout) return;
     logout();
     navigate("/");
   };
