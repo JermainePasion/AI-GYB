@@ -7,10 +7,9 @@ export default function UploadPhotos({ userId }) {
   const [files, setFiles] = useState([]);
   const [resultData, setResultData] = useState(null);
   const [showSkeletal, setShowSkeletal] = useState(false);
-  const [loading, setLoading] = useState(false); // ✅ Loading state
+  const [loading, setLoading] = useState(false);
   const { token } = useContext(UserContext);
 
-  // ✅ Handle file upload (append instead of overwrite, avoid duplicates)
   const handleFileChange = (e) => {
     const selectedFiles = [...e.target.files];
     setFiles((prevFiles) => {
@@ -22,7 +21,6 @@ export default function UploadPhotos({ userId }) {
     });
   };
 
-  // ✅ Delete image
   const handleDelete = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
@@ -41,7 +39,7 @@ export default function UploadPhotos({ userId }) {
     formData.append("userId", userId);
 
     try {
-      setLoading(true); // ✅ Show spinner
+      setLoading(true);
       const res = await axios.post(
         "http://localhost:3000/api/upload-photos",
         formData,
@@ -52,22 +50,20 @@ export default function UploadPhotos({ userId }) {
           },
         }
       );
-
-      console.log("Server Response:", res.data);
       setResultData(res.data);
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false); // ✅ Hide spinner
+      setLoading(false);
     }
   };
 
   return (
     <DashboardLayout>
-      <div>
-        {/* Only show Upload Photos container if no results yet */}
+      <div className="px-4 sm:px-6 lg:px-8">
+        {/* Upload Photos Section */}
         {!resultData && (
-          <div className="border-2 border-gray-400 rounded-lg p-4 text-2xl font-bold mt-15 max-w-200 mx-auto h-120 justify-center items-center text-center">
+          <div className="border-2 border-gray-400 rounded-lg p-6 text-xl sm:text-2xl font-bold mt-8 sm:mt-12 max-w-4xl mx-auto text-center">
             Upload Photos
             <form
               onSubmit={handleSubmit}
@@ -76,13 +72,12 @@ export default function UploadPhotos({ userId }) {
               {/* Dropzone */}
               <label
                 htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center mt-10 w-150 min-h-[310px] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 relative"
+                className="flex flex-col items-center justify-center mt-6 w-full sm:w-3/4 lg:w-2/3 min-h-[250px] sm:min-h-[300px] border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 relative"
               >
                 {files.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <div className="flex flex-col items-center justify-center p-6">
                     <svg
-                      className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                      aria-hidden="true"
+                      className="w-10 h-10 mb-4 text-gray-500 dark:text-gray-400"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 20 16"
@@ -100,19 +95,18 @@ export default function UploadPhotos({ userId }) {
                       drag and drop
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      SVG, PNG, JPG or GIF (MAX. 800x400px)
+                      JPG, PNG, GIF (max. 800×400px)
                     </p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-3 gap-4 p-4 w-full">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 w-full">
                     {files.map((file, i) => (
                       <div key={i} className="relative group">
                         <img
                           src={URL.createObjectURL(file)}
                           alt={`preview-${i}`}
-                          className="w-32 h-32 object-cover rounded-lg border"
+                          className="w-28 sm:w-32 h-28 sm:h-32 object-cover rounded-lg border"
                         />
-                        {/* Delete Button */}
                         <button
                           type="button"
                           onClick={(e) => {
@@ -137,18 +131,18 @@ export default function UploadPhotos({ userId }) {
                 />
               </label>
 
-              {/* Upload button with loading */}
+              {/* Upload button */}
               <button
                 type="submit"
                 disabled={loading}
-                className={`mt-4 px-4 py-2 rounded-lg text-white ${
+                className={`mt-4 px-4 py-2 rounded-lg text-white w-full sm:w-auto ${
                   loading
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
               >
                 {loading ? (
-                  <div className="flex items-center">
+                  <div className="flex items-center justify-center">
                     <svg
                       className="animate-spin h-5 w-5 mr-2 text-white"
                       xmlns="http://www.w3.org/2000/svg"
@@ -179,84 +173,79 @@ export default function UploadPhotos({ userId }) {
           </div>
         )}
 
-
-
-                {/* Show results */}
-                {resultData && (
-                  <div className="flex flex-col md:flex-row gap-6 mt-40 w-full">
-                    {/* Posture Baseline Thresholds */}
-                    <div className="w-full ml-20 md:w-1/3 bg-white shadow-lg rounded-xl p-6 border border-gray-200">
-                      <h3 className="text-xl font-bold mb-4 border-b pb-2 text-gray-700">
-                        Posture Baseline
-                      </h3>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        {/* Flex */}
-                        <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <p className="text-gray-500">Flex Min</p>
-                          <p className="text-blue-600 font-semibold">
-                            {parseInt(resultData.thresholds.flex_min, 10)}
-                          </p>
-                        </div>
-                        <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <p className="text-gray-500">Flex Max</p>
-                          <p className="text-blue-600 font-semibold">
-                            {parseInt(resultData.thresholds.flex_max, 10)}
-                          </p>
-                        </div>
-
-                        {/* GyroY */}
-                        <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <p className="text-gray-500">GyroY Min</p>
-                          <p className="text-green-600 font-semibold">
-                            {parseInt(resultData.thresholds.gyroY_min, 10)}
-                          </p>
-                        </div>
-                        <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <p className="text-gray-500">GyroY Max</p>
-                          <p className="text-green-600 font-semibold">
-                            {parseInt(resultData.thresholds.gyroY_max, 10)}
-                          </p>
-                        </div>
-
-                        {/* GyroZ */}
-                        <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <p className="text-gray-500">GyroZ Min</p>
-                          <p className="text-purple-600 font-semibold">
-                            {parseInt(resultData.thresholds.gyroZ_min, 10)}
-                          </p>
-                        </div>
-                        <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
-                          <p className="text-gray-500">GyroZ Max</p>
-                          <p className="text-purple-600 font-semibold">
-                            {parseInt(resultData.thresholds.gyroZ_max, 10)}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Skeletal / Processed Images */}
-                    <div className="w-full md:w-2/3 flex flex-wrap justify-center gap-4">
-                      {(showSkeletal ? resultData.skeletal_images : resultData.processed_images)?.map((img, i) => (
-                        <img
-                          key={i}
-                          src={img}
-                          alt={`Processed ${i}`}
-                          className="w-72 h-auto rounded-lg shadow-md"
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-
-
-
-        {/* Toggle & Upload Again buttons side by side */}
+        {/* Results Section */}
         {resultData && (
-          <div className="mt-6 ml-20 flex gap-4">
+          <div className="flex flex-col md:flex-row gap-6 mt-10 w-full">
+            {/* Posture Baseline */}
+            <div className="w-full md:w-1/3 bg-white shadow-lg rounded-xl p-6 border border-gray-200">
+              <h3 className="text-lg sm:text-xl font-bold mb-4 border-b pb-2 text-gray-700">
+                Posture Baseline
+              </h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-500">Flex Min</p>
+                  <p className="text-blue-600 font-semibold">
+                    {parseInt(resultData.thresholds.flex_min, 10)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-500">Flex Max</p>
+                  <p className="text-blue-600 font-semibold">
+                    {parseInt(resultData.thresholds.flex_max, 10)}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-500">GyroY Min</p>
+                  <p className="text-green-600 font-semibold">
+                    {parseInt(resultData.thresholds.gyroY_min, 10)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-500">GyroY Max</p>
+                  <p className="text-green-600 font-semibold">
+                    {parseInt(resultData.thresholds.gyroY_max, 10)}
+                  </p>
+                </div>
+
+                <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-500">GyroZ Min</p>
+                  <p className="text-purple-600 font-semibold">
+                    {parseInt(resultData.thresholds.gyroZ_min, 10)}
+                  </p>
+                </div>
+                <div className="bg-gray-50 p-3 rounded-lg shadow-sm">
+                  <p className="text-gray-500">GyroZ Max</p>
+                  <p className="text-purple-600 font-semibold">
+                    {parseInt(resultData.thresholds.gyroZ_max, 10)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Processed / Skeletal Images */}
+            <div className="w-full md:w-2/3 flex flex-wrap justify-center gap-4">
+              {(showSkeletal
+                ? resultData.skeletal_images
+                : resultData.processed_images
+              )?.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={`Processed ${i}`}
+                  className="w-full sm:w-64 md:w-72 h-auto rounded-lg shadow-md"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Action buttons */}
+        {resultData && (
+          <div className="mt-6 flex flex-col sm:flex-row gap-4">
             <button
               onClick={() => setShowSkeletal(!showSkeletal)}
-              className={`px-4 py-2 rounded-lg text-white ${
+              className={`px-4 py-2 rounded-lg text-white w-full sm:w-auto ${
                 showSkeletal ? "bg-blue-600" : "bg-green-600"
               }`}
             >
@@ -268,13 +257,12 @@ export default function UploadPhotos({ userId }) {
                 setFiles([]);
                 setResultData(null);
               }}
-              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
+              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 w-full sm:w-auto"
             >
               Upload Again
             </button>
           </div>
         )}
-
       </div>
     </DashboardLayout>
   );
