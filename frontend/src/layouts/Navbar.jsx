@@ -14,12 +14,12 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar-main sticky top-0 z-50 shadow-md">
-      <div className="max-w-screen-xl navbar-row flex flex-wrap items-center justify-between mx-auto px-4 py-4 md:py-0">
+    <nav className="navbar-main fixed w-full top-0 z-50 shadow-md">
+      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-0">
         {/* Logo + Brand */}
         <a href="/home" className="flex items-center space-x-3">
           {/* <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" /> */}
-          <span className="self-center text-xl font-bold whitespace-nowrap navbar-brand">
+          <span className="self-center text-xl font-bold whitespace-nowrap navbar-brand ml-2">
             AI-Got Your Back
           </span>
         </a>
@@ -28,7 +28,8 @@ function Navbar() {
         <button
           onClick={() => setIsOpen(!isOpen)}
           type="button"
-          className="navbar-toggle inline-flex items-center p-2 w-10 h-10 justify-center text-sm rounded-lg md:hidden"
+          className="navbar-toggle inline-flex items-center mt-5 mb-5 mr-2 p-2 w-10 h-10 justify-center text-sm rounded-lg custom-hidden"
+
           aria-controls="navbar-default"
           aria-expanded={isOpen}
         >
@@ -51,7 +52,7 @@ function Navbar() {
         </button>
 
         {/* Menu links */}
-        <div className={`${isOpen ? "block" : "hidden"} w-full md:block md:w-auto`} id="navbar-default">
+        <div className={`${isOpen ? "block" : "hidden"} w-full custom-block custom-w-auto`} id="navbar-default">
           <ul className="navbar-menu font-bold flex flex-col items-stretch p-0 mt-0 rounded-lg md:flex-row md:justify-between md:w-full md:mt-0 md:h-full">
             <li className="md:h-full">
               <NavLink
@@ -140,20 +141,20 @@ function Navbar() {
 
             {/* Logout (unchanged) */}
             {token && (
-              <li>
-                <button
-                  onClick={() => { handleLogout(); setIsOpen(false); }}
-                  className="navbar-logout"
-                >
-                  Logout
-                </button>
-              </li>
+            <li className="md:h-full">
+              <button
+                onClick={() => { handleLogout(); setIsOpen(false); }}
+                className="navbar-link navbar-logout"
+              >
+                Logout
+              </button>
+            </li>
             )}
           </ul>
         </div>
       </div>
     </nav>
-  );
+  ); 
 }
 
 export default Navbar;

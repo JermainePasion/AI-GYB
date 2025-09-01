@@ -3,12 +3,12 @@ import Navbar from "./Navbar";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div className="">
+    <div>
       <Navbar />
 
-      <div className="flex">
+      {/* push content below fixed navbar */}
+      <div className="pt-16 flex">
         <div className="hidden lg:block"></div>
-
         <div className="grow mx-5">{children}</div>
       </div>
     </div>
