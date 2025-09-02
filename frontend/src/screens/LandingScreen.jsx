@@ -1,11 +1,20 @@
 import LandingNavbar from "../layouts/LandingNavbar";
+import { motion } from "framer-motion";
 
 export default function LandingScreen() {
   return (
-    <div className="bg-white min-h-screen font-sans scroll-smooth">
+    <div className="bg-gray-300 min-h-screen font-sans scroll-smooth">
       <LandingNavbar />
 
       {/* Hero Section */}
+        <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}   // 👈 transition OUT
+        transition={{ duration: 1 }}
+        viewport={{ once: false, amount: 0.2 }} 
+        className="h-screen w-screen flex items-center justify-center "
+        >
       <section
         id="home"
         style={{
@@ -13,7 +22,7 @@ export default function LandingScreen() {
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
-        className="relative flex items-center justify-center h-screen px-6 pt-20"
+        className="relative flex items-center justify-center h-screen w-full px-6 pt-20"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
         <div className="relative max-w-3xl text-center p-10 animate-fadeIn">
@@ -32,12 +41,21 @@ export default function LandingScreen() {
           </a>
         </div>
       </section>
+      </motion.section>
 
       {/* Product Section */}
       <section
         id="product"
-        className="flex items-center justify-center min-h-screen px-6 py-20 bg-gray-50"
-      >
+        className="flex items-center justify-center min-h-screen px-6 py-20"
+     >
+        <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}   // 👈 transition OUT
+        transition={{ duration: 1 }}
+        viewport={{ once: false, amount: 0.2 }} 
+        className="h-screen flex items-center justify-center "
+        >
         <div className="max-w-6xl w-full bg-white rounded-3xl shadow-2xl p-12 grid md:grid-cols-2 gap-12 items-center animate-slideUp">
           {/* Product Image */}
           <div className="flex justify-center">
@@ -67,13 +85,23 @@ export default function LandingScreen() {
             </a>
           </div>
         </div>
+
+        </motion.section>
       </section>
 
       {/* Benefits Section */}
       <section
-        className="flex items-center justify-center min-h-screen px-6 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/benifit-image.jpg')" }}
-      >
+        className="flex items-center justify-center min-h-screen px-6 bg-cover bg-center bg-no-repeat">
+
+        <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}   // 👈 transition OUT
+        transition={{ duration: 1 }}
+        viewport={{ once: false, amount: 0.2 }} 
+        className="h-screen flex items-center justify-center "
+        >
+   
         <div className="max-w-4xl w-full p-12 text-center bg-white/80 backdrop-blur-md rounded-3xl shadow-xl animate-fadeIn">
           <h2 className="text-4xl font-bold text-gray-800 mb-8">
             Benefits of Good Posture
@@ -89,13 +117,21 @@ export default function LandingScreen() {
             <li>Essential for overall health and well-being</li>
           </ul>
         </div>
+        </motion.section>
       </section>
 
       {/* Blog Section */}
       <section
         id="blog"
-        className="flex items-center justify-center min-h-screen px-6 py-20 bg-gray-100"
-      >
+        className="flex items-center justify-center min-h-screen px-6 py-20">
+        <motion.section
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -50 }}   // 👈 transition OUT
+        transition={{ duration: 1 }}
+        viewport={{ once: false, amount: 0.2 }} 
+        className="h-screen w-screen flex items-center justify-center "
+        >
         <div className="max-w-6xl w-full">
           <h2 className="text-4xl font-bold text-gray-800 text-center mb-14">
             Learn More About Posture
@@ -140,6 +176,7 @@ export default function LandingScreen() {
             ))}
           </div>
         </div>
+        </motion.section>
       </section>
 
       {/* Footer */}
