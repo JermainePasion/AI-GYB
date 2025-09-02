@@ -1,12 +1,11 @@
 import LandingNavbar from "../layouts/LandingNavbar";
 
 export default function LandingScreen() {
-    return (
-      <div className="bg-white min-h-screen scroll-smooth font-sans">
-
+  return (
+    <div className="bg-white min-h-screen font-sans scroll-smooth">
       <LandingNavbar />
 
-      {/* Hero / Brief Intro */}
+      {/* Hero Section */}
       <section
         id="home"
         style={{
@@ -16,21 +15,18 @@ export default function LandingScreen() {
         }}
         className="relative flex items-center justify-center h-screen px-6 pt-20"
       >
-        <div className="absolute inset-0 bg-black/30" /> {/* overlay for readability */}
-
-        <div className="relative max-w-3xl text-center p-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg mb-6">
-            Welcome to AI-GYB
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
+        <div className="relative max-w-3xl text-center p-10 animate-fadeIn">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg mb-6 tracking-tight">
+            Welcome to <span className="text-blue-400">AI-GYB</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-100 mb-8 leading-relaxed">
             PostureSense is an AI-powered wearable device designed to help you
             maintain good posture, reduce back pain, and improve overall wellness.
           </p>
-
-          {/* CTA */}
           <a
             href="/signup"
-            className="inline-block px-8 py-4 text-lg font-medium text-white bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:opacity-90 transition-all duration-300"
+            className="inline-block px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
           >
             Get Started
           </a>
@@ -40,9 +36,9 @@ export default function LandingScreen() {
       {/* Product Section */}
       <section
         id="product"
-        className="flex items-center justify-center h-screen px-6 bg-white"
+        className="flex items-center justify-center min-h-screen px-6 py-20 bg-gray-50"
       >
-        <div className="max-w-6xl w-full bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-12 grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-6xl w-full bg-white rounded-3xl shadow-2xl p-12 grid md:grid-cols-2 gap-12 items-center animate-slideUp">
           {/* Product Image */}
           <div className="flex justify-center">
             <img
@@ -60,16 +56,12 @@ export default function LandingScreen() {
               <span className="font-semibold text-blue-600"> PostureSense</span>, 
               an AI-powered wearable that monitors and corrects your sitting position in real time.
             </p>
-
-            {/* Price */}
             <p className="text-3xl font-bold text-green-600 mb-8">$99.99</p>
-
-            {/* Buy Now Button */}
             <a
               href="https://yourshoplink.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-8 py-4 text-white text-lg font-medium bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:opacity-90 transition-all duration-300"
+              className="inline-block px-8 py-4 text-white text-lg font-medium bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
             >
               Buy Now
             </a>
@@ -79,10 +71,10 @@ export default function LandingScreen() {
 
       {/* Benefits Section */}
       <section
-        className="flex items-center justify-center h-screen px-6 bg-cover bg-center bg-no-repeat"
+        className="flex items-center justify-center min-h-screen px-6 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url('/benifit-image.jpg')" }}
       >
-        <div className="max-w-4xl w-full p-12 text-center bg-white/80 backdrop-blur-md rounded-3xl shadow-lg">
+        <div className="max-w-4xl w-full p-12 text-center bg-white/80 backdrop-blur-md rounded-3xl shadow-xl animate-fadeIn">
           <h2 className="text-4xl font-bold text-gray-800 mb-8">
             Benefits of Good Posture
           </h2>
@@ -102,15 +94,13 @@ export default function LandingScreen() {
       {/* Blog Section */}
       <section
         id="blog"
-        className="flex items-center justify-center min-h-screen px-6 py-20 bg-gray-50"
+        className="flex items-center justify-center min-h-screen px-6 py-20 bg-gray-100"
       >
         <div className="max-w-6xl w-full">
           <h2 className="text-4xl font-bold text-gray-800 text-center mb-14">
             Learn More About Posture
           </h2>
-
           <div className="grid md:grid-cols-3 gap-10">
-            {/* Blog Posts */}
             {[
               {
                 img: "/blog-1-image.webp",
@@ -130,7 +120,7 @@ export default function LandingScreen() {
             ].map((post, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition duration-300"
+                className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
               >
                 <img
                   src={post.img}

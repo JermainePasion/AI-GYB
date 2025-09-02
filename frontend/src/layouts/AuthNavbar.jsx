@@ -50,7 +50,7 @@ function AuthNavbar() {
               </a>
             </li>
             <li>
-              <a href="/control" className="link-auth md:p-2" onClick={() => setIsOpen(false)}>
+              <a href="/about" className="link-auth md:p-2" onClick={() => setIsOpen(false)}>
                 About us
               </a>
             </li>
