@@ -351,6 +351,8 @@ body {
   --navbar-height: 64px; /* adjust if different */
 }
 
+
+
 @layer utilities {
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
