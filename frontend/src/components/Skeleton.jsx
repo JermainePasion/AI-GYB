@@ -108,7 +108,14 @@ export default function Skeleton3D({ flexAngle, gyroY, gyroZ }) {
         <directionalLight intensity={4.5} position={[2, 1.5, 3]} />
         <directionalLight intensity={4.5} position={[-2, 1.5, 3]} />
           
-        <OrbitControls />
+        <OrbitControls
+          enablePan={false}       
+          enableZoom={false}      
+          enableRotate={true}     
+          rotateSpeed={0.5}      
+          maxPolarAngle={Math.PI / 2} 
+          minPolarAngle={0}         
+        />
       </Canvas>
     </div>
   )
