@@ -1,65 +1,30 @@
 // FigureScreen.jsx
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import SensorGauge from '../components/SensorGauge';
-import "../index.css"
-import DashboardLayout from '../layouts/DashboardLayout';
+import React, { useEffect, useState } from "react";
+import DashboardLayout from "../layouts/DashboardLayout";
+import SensorGauge from "../components/SensorGauge";
+import Skeleton3D from "../components/skeleton";
 
-const USE_MOCK = true; // change to false for live ESP data
-const ESP_IP = '192.168.100.66';
+const USE_MOCK = true;
+let mockTime = 0;
 
-// ===== FRONT VIEW HUMAN =====
-function FrontViewHuman({ flexAngle, gyroZ }) {
-  const spineBend = flexAngle * 0.4;
-  const tilt = gyroZ * 0.5;
-
+function FrontViewHuman({ flexAngle, gyroY, gyroZ }) {
   return (
-    <svg viewBox="0 0 200 400" className="w-60 h-96">
-      {/* Head */}
-      <circle cx="100" cy="50" r="25" fill="#fbbf24" stroke="black" />
-      {/* Body */}
-      <rect x="75" y="80" width="50" height="120" rx="25" fill="#60a5fa" stroke="black" />
-      {/* Arms */}
-      <line x1="75" y1="100" x2="40" y2="170" stroke="black" strokeWidth="6" />
-      <line x1="125" y1="100" x2="160" y2="170" stroke="black" strokeWidth="6" />
-      {/* Legs */}
-      <line x1="85" y1="200" x2="70" y2="300" stroke="black" strokeWidth="6" />
-      <line x1="115" y1="200" x2="130" y2="300" stroke="black" strokeWidth="6" />
-      {/* Spine */}
-      <path
-        d={`M100,80 Q${100 + tilt},${150 + spineBend} 100,200`}
-        stroke="red"
-        strokeWidth="4"
-        fill="none"
+    <div className="w-full h-[400px]">
+      <Skeleton3D
+        flexAngle={flexAngle}
+        gyroY={gyroY}
+        gyroZ={gyroZ}
+        cameraPosition={[5, 1.5, 0]} // side-facing
       />
-    </svg>
+    </div>
   );
 }
 
-// ===== SIDE VIEW HUMAN =====
-function SideViewHuman({ flexAngle, gyroY }) {
-  const forwardBend = gyroY * 0.5;
-  const spineCurve = flexAngle * 0.8;
-
+function SideViewHuman({ flexAngle, gyroY, gyroZ }) {
   return (
-    <svg viewBox="0 0 200 400" className="w-60 h-96">
-      {/* Head */}
-      <circle cx="100" cy="50" r="25" fill="#fbbf24" stroke="black" />
-      {/* Torso */}
-      <rect x="90" y="80" width="20" height="120" rx="10" fill="#60a5fa" stroke="black" />
-      {/* Arm */}
-      <line x1="100" y1="100" x2="150" y2="170" stroke="black" strokeWidth="6" />
-      {/* Leg */}
-      <line x1="100" y1="200" x2="110" y2="300" stroke="black" strokeWidth="6" />
-      {/* Spine */}
-      <path
-        d={`M100,80 Q${100 + forwardBend},${150 + spineCurve} 100,200`}
-        stroke="red"
-        strokeWidth="4"
-        fill="none"
-      />
-    </svg>
+    <div className="w-full h-[400px]">
+      
+    </div>
   );
 }
 
@@ -67,33 +32,28 @@ export default function FigureScreen() {
   const [flexAngle, setFlexAngle] = useState(0);
   const [gyroY, setGyroY] = useState(0);
   const [gyroZ, setGyroZ] = useState(0);
-  const navigate = useNavigate();
 
-  const fetchData = async () => {
-    try {
-      let data;
-      if (USE_MOCK) {
-        data = {
-          flexAngle: Math.random() * 45,
-          angleY: (Math.random() - 0.5) * 70,
-          angleZ: (Math.random() - 0.5) * 40,
-        };
-      } else {
-        const res = await axios.get(`http://${ESP_IP}/read`);
-        data = res.data;
-      }
-
-      setFlexAngle(data.flexAngle || 0);
-      setGyroY(data.angleY || 0);
-      setGyroZ(data.angleZ || 0);
-    } catch (err) {
-      console.error("Error fetching data:", err.message);
+  const fetchData = () => {
+    let data;
+    if (USE_MOCK) {
+      mockTime += 0.05;
+      const flex = 20 + 10 * Math.sin(mockTime);
+      const angleY = 5 * Math.sin(mockTime * 0.5);
+      const angleZ = 5 * Math.sin(mockTime * 0.3);
+      data = { flexAngle: flex, angleY, angleZ };
+    } else {
+      // replace with ESP fetch later
+      data = { flexAngle: 0, angleY: 0, angleZ: 0 };
     }
+
+    setFlexAngle(data.flexAngle);
+    setGyroY(data.angleY);
+    setGyroZ(data.angleZ);
   };
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 1500);
+    const interval = setInterval(fetchData, 100);
     return () => clearInterval(interval);
   }, []);
 
@@ -113,18 +73,16 @@ export default function FigureScreen() {
           {/* Right: Two Human Models */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full md:w-2/3">
             <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
-              <h2 className="text-lg font-semibold mb-2">Front  View</h2>
-              <FrontViewHuman flexAngle={flexAngle} gyroZ={gyroZ} />
+              <h2 className="text-lg font-semibold mb-2">Front View</h2>
+              <FrontViewHuman flexAngle={flexAngle} gyroY={gyroY} gyroZ={gyroZ} />
             </div>
             <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
-              <h2 className="text-lg font-semibold mb-2">Side  View</h2>
-              <SideViewHuman flexAngle={flexAngle} gyroY={gyroY} />
+              <h2 className="text-lg font-semibold mb-2">Side View</h2>
+              <SideViewHuman flexAngle={flexAngle} gyroY={gyroY} gyroZ={gyroZ} />
             </div>
           </div>
         </div>
       </div>
     </DashboardLayout>
   );
-
-
 }
