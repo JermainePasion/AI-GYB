@@ -19,7 +19,7 @@ function Sidebar() {
       <div
         className={`
           ${isOpen ? "w-56" : "w-16"} 
-          bg-gray-800 text-white 
+          bg-[#111827] text-white 
           h-[calc(100vh-64px)] 
           fixed top-16 left-0 
           transition-all duration-300 
@@ -34,16 +34,13 @@ function Sidebar() {
           <NavLink to="/upload" className="p-3 hover:bg-gray-700 rounded">
             Upload
           </NavLink>
-          <NavLink to="/figures" className="p-3 hover:bg-gray-700 rounded">
-            Figures
-          </NavLink>
          <NavLink to="/control" className="p-3 hover:bg-gray-700 rounded">
             Control
           </NavLink>
          <NavLink to="/connection" className="p-3 hover:bg-gray-700 rounded">
             Connection
           </NavLink>
-         <NavLink to="/figures" className="p-3 hover:bg-gray-700 rounded">
+         <NavLink to="/score" className="p-3 hover:bg-gray-700 rounded">
             Score
           </NavLink>
         </nav>
