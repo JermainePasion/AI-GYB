@@ -226,71 +226,16 @@ useEffect(() => {
 
   return (
 <DashboardLayout>
-  <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start gap-6 p-4">
+  <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start gap-6 p-4 mt-10">
     <h1 className="text-6xl font-extrabold text-white opacity-0 animate-fadeIn text-center">
       Hello, {user?.username}!
     </h1>
 
-
-    {/* Sensor Data Card */}
-    <div className="flex-1 max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] h-full flex flex-col animate-fadeIn">
-
-      {/* Bluetooth status */}
-      <p className="mt-2 text-sm text-gray-300">
-        Bluetooth Status: <span className="font-bold">{connectionStatus}</span>
-      </p>
-      <div className="flex gap-2 mt-2">
-        <button
-          onClick={connectBluetooth}
-          className="px-3 py-1 rounded bg-blue-500 text-sm hover:bg-blue-600"
-        >
-          🔗 Connect
-        </button>
-        <button
-          onClick={sendThresholds}
-          disabled={!btServer}
-          className="px-3 py-1 rounded bg-green-500 text-sm hover:bg-green-600 disabled:opacity-50"
-        >
-          ⬆ Upload Thresholds
-        </button>
-      </div>
-
-      <div className="flex-1 flex flex-col justify-between">
-        {data ? (
-          <>
-            <div className="space-y-4 mt-4">
-              <DataCard label="Angle Y" value={`${data.angleY.toFixed(2)}°`} />
-              <DataCard label="Angle Z" value={`${data.angleZ.toFixed(2)}°`} />
-              <DataCard label="Flex Angle" value={`${data.flexAngle.toFixed(1)}°`} />
-            </div>
-
-            <button
-              onClick={handleSetBaseline}
-              className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
-            >
-              Set Baseline
-            </button>
-          </>
-        ) : (
-          <p className="text-center text-gray-400 text-sm mt-6">
-            Loading sensor data...
-          </p>
-        )}
-
-        <div className="pt-6">
-          <button
-            onClick={handleClick}
-            className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
-          >
-            Go to Figures Page
-          </button>
-        </div>
-      </div>
-    </div>
+    
 
     {/* Thresholds Card */}
     {user?.posture_thresholds && (
-      <div className="flex-1 max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] h-full flex flex-col animate-fadeIn">
+      <div className=" max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] h-full flex flex-col animate-fadeIn">
           <p className="text-black mb-4 font-semibold text-center">
             Your Saved Thresholds
           </p>
@@ -299,10 +244,6 @@ useEffect(() => {
           
           <div>
             <p className="text-center font-semibold mb-2">Spine</p>
-            {/* <responsiveContainer width="100%" height={100}> 
-              <LineChart>
-              </LineChart>
-            </responsiveContainer> */}
           </div>
 
 
