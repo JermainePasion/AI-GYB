@@ -1,15 +1,19 @@
 import React from "react";
 import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
 
 const DashboardLayout = ({ children }) => {
   return (
-    <div>
-      <Navbar />
-
-      {/* push content below fixed navbar */}
+    <div className="h-screen flex flex-col">
+      <div>
+        <Navbar />
+      </div>
       <div className="pt-16 flex">
-        <div className="hidden lg:block"></div>
-        <div className="grow mx-5">{children}</div>
+  
+        <Sidebar />
+        <main className="flex-1 md:ml-56 p-6 overflow-y-auto">
+          {children}
+        </main>
       </div>
     </div>
   );
