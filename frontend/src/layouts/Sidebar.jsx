@@ -34,9 +34,6 @@ function Sidebar() {
           <NavLink to="/upload" className="p-3 hover:bg-gray-700 rounded">
             Upload
           </NavLink>
-          <NavLink to="/figures" className="p-3 hover:bg-gray-700 rounded">
-            Figures
-          </NavLink>
          <NavLink to="/control" className="p-3 hover:bg-gray-700 rounded">
             Control
           </NavLink>
