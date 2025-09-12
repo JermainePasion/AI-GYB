@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import {NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+
 import "../index.css";
 
 function Navbar() {
@@ -17,137 +18,136 @@ function Navbar() {
 
   return (
     <nav className="navbar-main fixed w-full top-0 z-50 shadow-md">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-0">
-        {/* Logo + Brand */}
-        <a href="/home" className="flex items-center space-x-3">
-          {/* <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" /> */}
-          <span className="self-center text-xl font-bold whitespace-nowrap navbar-brand ml-2">
-            AI-Got Your Back
-          </span>
-        </a>
+  <div className="w-full flex flex-wrap items-center justify-between p-0">
+    {/* Logo + Brand */}
+    <a href="/home" className="flex items-center space-x-3">
+      {/* <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" /> */}
+      <span className="self-center text-sm font-bold whitespace-nowrap navbar-brand ml-2">
+        AI-Got Your Back
+      </span>
+    </a>
 
-        {/* Mobile toggle button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          type="button"
-          className="navbar-toggle inline-flex items-center mt-5 mb-5 mr-2 p-2 w-10 h-10 justify-center text-sm rounded-lg custom-hidden"
+    {/* Mobile toggle button */}
+    <button
+      onClick={() => setIsOpen(!isOpen)}
+      type="button"
+      className="navbar-toggle inline-flex items-center mt-5 mb-5 mr-2 p-2 w-10 h-10 justify-center text-sm rounded-lg custom-hidden"
+      aria-controls="navbar-default"
+      aria-expanded={isOpen}
+    >
+      <span className="sr-only">Open main menu</span>
+      <svg
+        className="w-6 h-6"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <circle cx="12" cy="5" r="2" />
+        <circle cx="12" cy="12" r="2" />
+        <circle cx="12" cy="19" r="2" />
+      </svg>
+    </button>
 
-          aria-controls="navbar-default"
-          aria-expanded={isOpen}
-        >
-          <span className="sr-only">Open main menu</span>
-          <svg
-            className="w-5 h-5"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 17 14"
+    {/* Menu links */}
+    <div
+      className={`${isOpen ? "block" : "hidden"} w-full custom-block custom-w-auto`}
+      id="navbar-default"
+    >
+      <ul className="navbar-menu font-bold flex flex-col items-stretch p-0 mt-0 rounded-lg md:flex-row md:justify-between md:w-full md:mt-0 md:h-full">
+        <li className="md:h-full">
+          <NavLink
+            to="/home"
+            className={({ isActive }) =>
+              `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+            }
           >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d={isOpen ? "M4 4l9 9M4 13L13 4" : "M1 1h15M1 7h15M1 13h15"}
-            />
-          </svg>
-        </button>
+            Home
+          </NavLink>
+        </li>
+        <li className="md:h-full">
+          <NavLink
+            to="/upload"
+            className={({ isActive }) =>
+              `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+            }
+          >
+            Upload
+          </NavLink>
+        </li>
+        <li className="md:h-full">
+          <NavLink
+            to="/control"
+            className={({ isActive }) =>
+              `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+            }
+          >
+            Control
+          </NavLink>
+        </li>
+        <li className="md:h-full">
+          <NavLink
+            to="/connection"
+            className={({ isActive }) =>
+              `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+            }
+          >
+            Connection
+          </NavLink>
+        </li>
+        <li className="md:h-full">
+          <NavLink
+            to="/score"
+            className={({ isActive }) =>
+              `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+            }
+          >
+            Score
+          </NavLink>
+        </li>
+        <li className="md:h-full">
+          <NavLink
+            to="/settings"
+            className={({ isActive }) =>
+              `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
+            }
+          >
+            Settings
+          </NavLink>
+        </li>
 
-        {/* Menu links */}
-        <div className={`${isOpen ? "block" : "hidden"} w-full custom-block custom-w-auto`} id="navbar-default">
-          <ul className="navbar-menu font-bold flex flex-col items-stretch p-0 mt-0 rounded-lg md:flex-row md:justify-between md:w-full md:mt-0 md:h-full">
-            <li className="md:h-full">
-              <NavLink
-                to="/home"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Home
-              </NavLink>
-            </li>
-            <li className="md:h-full">
-              <NavLink
-                to="/upload"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Upload
-              </NavLink>
-            </li>
-            <li className="md:h-full">
-            </li>
-            <li className="md:h-full">
-              <NavLink
-                to="/control"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Control
-              </NavLink>
-            </li>
-            <li className="md:h-full">
-              <NavLink
-                to="/connection"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Connection
-              </NavLink>
-            </li>
-            <li className="md:h-full">
-              <NavLink
-                to="/score"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Score
-              </NavLink>
-            </li>
-            <li className="md:h-full">
-              <NavLink
-                to="/settings"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Settings
-              </NavLink>
-            </li>
+        {/* Admin only */}
+        {user?.role === "admin" && (
+          <li className="md:h-full">
+            <NavLink
+              to="/admin"
+              className={({ isActive }) =>
+                `navbar-link ${isActive ? "navbar-admin-active" : "navbar-admin-inactive"}`
+              }
+            >
+              Admin
+            </NavLink>
+          </li>
+        )}
 
-            {/* Admin only */}
-            {user?.role === "admin" && (
-              <li className="md:h-full">
-                <NavLink
-                  to="/admin"
-                  className={({ isActive }) =>
-                    `navbar-link ${isActive ? "navbar-admin-active" : "navbar-admin-inactive"}`
-                  }
-                >
-                  Admin
-                </NavLink>
-              </li>
-            )}
-
-            {/* Logout (unchanged) */}
-            {token && (
-            <li className="md:h-full">
-              <button
-                onClick={() => { handleLogout(); setIsOpen(false); }}
-                className="navbar-link navbar-logout"
-              >
-                Logout
-              </button>
-            </li>
-            )}
-          </ul>
-        </div>
-      </div>
-    </nav>
+        {/* Logout */}
+        {token && (
+          <li className="md:h-full">
+            <button
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
+              className="navbar-link navbar-logout"
+            >
+              Logout
+            </button>
+          </li>
+        )}
+      </ul>
+    </div>
+  </div>
+</nav>
   ); 
 }
 
