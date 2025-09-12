@@ -77,14 +77,6 @@ function Navbar() {
               </NavLink>
             </li>
             <li className="md:h-full">
-              <NavLink
-                to="/figures"
-                className={({ isActive }) =>
-                  `navbar-link ${isActive ? "navbar-link-active" : "navbar-link-inactive"}`
-                }
-              >
-                Figures
-              </NavLink>
             </li>
             <li className="md:h-full">
               <NavLink

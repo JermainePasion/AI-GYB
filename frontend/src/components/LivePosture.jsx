@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import SensorGauge from "../components/SensorGauge";
-import Skeleton3D from "../components/skeleton";
+import SensorGauge from "./SensorGauge";
+import Skeleton3D from "./skeleton";
 
 const USE_MOCK = true;
 let mockTime = 0;
