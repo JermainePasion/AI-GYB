@@ -1,7 +1,6 @@
 import "tailwindcss";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeScreen from './screens/HomeScreen';
-import FigureScreen from "./screens/FigureScreen";
 import ControlScreen from "./screens/ControlScreen";
 import ConnectionScreen from "./screens/ConnectionScreen";
 import ScoreScreen from "./screens/ScoreScreen";
@@ -33,14 +32,7 @@ function App() {
           </PrivateRoute>
         }
       />
-      <Route
-        path="/figures"
-        element={
-          <PrivateRoute>
-            <FigureScreen />
-          </PrivateRoute>
-        }
-      />
+      
       <Route
         path="/control"
         element={
