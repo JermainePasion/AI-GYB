@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { UserContext } from '../context/UserContext';
+import LivePosture from '../components/LivePosture';
+
 import {
   BarChart,
   Bar,
@@ -16,9 +18,10 @@ import {
 
 const ESP_IP = '192.168.100.66';
 const BACKEND_IP = 'localhost'; // try localhost first for testing
-const USE_MOCK = false; // CHANGE TO TRUE IF U ARE JERROLD
 const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
 const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+const USE_MOCK = true; // CHANGE TO TRUE/FALSE IF U ARE JERROLD
+let mockTime = 0;
 
 function HomeScreen() {
   const [data, setData] = useState(null);
@@ -120,26 +123,6 @@ const fetchThresholds = async () => {
     navigate('/figures');
   };
 
-  // Bluetooth connect
-  const connectBluetooth = async () => {
-    try {
-      const device = await navigator.bluetooth.requestDevice({
-        filters: [{ name: "AI-GYB" }],        // ESP32 BLE name
-        optionalServices: [SERVICE_UUID]      // must match ESP32 service UUID
-      });
-      setBtDevice(device);
-
-      const server = await device.gatt.connect();
-      setBtServer(server);
-      setConnectionStatus("Connected");
-    } catch (err) {
-      console.error("Bluetooth connection failed", err);
-      setConnectionStatus("Failed");
-    }
-  };
-
-
-
 const normalizeThresholds = (t) => {
   // Your API sometimes returns { posture_thresholds: { ... } } or { ... }.
   const src = t?.posture_thresholds ?? t ?? {};
@@ -154,49 +137,7 @@ const normalizeThresholds = (t) => {
   return norm;
 };
 
-const allSixFinite = (o) => Object.values(o).every(Number.isFinite);
-
-  // Send thresholds to ESP32
-  const sendThresholds = async () => {
-  if (!thresholds) {
-    alert("No thresholds to send!");
-    return;
-  }
-  if (!btServer) {
-    alert("Please connect to ESP32 first!");
-    return;
-  }
-
-  const norm = normalizeThresholds(thresholds);
-  if (!allSixFinite(norm)) {
-    alert("Your thresholds are incomplete. Please generate/set thresholds first.");
-    console.warn("Refusing to send invalid thresholds:", norm);
-    return;
-  }
-
-  try {
-    const payload = [
-      norm.flex_min.toFixed(2),
-      norm.flex_max.toFixed(2),
-      norm.gyroY_min.toFixed(2),
-      norm.gyroY_max.toFixed(2),
-      norm.gyroZ_min.toFixed(2),
-      norm.gyroZ_max.toFixed(2),
-    ].join(",") + "\n";
-
-    console.log("Sending thresholds payload:", payload);
-
-    const encoder = new TextEncoder();
-    const service = await btServer.getPrimaryService(SERVICE_UUID);
-    const characteristic = await service.getCharacteristic(CHARACTERISTIC_UUID);
-    await characteristic.writeValue(encoder.encode(payload));
-
-    alert("✅ Thresholds sent to ESP32 via Bluetooth!");
-  } catch (err) {
-    console.error("Failed to send thresholds", err);
-  }
-};
-
+ 
 useEffect(() => {
   fetchThresholds();
   fetchSensorData();
@@ -207,13 +148,7 @@ useEffect(() => {
   return () => clearInterval(interval);
 }, [token]);
 
-  const DataCard = ({ label, value }) => (
-    <div className="flex justify-between items-center bg-background px-4 py-3 rounded-lg shadow-sm text-sm">
-      <span className="text-gray-300">{label}</span>
-      <span className="font-medium">{value}</span>
-    </div>
-  );
-
+  
   if (loading) {
     return (
       <DashboardLayout>
@@ -226,12 +161,12 @@ useEffect(() => {
 
   return (
 <DashboardLayout>
-  <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start gap-6 p-4 mt-10">
+  <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start gap-4 p-4 mt-10">
     <h1 className="text-6xl font-extrabold text-white opacity-0 animate-fadeIn text-center">
       Hello, {user?.username}!
     </h1>
 
-    
+    <LivePosture/>
 
     {/* Thresholds Card */}
     {user?.posture_thresholds && (
@@ -245,9 +180,6 @@ useEffect(() => {
           <div>
             <p className="text-center font-semibold mb-2">Spine</p>
           </div>
-
-
-
 
           <ResponsiveContainer width="100%" height={300}>
             <BarChart

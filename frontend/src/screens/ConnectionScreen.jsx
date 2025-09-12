@@ -118,7 +118,7 @@ const fetchThresholds = async () => {
   };
 
   const handleClick = () => {
-    navigate('/figures');
+    navigate('/control');
   };
 
   // Bluetooth connect
@@ -258,7 +258,7 @@ useEffect(() => {
               onClick={handleClick}
               className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
             >
-              Go to Figures Page
+              Go to Control Page
             </button>
           </div>
         </div>
