@@ -64,7 +64,7 @@ function Navbar() {
             </li>
 
             {/* Admin only */}
-            {user?.role === "admin" && (
+            {user?.role === "admin" || "doctor" && (
               <li className="md:h-full">
                 <NavLink
                   to="/admin"
