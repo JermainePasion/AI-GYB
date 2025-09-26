@@ -1,17 +1,16 @@
+// routes/userRoutes.js
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
-const { protect, authorize } = require('../middleware/authMiddleware'); 
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 // Generate JWT
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
-  });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 // @route   POST /api/users/register
@@ -22,15 +21,14 @@ router.post(
 
     const userExists = await User.findOne({ email });
     if (userExists) {
-      res.status(400);
-      throw new Error("User already exists");
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const user = await User.create({
       username,
       email,
       password,
-      role
+      role,
     });
 
     if (user) {
@@ -42,8 +40,7 @@ router.post(
         token: generateToken(user.id),
       });
     } else {
-      res.status(400);
-      throw new Error("Invalid user data");
+      res.status(400).json({ message: "Invalid user data" });
     }
   })
 );
@@ -53,7 +50,6 @@ router.post(
   "/login",
   asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
@@ -65,42 +61,55 @@ router.post(
         token: generateToken(user.id),
       });
     } else {
-      res.status(401);
-      throw new Error("Invalid email or password");
+      res.status(401).json({ message: "Invalid email or password" });
     }
   })
 );
 
+// @route   GET /api/users/profile
 router.get(
   "/profile",
   protect,
   asyncHandler(async (req, res) => {
-    // req.user is populated by protect middleware (with user data excluding password)
     if (req.user) {
       res.json({
         _id: req.user._id,
         username: req.user.username,
         email: req.user.email,
         role: req.user.role,
-        posture_thresholds: req.user.posture_thresholds || {}
+        posture_thresholds: req.user.posture_thresholds || {},
       });
     } else {
-      res.status(404);
-      throw new Error("User not found");
+      res.status(404).json({ message: "User not found" });
     }
   })
 );
 
-router.get(
-  "/thresholds",
-  protect,
-  asyncHandler(async (req, res) => {
-    if (!req.user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.json(req.user.posture_thresholds || {});
-  })
-);
+// ✅ Threshold routes
+// @route GET /api/users/thresholds
+router.get("/thresholds", protect, asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("posture_thresholds");
+    res.json(user.posture_thresholds || {});
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching thresholds", error: err.message });
+  }
+}));
+
+// @route PUT /api/users/thresholds
+router.put("/thresholds", protect, asyncHandler(async (req, res) => {
+  try {
+    const { flex_min, flex_max, gyroY_min, gyroY_max, gyroZ_min, gyroZ_max } = req.body;
+    const user = await User.findById(req.user.id);
+
+    user.posture_thresholds = { flex_min, flex_max, gyroY_min, gyroY_max, gyroZ_min, gyroZ_max };
+    await user.save();
+
+    res.json(user.posture_thresholds);
+  } catch (err) {
+    res.status(500).json({ message: "Error updating thresholds", error: err.message });
+  }
+}));
 
 // @route POST /api/users/register-doctor
 router.post("/register-doctor", asyncHandler(async (req, res) => {
@@ -115,13 +124,12 @@ router.post("/register-doctor", asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  // Doctor will have "pending" status until admin approves
   const doctor = await User.create({
     username,
     email,
     password,
     role: "doctor",
-    status: "pending"
+    status: "pending",
   });
 
   if (doctor) {
@@ -151,19 +159,15 @@ router.put(
   })
 );
 
-
+// @route GET /api/users
 router.get(
   "/",
   protect,
   authorize("admin", "doctor"),
   asyncHandler(async (req, res) => {
-    const users = await User.find().select("-password"); // exclude password
+    const users = await User.find().select("-password");
     res.json(users);
   })
 );
 
-
-
-
 module.exports = router;
-
