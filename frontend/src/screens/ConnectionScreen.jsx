@@ -1,96 +1,92 @@
-import { useContext, useState } from "react";
+import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { BluetoothContext } from "../context/BluetoothContext";
 import { UserContext } from "../context/UserContext";
+import { BluetoothContext } from "../context/BluetoothContext";
 
-export default function ConnectionScreen() {
-  const { connected, connectBLE, characteristic, flexAngle, gyroY, gyroZ } =
-    useContext(BluetoothContext);
-  const { user } = useContext(UserContext);
-
-  const [baseline, setBaseline] = useState(null);
+function ConnectionScreen() {
+  const navigate = useNavigate();
+  const { user, token } = useContext(UserContext);
+  const {
+    connected,
+    flexAngle,
+    gyroY,
+    gyroZ,
+    connectBLE,
+    sendUserThresholds
+  } = useContext(BluetoothContext);
 
   const handleSetBaseline = () => {
-    if (!flexAngle && !gyroY && !gyroZ) {
-      alert("No sensor data yet!");
-      return;
-    }
-    const newBaseline = { flexAngle, gyroY, gyroZ };
-    setBaseline(newBaseline);
-    alert("✅ Baseline set:\n" + JSON.stringify(newBaseline, null, 2));
+    alert(
+      `✅ Current sensor values saved as baseline:\nFlex: ${flexAngle.toFixed(
+        2
+      )}°, Y: ${gyroY.toFixed(2)}°, Z: ${gyroZ.toFixed(2)}°`
+    );
+    // You could also send these to backend here if needed
   };
 
-  const sendThresholds = async () => {
-    if (!characteristic) {
-      alert("Please connect to ESP32 first!");
-      return;
-    }
-
-    if (!user?.posture_thresholds) {
-      alert("No thresholds available! Set thresholds first.");
-      return;
-    }
-
-    const t = user.posture_thresholds;
-    const payload = `${t.flex_min},${t.flex_max},${t.gyroY_min},${t.gyroY_max},${t.gyroZ_min},${t.gyroZ_max}`;
-    try {
-      const encoder = new TextEncoder();
-      await characteristic.writeValue(encoder.encode(payload));
-      alert("✅ Thresholds sent!");
-      console.log("Thresholds sent:", payload);
-    } catch (err) {
-      console.error("Failed to send thresholds:", err);
-      alert("❌ Failed to send thresholds");
-    }
-  };
+  const goToControl = () => navigate("/control");
 
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start p-4 mt-10">
-        <div className="max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] flex flex-col gap-4 animate-fadeIn">
-          <p className="text-sm">
-            Bluetooth Status:{" "}
-            <span className="font-bold">
-              {connected ? "Connected ✅" : "Disconnected ❌"}
-            </span>
+        <div className="max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl bg-[#a4ccd9] flex flex-col animate-fadeIn">
+
+          {/* Bluetooth Status */}
+          <p className="mt-2 text-sm text-gray-300">
+            Bluetooth Status: <span className="font-bold">{connected ? "Connected ✅" : "Disconnected ❌"}</span>
           </p>
 
-          <button
-            onClick={connectBLE}
-            className="px-3 py-1 rounded bg-blue-500 hover:bg-blue-600 transition"
-          >
-            🔗 Connect to ESP32
-          </button>
+          <div className="flex gap-2 mt-2">
+            <button
+              onClick={connectBLE}
+              className="px-3 py-1 rounded bg-blue-500 text-sm hover:bg-blue-600"
+            >
+              🔗 Connect
+            </button>
+            <button
+              onClick={sendUserThresholds}
+              disabled={!connected || !user?.posture_thresholds}
+              className="px-3 py-1 rounded bg-green-500 text-sm hover:bg-green-600 disabled:opacity-50"
+            >
+              ⬆ Upload Thresholds
+            </button>
+          </div>
 
-          <button
-            onClick={sendThresholds}
-            disabled={!connected}
-            className="px-3 py-1 rounded bg-green-500 hover:bg-green-600 disabled:opacity-50 transition"
-          >
-            ⬆ Upload Thresholds
-          </button>
-
-          <div className="mt-4">
-            <p className="font-semibold mb-2">Live Sensor Data:</p>
-            <p>Flex Angle: {flexAngle?.toFixed(1) || "--"}°</p>
-            <p>Gyro Y: {gyroY?.toFixed(1) || "--"}°</p>
-            <p>Gyro Z: {gyroZ?.toFixed(1) || "--"}°</p>
+          {/* Sensor Data */}
+          <div className="space-y-4 mt-4">
+            <DataCard label="Flex Angle" value={`${flexAngle.toFixed(2)}°`} />
+            <DataCard label="Gyro Y" value={`${gyroY.toFixed(2)}°`} />
+            <DataCard label="Gyro Z" value={`${gyroZ.toFixed(2)}°`} />
           </div>
 
           <button
             onClick={handleSetBaseline}
-            className="mt-4 w-full py-2 rounded-lg bg-primary text-white font-semibold shadow hover:bg-red-600 transition"
+            className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
           >
             Set Baseline
           </button>
 
-          {baseline && (
-            <div className="mt-2 text-sm text-gray-200">
-              Baseline: {JSON.stringify(baseline)}
-            </div>
-          )}
+          <div className="pt-6">
+            <button
+              onClick={goToControl}
+              className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
+            >
+              Go to Control Page
+            </button>
+          </div>
         </div>
       </div>
     </DashboardLayout>
   );
 }
+
+// Simple card component
+const DataCard = ({ label, value }) => (
+  <div className="bg-white/10 p-3 rounded-lg flex justify-between items-center text-sm">
+    <span>{label}</span>
+    <span className="font-bold">{value}</span>
+  </div>
+);
+
+export default ConnectionScreen;

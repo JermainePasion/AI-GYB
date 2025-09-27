@@ -16,6 +16,23 @@ export const BluetoothProvider = ({ children }) => {
   const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
+  // --- Send thresholds to ESP32 ---
+  const sendUserThresholds = async () => {
+    if (!characteristic || !user?.posture_thresholds) return;
+
+    const t = user.posture_thresholds;
+    const payload = `${t.flex_min},${t.flex_max},${t.gyroY_min},${t.gyroY_max},${t.gyroZ_min},${t.gyroZ_max}`;
+
+    try {
+      const encoder = new TextEncoder();
+      await characteristic.writeValue(encoder.encode(payload));
+      console.log("✅ Thresholds sent to ESP32:", payload);
+    } catch (err) {
+      console.error("Failed to send thresholds:", err);
+    }
+  };
+
+  // --- Connect to BLE ---
   const connectBLE = async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
@@ -30,32 +47,41 @@ export const BluetoothProvider = ({ children }) => {
 
       const service = await server.getPrimaryService(SERVICE_UUID);
       const char = await service.getCharacteristic(CHARACTERISTIC_UUID);
+
+      // Remove previous listener if any
+      char.removeEventListener("characteristicvaluechanged", handleNotifications);
+
+      // Save characteristic
       setCharacteristic(char);
 
+      // Start notifications
       await char.startNotifications();
+      char.addEventListener("characteristicvaluechanged", handleNotifications);
 
-      // Listen to sensor updates
-      char.addEventListener("characteristicvaluechanged", (event) => {
-        const value = new TextDecoder().decode(event.target.value);
-        console.log("BLE update:", value); // log for debugging
-        const [flex, y, z] = value.split(",").map(parseFloat);
-        setFlexAngle(flex);
-        setGyroY(y);
-        setGyroZ(z);
-      });
-
-      // Send thresholds
+      // Send thresholds immediately after connecting
       if (user?.posture_thresholds) {
-        const t = user.posture_thresholds;
-        const payload = `${t.flex_min},${t.flex_max},${t.gyroY_min},${t.gyroY_max},${t.gyroZ_min},${t.gyroZ_max}`;
-        const encoder = new TextEncoder();
-        await char.writeValue(encoder.encode(payload));
-        console.log("Thresholds sent:", payload);
+        await sendUserThresholds();
+        sendUserThresholds(user);
       }
+
+      console.log("✅ BLE connected:", device.name);
     } catch (err) {
       console.error("BLE connection failed:", err);
       setConnected(false);
     }
+  };
+
+  // --- Notification handler ---
+  const handleNotifications = (event) => {
+    const value = new TextDecoder().decode(event.target.value);
+    // Expecting CSV: "flexAngle,gyroY,gyroZ"
+    const [flex, y, z] = value.split(",").map(parseFloat);
+
+    setFlexAngle(flex);
+    setGyroY(y);
+    setGyroZ(z);
+
+    console.log("BLE update:", value);
   };
 
   return (
@@ -65,10 +91,11 @@ export const BluetoothProvider = ({ children }) => {
         server,
         characteristic,
         connected,
-        connectBLE,
         flexAngle,
         gyroY,
         gyroZ,
+        connectBLE,
+        sendUserThresholds, // <-- expose this for manual sending
       }}
     >
       {children}
