@@ -1,16 +1,19 @@
-import React from 'react';
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
-import { BrowserRouter } from 'react-router-dom';
-import { UserProvider } from './context/UserContext.jsx';
+// main.jsx or index.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
+import { UserProvider } from "./context/UserContext";
+import { BluetoothProvider } from "./context/BluetoothContext";
 
-createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <UserProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <BluetoothProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </BluetoothProvider>
     </UserProvider>
   </React.StrictMode>
 );
