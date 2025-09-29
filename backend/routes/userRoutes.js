@@ -5,6 +5,9 @@ const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const { protect, authorize } = require("../middleware/authMiddleware");
+const multer = require("multer");
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage });
 
 const router = express.Router();
 
@@ -167,6 +170,32 @@ router.get(
   asyncHandler(async (req, res) => {
     const users = await User.find().select("-password");
     res.json(users);
+  })
+);
+
+router.post(
+  "/upload-log",
+  protect,
+  upload.single("file"),
+  asyncHandler(async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      const user = await User.findById(req.user.id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      user.posture_logs.push({
+        filename: req.file.originalname,
+        data: req.file.buffer.toString("utf-8")
+      });
+
+      await user.save();
+      res.json({ message: "Log uploaded successfully", logs: user.posture_logs });
+    } catch (err) {
+      res.status(500).json({ message: "Error uploading log", error: err.message });
+    }
   })
 );
 

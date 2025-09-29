@@ -10,6 +10,13 @@ const thresholdSchema = new mongoose.Schema({
   gyroZ_max: { type: Number, default: 0 }
 });
 
+const postureLogSchema = new mongoose.Schema({
+  timestamp: { type: Date, default: Date.now },
+  filename: { type: String },
+  data: { type: String } 
+});
+
+
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
   email:    { type: String, required: true, unique: true },
@@ -21,7 +28,11 @@ const userSchema = new mongoose.Schema({
     gyroY_baseline: { type: Number, default: 0 },
     gyroZ_baseline: { type: Number, default: 0 }
   },
-  posture_thresholds: { type: thresholdSchema, default: () => ({}) } // default empty object
+  posture_thresholds: { type: thresholdSchema, default: () => ({}) },
+
+  // ✅ Add this
+  posture_logs: [postureLogSchema]
+
 }, { timestamps: true });
 
 // Hash password before save

@@ -20,12 +20,8 @@ export default function LivePosture() {
 
         {/* 3D Models */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full md:w-2/3">
-          <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
-            <h2 className="text-lg font-semibold mb-2">Front View</h2>
-            <Skeleton3D flexAngle={flexAngle} gyroY={gyroY} gyroZ={gyroZ} cameraPosition={[0, 1.5, 5]} />
-          </div>
-          <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white">
-            <h2 className="text-lg font-semibold mb-2">Side View</h2>
+
+          <div className="flex flex-col items-center border-2 border-gray-300 rounded-xl p-6 shadow-md bg-white ">
             <Skeleton3D flexAngle={flexAngle} gyroY={gyroY} gyroZ={gyroZ} cameraPosition={[5, 1.5, 0]} />
           </div>
         </div>

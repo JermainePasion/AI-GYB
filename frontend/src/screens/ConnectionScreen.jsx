@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
 import { BluetoothContext } from "../context/BluetoothContext";
+import UploadDataButton from "../components/UploadDataButton";
 
 function ConnectionScreen() {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ function ConnectionScreen() {
               Go to Control Page
             </button>
           </div>
+          <UploadDataButton token={token} />
         </div>
       </div>
     </DashboardLayout>
