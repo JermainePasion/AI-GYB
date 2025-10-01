@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const photoRoutes = require('./routes/photoRoutes');
 const userRoutes = require('./routes/userRoutes');
+const logRoutes = require('./routes/logRoutes');
 
 // Load env variables
 dotenv.config();
@@ -27,9 +28,9 @@ app.use(express.json());
 // Routes
 app.use('/api', photoRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/logs', logRoutes);
 
-// Serve uploaded files
-app.use('/uploads', express.static('uploads'));
+
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

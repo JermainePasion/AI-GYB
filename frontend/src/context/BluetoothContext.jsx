@@ -4,8 +4,8 @@ import { UserContext } from "./UserContext";
 export const BluetoothContext = createContext();
 
 export const BluetoothProvider = ({ children }) => {
-  const { user } = useContext(UserContext);
-
+  const { user, loading, token } = useContext(UserContext);
+  
   const characteristicRef = useRef(null);
   const [device, setDevice] = useState(null);
   const [server, setServer] = useState(null);
@@ -15,9 +15,9 @@ export const BluetoothProvider = ({ children }) => {
   const [gyroY, setGyroY] = useState(0);
   const [gyroZ, setGyroZ] = useState(0);
 
-  // CSV buffering refs
-  const csvBuffer = useRef([]);
-  const csvPromiseResolve = useRef(null);
+  // --- new: session data log
+  const dataLogRef = useRef([]);
+  const [dataLog, setDataLog] = useState([]);
 
   const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
@@ -40,42 +40,67 @@ export const BluetoothProvider = ({ children }) => {
   };
 
   // --- Notification handler ---
-  const handleNotifications = async (event) => {
-    const value = new TextDecoder().decode(event.target.value).trim();
+  const handleNotifications = (event) => {
+  const value = new TextDecoder().decode(event.target.value).trim();
 
-    if (value.includes(",")) {
-      const [flex, y, z] = value.split(",").map(parseFloat);
-      setFlexAngle(flex);
-      setGyroY(y);
-      setGyroZ(z);
-      console.log("📡 Posture update:", value);
-      return;
-    }
+  if (value.includes(",")) {
+    const [flex, y, z] = value.split(",").map(parseFloat);
+    setFlexAngle(flex);
+    setGyroY(y);
+    setGyroZ(z);
 
-    if (value === "CSV_END") {
-      console.log("📤 CSV transfer complete");
-      if (csvPromiseResolve.current) {
-        csvPromiseResolve.current(csvBuffer.current.join("\n"));
-      }
-      csvBuffer.current = [];
-      csvPromiseResolve.current = null;
-      return;
-    }
+    const newEntry = { timestamp: Date.now(), flex, gyroY: y, gyroZ: z };
 
-    if (csvPromiseResolve.current) {
-      csvBuffer.current.push(value);
-      console.log("📥 CSV line:", value);
-
-      try {
-        const encoder = new TextEncoder();
-        await characteristicRef.current.writeValue(encoder.encode("NEXT_CHUNK"));
-      } catch (err) {
-        console.error("❌ NEXT_CHUNK failed:", err);
-      }
-    }
+    setDataLog((prev) => [...prev, newEntry]);
+    dataLogRef.current.push(newEntry); // ✅ keep ref in sync
+  }
+};
+  // --- Generate CSV from dataLog ---
+  const generateCSV = () => {
+    const header = "timestamp,flex,gyroY,gyroZ\n";
+    const rows = dataLog
+      .map((row) => `${row.timestamp},${row.flex},${row.gyroY},${row.gyroZ}`)
+      .join("\n");
+    return header + rows;
   };
 
-  // --- Connect BLE ---
+  // --- Upload CSV to backend ---
+  const uploadCSV = async (logData = dataLogRef.current) => {
+  const header = "timestamp,flex,gyroY,gyroZ\n";
+  const rows = logData
+    .map((row) => `${row.timestamp},${row.flex},${row.gyroY},${row.gyroZ}`)
+    .join("\n");
+  const csvContent = header + rows;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/logs/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // ✅ use token from context
+      },
+      body: JSON.stringify({
+        csv: csvContent,
+        filename: `log-${Date.now()}.csv`,
+      }),
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+
+    const data = await res.json();
+    console.log("✅ CSV uploaded!", data);
+
+    // clear local log after successful upload
+    setDataLog([]);
+    dataLogRef.current = [];
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+  }
+};
+
+
+
+    // --- Connect BLE ---
   const connectBLE = async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
@@ -84,6 +109,18 @@ export const BluetoothProvider = ({ children }) => {
       });
       setDevice(device);
 
+      // 🔌 Handle auto-upload on disconnect
+      device.addEventListener("gattserverdisconnected", async () => {
+        console.log("📴 BLE disconnected");
+        setConnected(false);
+
+        if (dataLogRef.current.length > 0) {
+          console.log("📤 Uploading CSV after disconnect...");
+          await uploadCSV(dataLogRef.current);
+        } else {
+          console.log("ℹ️ No data to upload");
+        }
+      });
       const server = await device.gatt.connect();
       setServer(server);
       setConnected(true);
@@ -108,50 +145,6 @@ export const BluetoothProvider = ({ children }) => {
     }
   };
 
-  // --- Request CSV ---
-  const requestCsvFromEsp32 = async () => {
-    const char = characteristicRef.current;
-    if (!char) throw new Error("No BLE characteristic available");
-
-    const encoder = new TextEncoder();
-    await char.writeValue(encoder.encode("GET_CSV"));
-    console.log("📡 Requested CSV");
-
-    return new Promise((resolve) => {
-      csvBuffer.current = [];
-      csvPromiseResolve.current = resolve;
-    });
-  };
-
-  // --- Delete CSV ---
-  const sendDeleteCommand = async () => {
-    const char = characteristicRef.current;
-    if (!char) throw new Error("No BLE characteristic available");
-
-    const encoder = new TextEncoder();
-    await char.writeValue(encoder.encode("DELETE_CSV"));
-    console.log("🗑 CSV delete sent");
-  };
-
-  // --- Pause logging ---
-const pauseLogging = async () => {
-  const char = characteristicRef.current;
-  if (!char) throw new Error("No BLE characteristic available");
-
-  const encoder = new TextEncoder();
-  await char.writeValue(encoder.encode("PAUSE_LOG"));
-  console.log("⏸ Logging paused");
-};
-
-// --- Resume logging ---
-const resumeLogging = async () => {
-  const char = characteristicRef.current;
-  if (!char) throw new Error("No BLE characteristic available");
-
-  const encoder = new TextEncoder();
-  await char.writeValue(encoder.encode("RESUME_LOG"));
-  console.log("▶️ Logging resumed");
-};
 
   return (
     <BluetoothContext.Provider
@@ -162,12 +155,11 @@ const resumeLogging = async () => {
         flexAngle,
         gyroY,
         gyroZ,
+        dataLog,
         connectBLE,
         sendUserThresholds,
-        requestCsvFromEsp32,
-        sendDeleteCommand,
-        pauseLogging,
-        resumeLogging,
+        generateCSV,
+        uploadCSV,
       }}
     >
       {children}

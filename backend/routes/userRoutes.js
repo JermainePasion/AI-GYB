@@ -199,4 +199,23 @@ router.post(
   })
 );
 
+// @route POST /api/users/upload
+router.post("/upload", async (req, res) => {
+  try {
+    const { csv } = req.body;
+    if (!csv) return res.status(400).send("No CSV provided");
+
+    await req.app.locals.db.collection("posture_logs").insertOne({
+      csv,
+      userId: req.user?.id || null, // if you want to link logs to users
+      createdAt: new Date(),
+    });
+
+    res.send("CSV saved to MongoDB!");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error saving CSV");
+  }
+});
+
 module.exports = router;
