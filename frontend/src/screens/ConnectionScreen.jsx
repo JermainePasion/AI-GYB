@@ -1,8 +1,9 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
 import { BluetoothContext } from "../context/BluetoothContext";
+import CSVButton from "../components/CSVButton";
 
 function ConnectionScreen() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ function ConnectionScreen() {
     connectBLE,
     sendUserThresholds
   } = useContext(BluetoothContext);
-
+  const [logs, setLogs] = useState([]);
   const handleSetBaseline = () => {
     alert(
       `✅ Current sensor values saved as baseline:\nFlex: ${flexAngle.toFixed(
@@ -26,6 +27,19 @@ function ConnectionScreen() {
   };
 
   const goToControl = () => navigate("/control");
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      const res = await fetch("http://localhost:3000/api/logs/my", {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const data = await res.json();
+      setLogs(data);
+    };
+
+    fetchLogs();
+  }, []);
+
 
   return (
     <DashboardLayout>
@@ -75,7 +89,15 @@ function ConnectionScreen() {
               Go to Control Page
             </button>
           </div>
+           {logs.map((log) => (
+        <div key={log._id} className="mb-4 p-4 border rounded-lg shadow">
+          <p className="mb-2">{log.filename}</p>
+          <CSVButton log={log} />
         </div>
+      ))}
+        </div>
+
+        
       </div>
     </DashboardLayout>
   );
