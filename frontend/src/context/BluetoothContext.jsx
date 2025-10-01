@@ -6,16 +6,16 @@ export const BluetoothContext = createContext();
 export const BluetoothProvider = ({ children }) => {
   const { user } = useContext(UserContext);
 
+  const characteristicRef = useRef(null);
   const [device, setDevice] = useState(null);
   const [server, setServer] = useState(null);
-  const [characteristic, setCharacteristic] = useState(null);
   const [connected, setConnected] = useState(false);
 
   const [flexAngle, setFlexAngle] = useState(0);
   const [gyroY, setGyroY] = useState(0);
   const [gyroZ, setGyroZ] = useState(0);
 
-  // CSV buffering refs (so state doesn’t reset mid-transfer)
+  // CSV buffering refs
   const csvBuffer = useRef([]);
   const csvPromiseResolve = useRef(null);
 
@@ -24,25 +24,25 @@ export const BluetoothProvider = ({ children }) => {
 
   // --- Send thresholds to ESP32 ---
   const sendUserThresholds = async () => {
-    if (!characteristic || !user?.posture_thresholds) return;
+    const char = characteristicRef.current;
+    if (!char || !user?.posture_thresholds) return;
 
     const t = user.posture_thresholds;
     const payload = `${t.flex_min},${t.flex_max},${t.gyroY_min},${t.gyroY_max},${t.gyroZ_min},${t.gyroZ_max}`;
 
     try {
       const encoder = new TextEncoder();
-      await characteristic.writeValue(encoder.encode(payload));
-      console.log("✅ Thresholds sent to ESP32:", payload);
+      await char.writeValue(encoder.encode(payload));
+      console.log("✅ Thresholds sent:", payload);
     } catch (err) {
-      console.error("Failed to send thresholds:", err);
+      console.error("❌ Failed to send thresholds:", err);
     }
   };
 
-  // --- Unified notification handler ---
-  const handleNotifications = (event) => {
+  // --- Notification handler ---
+  const handleNotifications = async (event) => {
     const value = new TextDecoder().decode(event.target.value).trim();
 
-    // --- If posture update ---
     if (value.includes(",")) {
       const [flex, y, z] = value.split(",").map(parseFloat);
       setFlexAngle(flex);
@@ -52,8 +52,7 @@ export const BluetoothProvider = ({ children }) => {
       return;
     }
 
-    // --- If CSV streaming ---
-    if (value === "END_CSV") {
+    if (value === "CSV_END") {
       console.log("📤 CSV transfer complete");
       if (csvPromiseResolve.current) {
         csvPromiseResolve.current(csvBuffer.current.join("\n"));
@@ -66,10 +65,17 @@ export const BluetoothProvider = ({ children }) => {
     if (csvPromiseResolve.current) {
       csvBuffer.current.push(value);
       console.log("📥 CSV line:", value);
+
+      try {
+        const encoder = new TextEncoder();
+        await characteristicRef.current.writeValue(encoder.encode("NEXT_CHUNK"));
+      } catch (err) {
+        console.error("❌ NEXT_CHUNK failed:", err);
+      }
     }
   };
 
-  // --- Connect to BLE ---
+  // --- Connect BLE ---
   const connectBLE = async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
@@ -85,37 +91,31 @@ export const BluetoothProvider = ({ children }) => {
       const service = await server.getPrimaryService(SERVICE_UUID);
       const char = await service.getCharacteristic(CHARACTERISTIC_UUID);
 
-      // Clear old listener
-      char.removeEventListener("characteristicvaluechanged", handleNotifications);
+      characteristicRef.current = char;
 
-      // Save and start
-      setCharacteristic(char);
+      char.removeEventListener("characteristicvaluechanged", handleNotifications);
       await char.startNotifications();
       char.addEventListener("characteristicvaluechanged", handleNotifications);
 
-      // Send thresholds immediately after connecting
       if (user?.posture_thresholds) {
         await sendUserThresholds();
       }
 
       console.log("✅ BLE connected:", device.name);
     } catch (err) {
-      console.error("BLE connection failed:", err);
+      console.error("❌ BLE connection failed:", err);
       setConnected(false);
     }
   };
 
-  // --- Request CSV (line-by-line streaming) ---
+  // --- Request CSV ---
   const requestCsvFromEsp32 = async () => {
-    if (!characteristic) throw new Error("No BLE characteristic available");
+    const char = characteristicRef.current;
+    if (!char) throw new Error("No BLE characteristic available");
 
     const encoder = new TextEncoder();
-    try {
-      await characteristic.writeValue(encoder.encode("GET_CSV"));
-    } catch (err) {
-      console.error("❌ Failed to request CSV:", err);
-      throw err;
-    }
+    await char.writeValue(encoder.encode("GET_CSV"));
+    console.log("📡 Requested CSV");
 
     return new Promise((resolve) => {
       csvBuffer.current = [];
@@ -123,22 +123,41 @@ export const BluetoothProvider = ({ children }) => {
     });
   };
 
-
-  // --- Send delete command to ESP32 ---
+  // --- Delete CSV ---
   const sendDeleteCommand = async () => {
-    if (!characteristic) throw new Error("No BLE characteristic available");
+    const char = characteristicRef.current;
+    if (!char) throw new Error("No BLE characteristic available");
 
     const encoder = new TextEncoder();
-    await characteristic.writeValue(encoder.encode("DELETE_CSV"));
-    console.log("🗑 Delete command sent to ESP32");
+    await char.writeValue(encoder.encode("DELETE_CSV"));
+    console.log("🗑 CSV delete sent");
   };
+
+  // --- Pause logging ---
+const pauseLogging = async () => {
+  const char = characteristicRef.current;
+  if (!char) throw new Error("No BLE characteristic available");
+
+  const encoder = new TextEncoder();
+  await char.writeValue(encoder.encode("PAUSE_LOG"));
+  console.log("⏸ Logging paused");
+};
+
+// --- Resume logging ---
+const resumeLogging = async () => {
+  const char = characteristicRef.current;
+  if (!char) throw new Error("No BLE characteristic available");
+
+  const encoder = new TextEncoder();
+  await char.writeValue(encoder.encode("RESUME_LOG"));
+  console.log("▶️ Logging resumed");
+};
 
   return (
     <BluetoothContext.Provider
       value={{
         device,
         server,
-        characteristic,
         connected,
         flexAngle,
         gyroY,
@@ -147,6 +166,8 @@ export const BluetoothProvider = ({ children }) => {
         sendUserThresholds,
         requestCsvFromEsp32,
         sendDeleteCommand,
+        pauseLogging,
+        resumeLogging,
       }}
     >
       {children}
