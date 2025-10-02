@@ -4,15 +4,18 @@ const PosturePieChart = ({ logs }) => {
   if (!logs || logs.length === 0)
     return <p className="text-center text-black">No data yet</p>;
 
-  const good = logs.filter((l) => l.stage === 0).length;
-  const bad = logs.filter((l) => l.stage > 0).length;
+  // Count occurrences of each stage
+  const stageCounts = [0, 1, 2].map(
+    (stage) => logs.filter((l) => l.stage === stage).length
+  );
 
   const data = [
-    { name: "Good Posture", value: good },
-    { name: "Bad Posture", value: bad },
+    { name: "Stage 0 (Good)", value: stageCounts[0] },
+    { name: "Stage 1", value: stageCounts[1] },
+    { name: "Stage 2", value: stageCounts[2] },
   ];
 
-  const COLORS = ["#60a5fa", "#f87171"];
+  const COLORS = ["#60a5fa", "#facc15", "#f87171"]; // Blue, Yellow, Red
 
   return (
     <ResponsiveContainer width="100%" height={300}>
