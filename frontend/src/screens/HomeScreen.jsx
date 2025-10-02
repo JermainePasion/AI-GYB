@@ -4,6 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { UserContext } from '../context/UserContext';
 import LivePosture from '../components/LivePosture';
+import { usePostureLogs } from '../hooks/UsePostureLogs';
+
+
+import PosturePieChart from '../components/graphs/PosturePieChart';
+import SummaryTable from '../components/graphs/SummaryTable';
+import ThresholdOverlayGraph from '../components/graphs/ThresholdOverlayGraph';
+import TimeSeriesGraph from '../components/graphs/TimeSeriesGraph';
+
+
 
 import {
   BarChart,
@@ -38,6 +47,9 @@ function HomeScreen() {
 
   const POLL_INTERVAL = 1000; 
   const toNum = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
+
+  const { logs, loading: logsLoading } = usePostureLogs();
+
   // Fetch thresholds from backend
 const fetchThresholds = async () => {
   if (USE_MOCK) {
@@ -149,11 +161,11 @@ useEffect(() => {
 }, [token]);
 
   
-  if (loading) {
+  if (loading || logsLoading) {
     return (
       <DashboardLayout>
         <div className="min-h-screen flex items-center justify-center text-white">
-          Loading user info...
+          Loading user info and logs...
         </div>
       </DashboardLayout>
     );
@@ -214,8 +226,29 @@ useEffect(() => {
         </div>
     )}
   </div>
-</DashboardLayout>
+ {/* ================= Graphs Section ================= */}
+        <div className="w-full max-w-6xl flex flex-col gap-8 mt-8">
+          <div className="bg-secondary rounded-2xl p-4 shadow-xl animate-fadeIn">
+            <h2 className="text-center font-semibold mb-2 text-black">Time-Series Sensor Graph</h2>
+            <TimeSeriesGraph logs={logs} />
+          </div>
 
+          <div className="bg-secondary rounded-2xl p-4 shadow-xl animate-fadeIn">
+            <h2 className="text-center font-semibold mb-2 text-black">Posture Distribution</h2>
+            <PosturePieChart logs={logs} />
+          </div>
+
+          <div className="bg-secondary rounded-2xl p-4 shadow-xl animate-fadeIn">
+            <h2 className="text-center font-semibold mb-2 text-black">Sensor Threshold Overlay</h2>
+            <ThresholdOverlayGraph logs={logs} thresholds={user.posture_thresholds} />
+          </div>
+
+          <div className="bg-secondary rounded-2xl p-4 shadow-xl animate-fadeIn">
+            <h2 className="text-center font-semibold mb-2 text-black">Daily Summary & Trends</h2>
+            <SummaryTable logs={logs} />
+          </div>
+        </div>
+    </DashboardLayout>
   );
 }
 

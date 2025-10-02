@@ -14,17 +14,8 @@ function ConnectionScreen() {
     gyroY,
     gyroZ,
     connectBLE,
-    sendUserThresholds
   } = useContext(BluetoothContext);
   const [logs, setLogs] = useState([]);
-  const handleSetBaseline = () => {
-    alert(
-      `✅ Current sensor values saved as baseline:\nFlex: ${flexAngle.toFixed(
-        2
-      )}°, Y: ${gyroY.toFixed(2)}°, Z: ${gyroZ.toFixed(2)}°`
-    );
-    // You could also send these to backend here if needed
-  };
 
   const goToControl = () => navigate("/control");
 
@@ -48,7 +39,7 @@ function ConnectionScreen() {
 
           {/* Bluetooth Status */}
           <p className="mt-2 text-sm text-gray-300">
-            Bluetooth Status: <span className="font-bold">{connected ? "Connected ✅" : "Disconnected ❌"}</span>
+            Bluetooth Status: <span className="font-bold">{connected ? "Connected" : "Disconnected"}</span>
           </p>
 
           <div className="flex gap-2 mt-2">
@@ -56,14 +47,7 @@ function ConnectionScreen() {
               onClick={connectBLE}
               className="px-3 py-1 rounded bg-blue-500 text-sm hover:bg-blue-600"
             >
-              🔗 Connect
-            </button>
-            <button
-              onClick={sendUserThresholds}
-              disabled={!connected || !user?.posture_thresholds}
-              className="px-3 py-1 rounded bg-green-500 text-sm hover:bg-green-600 disabled:opacity-50"
-            >
-              ⬆ Upload Thresholds
+            Connect
             </button>
           </div>
 
@@ -74,13 +58,6 @@ function ConnectionScreen() {
             <DataCard label="Gyro Z" value={`${gyroZ.toFixed(2)}°`} />
           </div>
 
-          <button
-            onClick={handleSetBaseline}
-            className="mt-6 w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-red-600 transition duration-200"
-          >
-            Set Baseline
-          </button>
-
           <div className="pt-6">
             <button
               onClick={goToControl}
@@ -90,7 +67,7 @@ function ConnectionScreen() {
             </button>
           </div>
            {logs.map((log) => (
-        <div key={log._id} className="mb-4 p-4 border rounded-lg shadow">
+        <div key={log._id} className="mb-4 p-4 border rounded-lg shadow mt-5">
           <p className="mb-2">{log.filename}</p>
           <CSVButton log={log} />
         </div>
