@@ -41,34 +41,46 @@ export const BluetoothProvider = ({ children }) => {
 
   // --- Notification handler ---
   const handleNotifications = (event) => {
-  const value = new TextDecoder().decode(event.target.value).trim();
+    const value = new TextDecoder().decode(event.target.value).trim();
 
-  if (value.includes(",")) {
-    const [flex, y, z] = value.split(",").map(parseFloat);
-    setFlexAngle(flex);
-    setGyroY(y);
-    setGyroZ(z);
+    if (value.includes(",")) {
+      const parts = value.split(",");
+      const flex = parseFloat(parts[0]);
+      const y = parseFloat(parts[1]);
+      const z = parseFloat(parts[2]);
+      const stage = parseInt(parts[3], 10) || 0; // 0, 1, or 2
 
-    const newEntry = { timestamp: Date.now(), flex, gyroY: y, gyroZ: z };
+      setFlexAngle(flex);
+      setGyroY(y);
+      setGyroZ(z);
 
-    setDataLog((prev) => [...prev, newEntry]);
-    dataLogRef.current.push(newEntry); // ✅ keep ref in sync
-  }
-};
+      const newEntry = {
+        timestamp: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Manila" }), // 2025-10-02 21:35:12
+        flex,
+        gyroY: y,
+        gyroZ: z,
+        stage
+      };
+
+        setDataLog((prev) => [...prev, newEntry]);
+        dataLogRef.current.push(newEntry);
+      }
+  };
   // --- Generate CSV from dataLog ---
   const generateCSV = () => {
-    const header = "timestamp,flex,gyroY,gyroZ\n";
-    const rows = dataLog
-      .map((row) => `${row.timestamp},${row.flex},${row.gyroY},${row.gyroZ}`)
-      .join("\n");
-    return header + rows;
-  };
-
+  const header = "timestamp,flex,gyroY,gyroZ,stage\n"; // include stage
+  const rows = dataLog
+    .map(
+      (row) => `${row.timestamp},${row.flex},${row.gyroY},${row.gyroZ},${row.stage}`
+    )
+    .join("\n");
+  return header + rows;
+};
   // --- Upload CSV to backend ---
   const uploadCSV = async (logData = dataLogRef.current) => {
-  const header = "timestamp,flex,gyroY,gyroZ\n";
+  const header = "timestamp,flex,gyroY,gyroZ,stage\n"; // include stage
   const rows = logData
-    .map((row) => `${row.timestamp},${row.flex},${row.gyroY},${row.gyroZ}`)
+    .map((row) => `${row.timestamp},${row.flex},${row.gyroY},${row.gyroZ},${row.stage}`)
     .join("\n");
   const csvContent = header + rows;
 
@@ -77,7 +89,7 @@ export const BluetoothProvider = ({ children }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // ✅ use token from context
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         csv: csvContent,
@@ -86,11 +98,9 @@ export const BluetoothProvider = ({ children }) => {
     });
 
     if (!res.ok) throw new Error("Upload failed");
-
     const data = await res.json();
     console.log("✅ CSV uploaded!", data);
 
-    // clear local log after successful upload
     setDataLog([]);
     dataLogRef.current = [];
   } catch (err) {
