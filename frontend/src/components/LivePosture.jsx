@@ -7,8 +7,7 @@ export default function LivePosture() {
   const { flexAngle, gyroY, gyroZ } = useContext(BluetoothContext);
 
   return (
-    <div className="min-h-screen bg-background text-gray-800 py-5 w-full px-4 flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-6">Live Posture</h1>
+    <div className="min-h-screen bg-background text-gray-800 py-5 w-full px-4 flex flex-col items-center pt-10">
 
       <div className="flex flex-col md:flex-row gap-10 w-full max-w-6xl">
         {/* Gauges */}

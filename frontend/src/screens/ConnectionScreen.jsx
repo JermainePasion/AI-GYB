@@ -80,7 +80,6 @@ function ConnectionScreen() {
   );
 }
 
-// Simple card component
 const DataCard = ({ label, value }) => (
   <div className="bg-white/10 p-3 rounded-lg flex justify-between items-center text-sm">
     <span>{label}</span>

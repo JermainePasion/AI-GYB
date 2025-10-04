@@ -1,6 +1,6 @@
 const SummaryTable = ({ logs }) => {
   if (!logs || logs.length === 0) 
-    return <p className="text-white">No data yet</p>;
+    return <p className="text-black text-center">No data yet</p>;
 
   // Calculate averages
   const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length || 0;
@@ -31,25 +31,25 @@ const SummaryTable = ({ logs }) => {
 
   return (
     <div className="overflow-x-auto w-full">
-      <table className="min-w-full bg-[#1f2937] text-white rounded-lg overflow-hidden">
-        <thead className="bg-[#374151]">
+      <table className="min-w-full rounded-xl overflow-hidden shadow-md">
+        <thead className="bg-[#A4CCD9] text-white">
           <tr>
-            <th className="px-4 py-2">Flex Avg</th>
-            <th className="px-4 py-2">GyroY Avg</th>
-            <th className="px-4 py-2">GyroZ Avg</th>
-            <th className="px-4 py-2">Good Posture (0)</th>
-            <th className="px-4 py-2">Stage 1</th>
-            <th className="px-4 py-2">Stage 2</th>
+            <th className="px-4 py-3">Flex Avg</th>
+            <th className="px-4 py-3">GyroY Avg</th>
+            <th className="px-4 py-3">GyroZ Avg</th>
+            <th className="px-4 py-3">Good Posture (0)</th>
+            <th className="px-4 py-3">Stage 1</th>
+            <th className="px-4 py-3">Stage 2</th>
           </tr>
         </thead>
-        <tbody>
-          <tr className="border-b border-gray-700 hover:bg-gray-800">
-            <td className="px-4 py-2 text-center">{summary.flexAvg}</td>
-            <td className="px-4 py-2 text-center">{summary.gyroYAvg}</td>
-            <td className="px-4 py-2 text-center">{summary.gyroZAvg}</td>
-            <td className="px-4 py-2 text-center">{summary.stage0}</td>
-            <td className="px-4 py-2 text-center">{summary.stage1}</td>
-            <td className="px-4 py-2 text-center">{summary.stage2}</td>
+        <tbody className="text-center text-black">
+          <tr className="bg-[#EBFFD8] hover:bg-[#C4E1E6] transition-colors">
+            <td className="px-4 py-3">{summary.flexAvg}</td>
+            <td className="px-4 py-3">{summary.gyroYAvg}</td>
+            <td className="px-4 py-3">{summary.gyroZAvg}</td>
+            <td className="px-4 py-3 font-semibold text-green-600">{summary.stage0}</td>
+            <td className="px-4 py-3 font-semibold text-yellow-600">{summary.stage1}</td>
+            <td className="px-4 py-3 font-semibold text-red-600">{summary.stage2}</td>
           </tr>
         </tbody>
       </table>

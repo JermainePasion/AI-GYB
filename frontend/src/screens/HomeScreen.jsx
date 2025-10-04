@@ -8,7 +8,6 @@ import { usePostureLogs } from '../hooks/UsePostureLogs';
 
 import PosturePieChart from '../components/graphs/PosturePieChart';
 import SummaryTable from '../components/graphs/SummaryTable';
-import ThresholdOverlayGraph from '../components/graphs/ThresholdOverlayGraph';
 import TimeSeriesGraph from '../components/graphs/TimeSeriesGraph';
 
 import {
@@ -21,6 +20,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import PostureHeatmap from '../components/graphs/PostureHeatmap';
+import FadeInSection from '../components/animation/FadeInSection';
 
 const BACKEND_IP = 'localhost';
 const USE_MOCK = true;
@@ -35,7 +36,7 @@ function HomeScreen() {
 
   const toNum = (v) => (Number.isFinite(Number(v)) ? Number(v) : null);
 
-  // ---------------------- Process logs once ----------------------
+
   useEffect(() => {
     if (rawLogs && rawLogs.length > 0) {
       const sortedLogs = [...rawLogs].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
@@ -46,7 +47,6 @@ function HomeScreen() {
     }
   }, [rawLogs]);
 
-  // ---------------------- Fetch Thresholds ----------------------
   useEffect(() => {
     const fetchThresholds = async () => {
       if (USE_MOCK) {
@@ -94,57 +94,62 @@ function HomeScreen() {
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start p-4 mt-10">
-        <h1 className="text-6xl font-extrabold text-white text-center">
-          Hello, {user?.username}!
-        </h1>
-
+          <h1 className="text-6xl font-extrabold text-white text-center">
+            Hello, {user?.username}!
+          </h1>
         <LivePosture />
 
-        {/* ---------------- Thresholds Card ---------------- */}
         {user?.posture_thresholds && (
-          <div className="max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl flex flex-col">
-            <p className="text-black mb-4 font-semibold text-center">
-              Your Saved Thresholds
-            </p>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={thresholdData} margin={{ top: 20, right: 20, left: 0, bottom: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis unit="°" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="Min" fill="#60a5fa" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-                <Bar dataKey="Max" fill="#34d399" radius={[6, 6, 0, 0]} isAnimationActive={false} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <FadeInSection>
+            <div className="max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl flex flex-col ">
+              <p className="text-white mb-4 font-semibold text-center">
+                Your Saved Thresholds
+              </p>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={thresholdData} margin={{ top: 20, right: 20, left: 0, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis unit="°" />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="Min" fill="#60a5fa" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+                  <Bar dataKey="Max" fill="#34d399" radius={[6, 6, 0, 0]} isAnimationActive={false} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+           </FadeInSection>
         )}
 
-        {/* ---------------- Graphs Section ---------------- */}
         <div className="w-full flex flex-col items-center gap-8 mt-8">
-          {/* Time-Series Graph */}
-          <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
-            <h2 className="text-center font-semibold mb-2 text-black">Time-Series Sensor Graph</h2>
-            <TimeSeriesGraph logs={logs.sampled} />
-          </div>
+         
+          <FadeInSection>
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
+              <h2 className="text-center font-semibold mb-2 text-white">Time-Series Sensor Graph</h2>
+              <TimeSeriesGraph logs={logs.sampled} />
+            </div>
+          </FadeInSection>
 
-          {/* Posture Distribution */}
-          <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
-            <h2 className="text-center font-semibold mb-2 text-black">Posture Distribution</h2>
-            <PosturePieChart logs={logs.full} />
-          </div>
+          <FadeInSection>
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5">
+              <h2 className="text-center font-semibold mb-2 text-white">Total Posture Distribution</h2>
+              <PosturePieChart logs={logs.full} />
+            </div>
+          </FadeInSection>
 
-          {/* Sensor Threshold Overlay */}
-          <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
-            <h2 className="text-center font-semibold mb-2 text-black">Sensor Threshold Overlay</h2>
-            <ThresholdOverlayGraph logs={logs.full} thresholds={user.posture_thresholds} />
-          </div>
+          <FadeInSection>
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5">
+              <h2 className="text-center font-semibold mb-2 text-white">Cyclic Posture Distribution</h2>
+              <PostureHeatmap logs={logs.full}/>
+            </div>
+          </FadeInSection>
 
-          {/* Daily Summary Table */}
-          <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
-            <h2 className="text-center font-semibold mb-2 text-black">Daily Summary & Trends</h2>
-            <SummaryTable logs={logs.full} />
-          </div>
+          <FadeInSection>
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
+              <h2 className="text-center font-semibold mb-2 text-white">Daily Summary & Trends</h2>
+              <SummaryTable logs={logs.full} />
+            </div>
+          </FadeInSection>
+
         </div>
       </div>
     </DashboardLayout>

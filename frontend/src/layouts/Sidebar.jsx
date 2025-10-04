@@ -72,7 +72,7 @@ function Sidebar() {
             Connection
           </NavLink>
           <NavLink
-            to="/figures"
+            to="/score"
             className={({ isActive }) =>
               `${linkClasses} ${
                 isActive ? "bg-gray-700" : "hover:bg-gray-700"
