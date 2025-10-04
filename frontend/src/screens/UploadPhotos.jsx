@@ -95,7 +95,7 @@ export default function UploadPhotos({ userId }) {
                       drag and drop
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      JPG, PNG, GIF (max. 800×400px)
+                      JPG, PNG (max. 800×400px)
                     </p>
                   </div>
                 ) : (
@@ -138,7 +138,7 @@ export default function UploadPhotos({ userId }) {
                 className={`mt-4 px-4 py-2 rounded-lg text-white w-full sm:w-auto ${
                   loading
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
+                    : "bg-[#8DBCC7]  hover:bg-[#638f99] transition"
                 }`}
               >
                 {loading ? (

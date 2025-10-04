@@ -45,7 +45,7 @@ function ConnectionScreen() {
           <div className="flex gap-2 mt-2">
             <button
               onClick={connectBLE}
-              className="px-3 py-1 rounded bg-blue-500 text-sm hover:bg-blue-600"
+              className="px-3 py-1 rounded bg-[#8DBCC7] text-sm hover:bg-[#638f99]"
             >
             Connect
             </button>
@@ -61,7 +61,7 @@ function ConnectionScreen() {
           <div className="pt-6">
             <button
               onClick={goToControl}
-              className="w-full py-2 rounded-lg bg-primary text-white text-sm font-semibold shadow hover:bg-green-600 transition duration-200"
+              className="w-full py-2 rounded-lg bg-primary text-black text-sm font-semibold shadow hover:bg-[#EBFFD8]  transition duration-200"
             >
               Go to Control Page
             </button>
