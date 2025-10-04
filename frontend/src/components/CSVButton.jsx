@@ -17,7 +17,7 @@ const CSVButton = ({ log }) => {
   return (
     <button
       onClick={handleDownload}
-      className="px-4 py-2 bg-[#C4E1E6] text-black rounded-lg shadow hover:bg-[#EBFFD8] transition"
+      className="px-4 py-2 bg-[#EBFFD8] text-black rounded-lg shadow hover:bg-[#C4E1E6] transition"
     >
       ⬇ Download CSV
     </button>
