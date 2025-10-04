@@ -41,7 +41,7 @@ const ThresholdSlider = ({ label, name, value, min=-20, max=20, step=0.1, onChan
             w-24 p-2 rounded 
             bg-[#A4CCD9] 
             border border-[#C4E1E6] 
-            text-[#1F2937] font-medium 
+            text-white font-bold
             text-center shadow-sm
             focus:outline-none focus:ring-2 focus:ring-[#EBFFD8]
           "

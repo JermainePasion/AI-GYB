@@ -363,3 +363,14 @@ body {
     animation: fadeIn 1s ease-out forwards;
   }
 }
+
+.carousel-image {
+  transition: all 0.5s ease;
+  opacity: 0.5;
+  transform: scale(0.9);
+}
+
+.slick-center .carousel-image {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
