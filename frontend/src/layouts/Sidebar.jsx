@@ -79,13 +79,6 @@ function Sidebar() {
               >
                 Upload
               </NavLink>
-              <NavLink
-                to="/figures"
-                className="p-3 hover:bg-gray-700 rounded"
-                onClick={() => setIsMobileOpen(false)}
-              >
-                Figures
-              </NavLink>
              <NavLink
                 to="/control"
                 className="p-3 hover:bg-gray-700 rounded"
