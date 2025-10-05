@@ -30,22 +30,21 @@ const ThresholdSlider = ({ label, name, value, min=-20, max=20, step=0.1, onChan
             [&::-ms-thumb]:bg-[#A4CCD9]
           "
         />
-
-        {/* Number box */}
-        <input
-          type="number"
-          name={name}
-          value={displayValue}
-          onChange={onChange}
-          className="
-            w-24 p-2 rounded 
-            bg-[#A4CCD9] 
-            border border-[#C4E1E6] 
-            text-white font-bold
-            text-center shadow-sm
-            focus:outline-none focus:ring-2 focus:ring-[#EBFFD8]
-          "
-        />
+            <input
+                type="number"
+                name={name}
+                value={displayValue}
+                onChange={onChange}
+                className="
+                    w-24 p-2 rounded-md
+                    bg-white/10 backdrop-blur-md
+                    border border-white/20
+                    text-gray-200 font-medium
+                    text-center shadow-sm
+                    placeholder-gray-400
+                    focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]/50
+                "
+            />
       </div>
     </div>
   );

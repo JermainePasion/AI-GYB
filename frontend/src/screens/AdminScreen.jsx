@@ -3,6 +3,7 @@ import DashboardLayout from "../layouts/DashboardLayout";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import emailjs from "@emailjs/browser";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminScreen() {
   const [users, setUsers] = useState([]);
@@ -12,7 +13,7 @@ export default function AdminScreen() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
-
+  const navigate = useNavigate();
   
 
   useEffect(() => {
@@ -72,6 +73,13 @@ export default function AdminScreen() {
   }
 };
 
+
+const formatThreshold = (val) => {
+  return val !== undefined && val !== null && val !== ""
+    ? parseFloat(val).toFixed(2)
+    : "-";
+};
+
   return (
     <DashboardLayout>
       <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -127,40 +135,41 @@ export default function AdminScreen() {
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-gray-500">Flex Min</p>
                         <p className="font-medium text-blue-600">
-                          {user.posture_thresholds?.flex_min ?? "-"}
+                          {formatThreshold(patient.posture_thresholds?.flex_min)}
                         </p>
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-gray-500">Flex Max</p>
                         <p className="font-medium text-blue-600">
-                          {user.posture_thresholds?.flex_max ?? "-"}
+                          {formatThreshold(patient.posture_thresholds?.flex_max)}
                         </p>
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-gray-500">GyroY Min</p>
                         <p className="font-medium text-green-600">
-                          {user.posture_thresholds?.gyroY_min ?? "-"}
+                          {formatThreshold(patient.posture_thresholds?.gyroY_min)}
                         </p>
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-gray-500">GyroY Max</p>
                         <p className="font-medium text-green-600">
-                          {user.posture_thresholds?.gyroY_max ?? "-"}
+                          {formatThreshold(patient.posture_thresholds?.gyroY_max)}
                         </p>
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-gray-500">GyroZ Min</p>
                         <p className="font-medium text-purple-600">
-                          {user.posture_thresholds?.gyroZ_min ?? "-"}
+                          {formatThreshold(patient.posture_thresholds?.gyroZ_min)}
                         </p>
                       </div>
                       <div className="bg-gray-50 p-2 rounded">
                         <p className="text-gray-500">GyroZ Max</p>
                         <p className="font-medium text-purple-600">
-                          {user.posture_thresholds?.gyroZ_max ?? "-"}
+                          {formatThreshold(patient.posture_thresholds?.gyroZ_max)}
                         </p>
                       </div>
                     </div>
+
 
                     {/* Doctor message form */}
                     <form
@@ -186,6 +195,15 @@ export default function AdminScreen() {
                         {loading ? "Sending..." : "Send"}
                       </button>
                     </form>
+
+                    <div className="mt-3">
+                      <button
+                        onClick={() => navigate(`/patients/${patient._id}/graphs`)}
+                        className="w-full px-4 py-2 bg-[#C15353] hover:bg-[#a74242] text-white rounded-lg shadow-md transition"
+                      >
+                        View Statistics
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

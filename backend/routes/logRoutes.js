@@ -1,8 +1,7 @@
 const express = require("express");
 const asyncHandler = require("express-async-handler");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, authorize } = require("../middleware/authMiddleware");
 const PostureLog = require("../models/PostureLog");
-
 const router = express.Router();
 
 router.post(
@@ -45,5 +44,24 @@ router.get("/my", protect, asyncHandler(async (req, res) => {
   const logs = await PostureLog.find({ user: req.user.id }).sort({ createdAt: -1 });
   res.json(logs);
 }));
+
+
+router.get(
+  "/:userId",
+  protect,
+  authorize("admin", "doctor"),
+  asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+    // Find all logs for that user
+    const logs = await PostureLog.find({ user: userId }).sort({ createdAt: -1 });
+
+    if (!logs || logs.length === 0) {
+      return res.status(404).json({ message: "No logs found for this user" });
+    }
+
+    res.json(logs);
+  })
+);
 
 module.exports = router;

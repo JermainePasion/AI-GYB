@@ -14,6 +14,7 @@ import AdminScreen from "./screens/AdminScreen";
 import DoctorRegisterScreen from "./screens/DoctorRegisterScreen";
 import { BluetoothProvider } from "./context/BluetoothContext";
 import { UserProvider } from "./context/UserContext";
+import PatientGraphs from "./screens/PatientGraphs";
 
 function App() {
   return (
@@ -85,6 +86,16 @@ function App() {
                 </PrivateRoute>
               }
             />
+
+            <Route
+              path="/patients/:id/graphs"
+              element={
+                <PrivateRoute roles={["admin", "doctor"]}>
+                  <PatientGraphs/>
+                </PrivateRoute>
+              }
+            />
+
           </Routes>
 
       </BluetoothProvider>
