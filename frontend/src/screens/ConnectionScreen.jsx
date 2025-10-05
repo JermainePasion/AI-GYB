@@ -66,12 +66,6 @@ function ConnectionScreen() {
               Go to Control Page
             </button>
           </div>
-           {logs.map((log) => (
-        <div key={log._id} className="mb-4 p-4 border rounded-lg shadow mt-5">
-          <p className="mb-2">{log.filename}</p>
-          <CSVButton log={log} />
-        </div>
-      ))}
         </div>
 
         
