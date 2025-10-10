@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import {NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 import "../index.css";
@@ -17,12 +17,12 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar-main fixed w-full top-0 z-50 shadow-md px-4 md:px-8">
-      <div className="w-full flex flex-wrap items-center justify-between p-0">
+    <nav className="navbar-main fixed w-full top-0 z-50 shadow-md">
+        <div className="w-full flex flex-wrap items-center justify-between p-0">
         {/* Logo + Brand */}
         <a href="/home" className="flex items-center space-x-3">
           {/* <img src="/ai-gyb-logo.png" className="h-10 w-auto" alt="AI-GYB Logo" /> */}
-          <span className="self-center text-xl font-bold whitespace-nowrap navbar-brand ml-2">
+          <span className="self-center text-sm font-bold whitespace-nowrap navbar-brand ml-2">
             AI-Got Your Back
           </span>
         </a>
@@ -50,11 +50,8 @@ function Navbar() {
         </button>
 
         {/* Menu links */}
-        <div
-          className={`${isOpen ? "block" : "hidden"} w-full custom-block custom-w-auto`}
-          id="navbar-default"
-        >
-          <ul className="navbar-menu font-bold flex flex-col items-stretch p-0 mt-0 rounded-lg md:flex-row md:justify-between md:w-full md:mt-0 md:h-full text-base">
+        <div className={`${isOpen ? "block" : "hidden"} w-full custom-block custom-w-auto`} id="navbar-default">
+          <ul className="navbar-menu font-bold flex flex-col items-stretch p-0 mt-0 rounded-lg md:flex-row md:justify-between md:w-full md:mt-0 md:h-full">
             <li className="md:h-full">
               <NavLink
                 to="/settings"
@@ -67,7 +64,7 @@ function Navbar() {
             </li>
 
             {/* Admin only */}
-            {user?.role === "admin" && (
+            {user?.role === "admin" || user?.role ===  "doctor" && (
               <li className="md:h-full">
                 <NavLink
                   to="/admin"
@@ -80,25 +77,22 @@ function Navbar() {
               </li>
             )}
 
-            {/* Logout */}
+            {/* Logout (unchanged) */}
             {token && (
-              <li className="md:h-full">
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsOpen(false);
-                  }}
-                  className="navbar-link navbar-logout"
-                >
-                  Logout
-                </button>
-              </li>
+            <li className="md:h-full">
+              <button
+                onClick={() => { handleLogout(); setIsOpen(false); }}
+                className="navbar-link navbar-logout"
+              >
+                Logout
+              </button>
+            </li>
             )}
           </ul>
         </div>
       </div>
     </nav>
-  );
+  ); 
 }
 
 export default Navbar;
