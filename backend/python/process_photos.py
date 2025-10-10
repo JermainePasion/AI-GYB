@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 
-# 🎨 Custom drawing colors
+
 drawing_spec_landmarks = mp_drawing.DrawingSpec(color=(217,204,164), thickness=4, circle_radius=3)  # beige
 drawing_spec_connections = mp_drawing.DrawingSpec(color=(255,0,0), thickness=3, circle_radius=2)   # red
 

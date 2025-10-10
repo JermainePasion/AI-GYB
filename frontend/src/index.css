@@ -171,12 +171,12 @@ body {
 
 /* Navbar wrapper */
 .navbar-main {
-  background-color: #c4e1e6;                /* bg-white */
-  border-bottom: 1px solid #c4e1e6;       /* border-gray-200 */
+  background-color:#111827;                /* bg-white */
+  border-bottom: 1px solid #111827;       /* border-gray-200 */
 }
 @media (prefers-color-scheme: dark) {
   .navbar-main {
-    background-color: #c4e1e6;            /* dark:bg-gray-900 */
+    background-color: #111827;            /* dark:bg-gray-900 */
   }
 }
 
@@ -186,7 +186,7 @@ body {
 }
 @media (prefers-color-scheme: dark) {
   .navbar-brand {
-    color: #000000; /* dark:text-white */
+    color: #ffffff; /* dark:text-white */
   }
 }
 
@@ -248,7 +248,7 @@ body {
 }
 @media (prefers-color-scheme: dark) {
   .navbar-link {
-    color: black; /* dark:text-white */
+    color: rgb(250, 250, 250); /* dark:text-white */
   }
 }
 
