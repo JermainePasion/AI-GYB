@@ -5,6 +5,9 @@ function Sidebar() {
   const [isOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  const linkClasses =
+    "p-3 rounded transition-colors duration-300 ease-in-out"; // shared styles
+
   return (
     <>
       {/* Mobile Toggle Button */}
@@ -19,7 +22,7 @@ function Sidebar() {
       <div
         className={`
           ${isOpen ? "w-56" : "w-16"} 
-          bg-[#111827] text-white 
+          bg-gray-800 text-white 
           h-[calc(100vh-64px)] 
           fixed top-16 left-0 
           transition-all duration-300 
@@ -28,19 +31,54 @@ function Sidebar() {
         `}
       >
         <nav className="flex flex-col mt-4 space-y-2">
-          <NavLink to="/Home" className="p-3 hover:bg-gray-700 rounded">
+          <NavLink
+            to="/home"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive ? "bg-gray-700" : "hover:bg-gray-700"
+              }`
+            }
+          >
             Home
           </NavLink>
-          <NavLink to="/upload" className="p-3 hover:bg-gray-700 rounded">
+          <NavLink
+            to="/upload"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive ? "bg-gray-700" : "hover:bg-gray-700"
+              }`
+            }
+          >
             Upload
           </NavLink>
-         <NavLink to="/control" className="p-3 hover:bg-gray-700 rounded">
+          <NavLink
+            to="/control"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive ? "bg-gray-700" : "hover:bg-gray-700"
+              }`
+            }
+          >
             Control
           </NavLink>
-         <NavLink to="/connection" className="p-3 hover:bg-gray-700 rounded">
+          <NavLink
+            to="/connection"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive ? "bg-gray-700" : "hover:bg-gray-700"
+              }`
+            }
+          >
             Connection
           </NavLink>
-         <NavLink to="/score" className="p-3 hover:bg-gray-700 rounded">
+          <NavLink
+            to="/score"
+            className={({ isActive }) =>
+              `${linkClasses} ${
+                isActive ? "bg-gray-700" : "hover:bg-gray-700"
+              }`
+            }
+          >
             Score
           </NavLink>
         </nav>
@@ -56,7 +94,7 @@ function Sidebar() {
           ></div>
 
           {/* Sidebar Panel */}
-          <div className="w-56 bg-gray-800 text-white h-full p-4 z-50 relative mt-20">
+          <div className="w-56 bg-gray-800 text-white h-full p-4 z-50 relative mt-20 transition-transform duration-300 ease-in-out transform translate-x-0">
             <button
               onClick={() => setIsMobileOpen(false)}
               className="absolute top-4 right-4 text-white"
@@ -67,35 +105,66 @@ function Sidebar() {
             <nav className="flex flex-col mt-8 space-y-2">
               <NavLink
                 to="/home"
-                className="p-3 hover:bg-gray-700 rounded"
+                className={({ isActive }) =>
+                  `${linkClasses} ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`
+                }
                 onClick={() => setIsMobileOpen(false)}
               >
                 Home
               </NavLink>
               <NavLink
                 to="/upload"
-                className="p-3 hover:bg-gray-700 rounded"
+                className={({ isActive }) =>
+                  `${linkClasses} ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`
+                }
                 onClick={() => setIsMobileOpen(false)}
               >
                 Upload
               </NavLink>
-             <NavLink
+              <NavLink
+                to="/figures"
+                className={({ isActive }) =>
+                  `${linkClasses} ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`
+                }
+                onClick={() => setIsMobileOpen(false)}
+              >
+                Figures
+              </NavLink>
+              <NavLink
                 to="/control"
-                className="p-3 hover:bg-gray-700 rounded"
+                className={({ isActive }) =>
+                  `${linkClasses} ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`
+                }
                 onClick={() => setIsMobileOpen(false)}
               >
                 Control
               </NavLink>
-             <NavLink
+              <NavLink
                 to="/connection"
-                className="p-3 hover:bg-gray-700 rounded"
+                className={({ isActive }) =>
+                  `${linkClasses} ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`
+                }
                 onClick={() => setIsMobileOpen(false)}
               >
                 Connection
               </NavLink>
-             <NavLink
+              <NavLink
                 to="/score"
-                className="p-3 hover:bg-gray-700 rounded"
+                className={({ isActive }) =>
+                  `${linkClasses} ${
+                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                  }`
+                }
                 onClick={() => setIsMobileOpen(false)}
               >
                 Score
