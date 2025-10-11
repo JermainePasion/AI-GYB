@@ -17,6 +17,8 @@ export const BluetoothProvider = ({ children }) => {
   const dataLogRef = useRef([]);
   const [dataLog, setDataLog] = useState([]);
 
+  const [showUploadPopup, setShowUploadPopup] = useState(false);
+
   const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
@@ -52,44 +54,50 @@ export const BluetoothProvider = ({ children }) => {
   };
 
   // --- Chunked CSV upload ---
-  const uploadCSVChunk = async (chunkSize = 500) => {
-    if (!dataLogRef.current.length) return;
+const uploadCSVChunk = async (chunkSize = 500) => {
+  if (!dataLogRef.current.length) return;
 
-    const chunks = [];
-    for (let i = 0; i < dataLogRef.current.length; i += chunkSize) {
-      chunks.push(dataLogRef.current.slice(i, i + chunkSize));
+  const chunks = [];
+  for (let i = 0; i < dataLogRef.current.length; i += chunkSize) {
+    chunks.push(dataLogRef.current.slice(i, i + chunkSize));
+  }
+
+  for (const [index, chunk] of chunks.entries()) {
+    const header = index === 0 ? "timestamp,flex,gyroY,gyroZ,stage\n" : "";
+    const rows = chunk
+      .map(r => `${r.timestamp},${r.flex},${r.gyroY},${r.gyroZ},${r.stage}`)
+      .join("\n");
+    const csvContent = header + rows;
+
+    try {
+      const res = await fetch("http://localhost:3000/api/logs/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          csv: csvContent,
+          filename: sessionFilenameRef.current,
+          append: true, // backend will append
+        }),
+      });
+
+      if (!res.ok) throw new Error("Upload failed");
+      await res.json();
+    } catch (err) {
+      console.error("❌ Upload chunk error:", err);
     }
+  }
 
-    for (const [index, chunk] of chunks.entries()) {
-      const header = index === 0 ? "timestamp,flex,gyroY,gyroZ,stage\n" : "";
-      const rows = chunk.map(r => `${r.timestamp},${r.flex},${r.gyroY},${r.gyroZ},${r.stage}`).join("\n");
-      const csvContent = header + rows;
+  setDataLog([]);
+  dataLogRef.current = [];
+  setShowUploadPopup(true); 
 
-      try {
-        const res = await fetch("http://localhost:3000/api/logs/upload", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            csv: csvContent,
-            filename: sessionFilenameRef.current,
-            append: true // backend will append
-          }),
-        });
+  console.log("CSV uploaded! All chunks successfully sent.");
 
-        if (!res.ok) throw new Error("Upload failed");
-        await res.json();
-      } catch (err) {
-        console.error("❌ Upload chunk error:", err);
-      }
-    }
-
-    // Clear logs after successful upload
-    setDataLog([]);
-    dataLogRef.current = [];
-  };
+  setTimeout(() => setShowUploadPopup(false), 3000);
+};
 
   // --- Send thresholds to ESP32 ---
   const sendUserThresholds = async () => {
@@ -120,7 +128,7 @@ export const BluetoothProvider = ({ children }) => {
       device.addEventListener("gattserverdisconnected", async () => {
         setConnected(false);
         if (dataLogRef.current.length > 0) {
-          console.log("📤 Uploading remaining data on disconnect...");
+          console.log("Uploading remaining data on disconnect.");
           await uploadCSVChunk();
         }
       });
@@ -160,6 +168,7 @@ export const BluetoothProvider = ({ children }) => {
         dataLog,
         connectBLE,
         uploadCSVChunk,
+        showUploadPopup
       }}
     >
       {children}

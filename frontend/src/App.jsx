@@ -1,4 +1,5 @@
 import "tailwindcss";
+import { useContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeScreen from './screens/HomeScreen';
 import ControlScreen from "./screens/ControlScreen";
@@ -15,11 +16,14 @@ import DoctorRegisterScreen from "./screens/DoctorRegisterScreen";
 import { BluetoothProvider } from "./context/BluetoothContext";
 import { UserProvider } from "./context/UserContext";
 import PatientGraphs from "./screens/PatientGraphs";
+import UploadPopup from "./components/UploadPopup";
+import { BluetoothContext } from "./context/BluetoothContext";
 
 function App() {
   return (
     <UserProvider>
       <BluetoothProvider>
+        <UploadPopup visible={useContext(BluetoothContext).showUploadPopup} /> 
 
           <Routes>
             {/* Public */}
