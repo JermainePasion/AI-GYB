@@ -123,28 +123,28 @@ function HomeScreen() {
         <div className="w-full flex flex-col items-center gap-8 mt-8">
          
           <FadeInSection>
-            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl bg-white">
               <h2 className="text-center font-semibold mb-2 text-white">Time-Series Sensor Graph</h2>
               <TimeSeriesGraph logs={logs.sampled} />
             </div>
           </FadeInSection>
 
           <FadeInSection>
-            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5">
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5 bg-white">
               <h2 className="text-center font-semibold mb-2 text-white">Total Posture Distribution</h2>
               <PosturePieChart logs={logs.full} />
             </div>
           </FadeInSection>
 
           <FadeInSection>
-            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5">
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5 bg-white">
               <h2 className="text-center font-semibold mb-2 text-white">Cyclic Posture Distribution</h2>
               <PostureHeatmap logs={logs.full}/>
             </div>
           </FadeInSection>
 
           <FadeInSection>
-            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl">
+            <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl bg-white">
               <h2 className="text-center font-semibold mb-2 text-white">Daily Summary & Trends</h2>
               <SummaryTable logs={logs.full} />
             </div>

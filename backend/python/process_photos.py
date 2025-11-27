@@ -7,12 +7,12 @@ import mediapipe.python.solutions.drawing_utils as mp_drawing
 drawing_spec_landmarks = mp_drawing.DrawingSpec(color=(217,204,164), thickness=4, circle_radius=3)  # beige
 drawing_spec_connections = mp_drawing.DrawingSpec(color=(255,0,0), thickness=3, circle_radius=2)   # red
 
-# Get photo paths from Node.js arguments
+
 image_paths = sys.argv[1:]
 
 mp_pose = mp.solutions.pose
 
-# Lists for storing multiple image readings
+
 flex_angles, gyroY_angles, gyroZ_angles = [], [], []
 overlay_images, skeletal_images = [], []
 
@@ -29,57 +29,90 @@ with mp_pose.Pose(static_image_mode=True) as pose:
         if res.pose_landmarks:
             lm = res.pose_landmarks.landmark
 
-            # Key landmarks
-            shoulder = [lm[mp_pose.PoseLandmark.LEFT_SHOULDER].x * w,
-                        lm[mp_pose.PoseLandmark.LEFT_SHOULDER].y * h]
-            hip = [lm[mp_pose.PoseLandmark.LEFT_HIP].x * w,
-                   lm[mp_pose.PoseLandmark.LEFT_HIP].y * h]
-            ear = [lm[mp_pose.PoseLandmark.LEFT_EAR].x * w,
-                   lm[mp_pose.PoseLandmark.LEFT_EAR].y * h]
-            r_shoulder = [lm[mp_pose.PoseLandmark.RIGHT_SHOULDER].x * w,
-                          lm[mp_pose.PoseLandmark.RIGHT_SHOULDER].y * h]
+            # EXTRACT LANDMARKS
 
-            # FLEX SENSOR baseline
-            raw_flex_angle = math.degrees(math.atan2(ear[0] - shoulder[0], shoulder[1] - ear[1]))
+            shoulder = [
+                lm[mp_pose.PoseLandmark.LEFT_SHOULDER].x * w,
+                lm[mp_pose.PoseLandmark.LEFT_SHOULDER].y * h
+            ]
+            hip = [
+                lm[mp_pose.PoseLandmark.LEFT_HIP].x * w,
+                lm[mp_pose.PoseLandmark.LEFT_HIP].y * h
+            ]
+            ear = [
+                lm[mp_pose.PoseLandmark.LEFT_EAR].x * w,
+                lm[mp_pose.PoseLandmark.LEFT_EAR].y * h
+            ]
+            r_shoulder = [
+                lm[mp_pose.PoseLandmark.RIGHT_SHOULDER].x * w,
+                lm[mp_pose.PoseLandmark.RIGHT_SHOULDER].y * h
+            ]
+
+
+            # FLEX SENSOR BASELINE
+
+            raw_flex_angle = math.degrees(math.atan2(
+                ear[0] - shoulder[0],
+                shoulder[1] - ear[1]
+            ))
             flex_angle = raw_flex_angle if raw_flex_angle > 0 else 0
             flex_angles.append(flex_angle)
 
-            # GYRO Y baseline
-            dxY, dyY = shoulder[0] - hip[0], shoulder[1] - hip[1]
+
+            # GYRO Y BASELINE
+
+            dxY = shoulder[0] - hip[0]
+            dyY = shoulder[1] - hip[1]
             refY = (0, -1)  # upright vector
+
             dot = dxY * refY[0] + dyY * refY[1]
             mag1 = math.sqrt(dxY**2 + dyY**2)
             mag2 = math.sqrt(refY[0]**2 + refY[1]**2)
             cos_theta = dot / (mag1 * mag2 + 1e-6)
-            angle = math.degrees(math.acos(max(-1, min(1, cos_theta))))
+
+            angleY = math.degrees(math.acos(max(-1, min(1, cos_theta))))
             cross = dxY * refY[1] - dyY * refY[0]
             if cross < 0:
-                angle = -angle
-            gyroY_angles.append(angle)
+                angleY = -angleY
 
-            # GYRO Z baseline
-            dyZ = r_shoulder[1] - shoulder[1]
+            gyroY_angles.append(angleY)
+
+
+            # FIXED GYRO Z BASELINE (SHOULDER TILT)
+
             dxZ = r_shoulder[0] - shoulder[0]
-            gyroZ_angle = math.degrees(math.atan2(dyZ, dxZ))
+            dyZ = r_shoulder[1] - shoulder[1]
+
+            # Compute shoulder tilt relative to horizontal
+            gyroZ_angle = math.degrees(math.atan(dyZ / (abs(dxZ) + 1e-6)))
+
+            # Optional clamping to avoid unnatural spikes
+            gyroZ_angle = max(-15, min(15, gyroZ_angle))
+
             gyroZ_angles.append(gyroZ_angle)
 
-            # --- Draw Overlay version (pose on original image) ---
+
+            # DRAW OVERLAY IMAGE
+
             overlay_img = img.copy()
             mp_drawing.draw_landmarks(
                 overlay_img, res.pose_landmarks, mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=drawing_spec_landmarks,
                 connection_drawing_spec=drawing_spec_connections
             )
+
             font = cv2.FONT_HERSHEY_SIMPLEX
-            font_scale = 0.8
-            color = (255, 255, 255)   # white text
+            color = (255, 255, 255)
             thickness = 2
+            font_scale = 0.8
 
             cv2.putText(overlay_img, f"Flex Angle: {flex_angle:.2f}°", (10, 30), font, font_scale, color, thickness, cv2.LINE_AA)
-            cv2.putText(overlay_img, f"GyroY Angle: {angle:.2f}°", (10, 60), font, font_scale, color, thickness, cv2.LINE_AA)
+            cv2.putText(overlay_img, f"GyroY Angle: {angleY:.2f}°", (10, 60), font, font_scale, color, thickness, cv2.LINE_AA)
             cv2.putText(overlay_img, f"GyroZ Angle: {gyroZ_angle:.2f}°", (10, 90), font, font_scale, color, thickness, cv2.LINE_AA)
 
-            # --- Draw Skeletal Only version (black background) ---
+
+            # DRAW SKELETAL IMAGE
+
             skeletal_img = np.zeros_like(img)
             mp_drawing.draw_landmarks(
                 skeletal_img, res.pose_landmarks, mp_pose.POSE_CONNECTIONS,
@@ -87,24 +120,23 @@ with mp_pose.Pose(static_image_mode=True) as pose:
                 connection_drawing_spec=drawing_spec_connections
             )
 
-            # Save both
             out_dir = os.path.join("uploads", "processed")
             os.makedirs(out_dir, exist_ok=True)
+
             base = os.path.splitext(os.path.basename(img_path))[0]
 
             overlay_filename = f"{base}_overlay.jpg"
-            overlay_path = os.path.join(out_dir, overlay_filename)
             skeletal_filename = f"{base}_skeletal.jpg"
-            skeletal_path = os.path.join(out_dir, skeletal_filename)
 
-            cv2.imwrite(overlay_path, overlay_img)
-            cv2.imwrite(skeletal_path, skeletal_img)
+            cv2.imwrite(os.path.join(out_dir, overlay_filename), overlay_img)
+            cv2.imwrite(os.path.join(out_dir, skeletal_filename), skeletal_img)
 
-            # Append full URLs for frontend
             overlay_images.append(f"{BASE_URL}/{overlay_filename}")
             skeletal_images.append(f"{BASE_URL}/{skeletal_filename}")
 
-# Prepare JSON result
+# ---------------------------
+# RETURN RESULTS
+# ---------------------------
 output_data = {
     "flex_sensor_baseline": sum(flex_angles) / len(flex_angles) if flex_angles else None,
     "gyroY_baseline": sum(gyroY_angles) / len(gyroY_angles) if gyroY_angles else None,
