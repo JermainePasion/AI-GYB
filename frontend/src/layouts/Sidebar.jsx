@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 function Sidebar() {
+   const { token, logout, user } = useContext(UserContext);
   const [isOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -81,6 +83,19 @@ function Sidebar() {
           >
             Score
           </NavLink>
+
+         {(user?.role === "admin" || user?.role === "doctor") && (
+  <li className="md:h-full">
+    <NavLink
+      to="/admin"
+      className={({ isActive }) =>
+        `navbar-link ${isActive ? "navbar-admin-active" : "navbar-admin-inactive"}`
+      }
+    >
+      Admin
+    </NavLink>
+  </li>
+)}
         </nav>
       </div>
 

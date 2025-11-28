@@ -1,5 +1,9 @@
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const CSVButton = ({ log }) => {
+  const { user } = useContext(UserContext);
+
   if (!log) return null;
 
   const handleDownload = () => {
@@ -8,9 +12,10 @@ const CSVButton = ({ log }) => {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = log.filename || "posture-log.csv";
-    a.click();
+    const username = user?.username || "user";
+    a.download = `${username}-logs.csv`;
 
+    a.click();
     URL.revokeObjectURL(url);
   };
 

@@ -24,24 +24,38 @@ function SettingsScreen() {
     fetchLogs();
   }, [token]);
 
+
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start p-4 mt-10">
         <h1 className="text-2xl font-bold mb-6">Your CSV Logs</h1>
+
         <div className="w-full max-w-md flex flex-col gap-4">
           {logs.length === 0 && (
             <p className="text-gray-300">No CSV logs found.</p>
           )}
 
-          {logs.map((log) => (
-            <div
-              key={log._id}
-              className="mb-4 p-4 border rounded-lg shadow flex justify-between items-center"
-            >
-              <span className="font-medium">{log.filename}</span>
-              <CSVButton log={log} />
-            </div>
-          ))}
+          {logs.map((log) => {
+            const date = new Date(log.createdAt);
+            const formattedDate = date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            });
+
+            return (
+              <div
+                key={log._id}
+                className="mb-4 p-4 border rounded-lg shadow flex justify-between items-center"
+              >
+                <span className="font-medium">
+                  Session Log — {formattedDate}
+                </span>
+
+                <CSVButton log={log} />
+              </div>
+            );
+          })}
         </div>
       </div>
     </DashboardLayout>
