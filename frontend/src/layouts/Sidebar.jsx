@@ -84,18 +84,20 @@ function Sidebar() {
             Score
           </NavLink>
 
-         {(user?.role === "admin" || user?.role === "doctor") && (
-  <li className="md:h-full">
-    <NavLink
-      to="/admin"
-      className={({ isActive }) =>
-        `navbar-link ${isActive ? "navbar-admin-active" : "navbar-admin-inactive"}`
-      }
-    >
-      Admin
-    </NavLink>
-  </li>
-)}
+          {(user?.role === "admin" || user?.role === "doctor") && (
+
+              <NavLink
+                to="/admin"
+                 className={({ isActive }) =>
+                `${linkClasses} ${
+                  isActive ? "bg-gray-700" : "hover:bg-gray-700"
+                }`
+              }
+            >
+                Admin
+              </NavLink>
+
+          )}
         </nav>
       </div>
 
