@@ -2,6 +2,7 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const { protect, authorize } = require("../middleware/authMiddleware");
 const PostureLog = require("../models/PostureLog");
+
 const router = express.Router();
 
 router.post(
@@ -9,30 +10,38 @@ router.post(
   protect,
   asyncHandler(async (req, res) => {
     const { csv, filename, append } = req.body;
+    if (!csv) return res.status(400).json({ message: "CSV data is required" });
 
-    if (!csv) {
-      return res.status(400).json({ message: "CSV data is required" });
-    }
-
-    // Find existing log with the same filename for this user
     let log = await PostureLog.findOne({ user: req.user.id, filename });
-
-    if (log && append) {
-      // Append new data (skip header)
-      log.data += "\n" + csv.split("\n").slice(1).join("\n");
-      await log.save();
-      return res.json({ message: "Log updated successfully (appended)", log });
-    } else if (!log) {
-      // Create new log
+    if (!log) {
       log = await PostureLog.create({
         user: req.user.id,
         filename: filename || `log-${Date.now()}.csv`,
-        data: csv,
+        data: "",
+        painEvents: []
       });
-      return res.status(201).json({ message: "Log created successfully", log });
+    }
+
+    const rows = csv.split("\n");
+    const header = rows[0];
+    const dataRows = rows.slice(1);
+
+    const mergedRows = dataRows.map(row => {
+      const [timestamp, flex, gyroY, gyroZ, stage] = row.split(",");
+      const pain = log.painEvents.find(p => p.timestamp.toISOString() === timestamp);
+      const x = pain ? pain.coordinates.x : 0;
+      const y = pain ? pain.coordinates.y : 0;
+      return [timestamp, flex, gyroY, gyroZ, stage, x, y].join(",");
+    });
+
+    const finalCSV = [header.includes("painX") ? header : header + ",painX,painY", ...mergedRows].join("\n");
+
+    if (append) {
+      log.data += "\n" + finalCSV.split("\n").slice(1).join("\n");
+      await log.save();
+      return res.json({ message: "Log updated successfully (appended)", log });
     } else {
-      // If log exists but append is false, overwrite
-      log.data = csv;
+      log.data = finalCSV;
       await log.save();
       return res.json({ message: "Log overwritten successfully", log });
     }
@@ -45,15 +54,12 @@ router.get("/my", protect, asyncHandler(async (req, res) => {
   res.json(logs);
 }));
 
-
 router.get(
   "/:userId",
   protect,
   authorize("admin", "doctor"),
   asyncHandler(async (req, res) => {
     const { userId } = req.params;
-
-    // Find all logs for that user
     const logs = await PostureLog.find({ user: userId }).sort({ createdAt: -1 });
 
     if (!logs || logs.length === 0) {
@@ -64,4 +70,51 @@ router.get(
   })
 );
 
+//
+// NEW — ADD PAIN LOG TO A POSTURE LOG
+//
+router.post(
+  "/:logId/pain",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { logId } = req.params;
+    const { timestamp, painLocation, coordinates } = req.body;
+
+    if (!timestamp || !painLocation || !coordinates) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Find the posture log
+    const log = await PostureLog.findOne({ _id: logId, user: req.user.id });
+    if (!log) return res.status(404).json({ message: "Posture log not found" });
+
+    // Add pain event
+    log.painEvents.push({ timestamp, painLocation, coordinates });
+
+    // Merge pain into CSV immediately
+    if (log.data) {
+      const rows = log.data.split("\n");
+      const header = rows[0];
+      const dataRows = rows.slice(1);
+
+      const mergedRows = dataRows.map(row => {
+        const [rowTimestamp, flex, gyroY, gyroZ, stage, painX, painY] = row.split(",");
+        // match timestamps exactly
+        if (rowTimestamp === timestamp) {
+          return [rowTimestamp, flex, gyroY, gyroZ, stage, coordinates.x, coordinates.y].join(",");
+        }
+        return [rowTimestamp, flex, gyroY, gyroZ, stage, painX || 0, painY || 0].join(",");
+      });
+
+      log.data = [header.includes("painX") ? header : header + ",painX,painY", ...mergedRows].join("\n");
+    }
+
+    await log.save();
+
+    res.status(201).json({
+      message: "Pain point added and CSV merged",
+      log
+    });
+  })
+);
 module.exports = router;
