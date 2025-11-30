@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import mediapipe.python.solutions.drawing_utils as mp_drawing
 
-# 🎨 Custom drawing colors
+
 drawing_spec_landmarks = mp_drawing.DrawingSpec(color=(217,204,164), thickness=4, circle_radius=3)  # beige
 drawing_spec_connections = mp_drawing.DrawingSpec(color=(255,0,0), thickness=3, circle_radius=2)   # red
 
@@ -15,6 +15,9 @@ mp_pose = mp.solutions.pose
 # Lists for storing multiple image readings
 flex_angles, gyroY_angles, gyroZ_angles = [], [], []
 overlay_images, skeletal_images = [], []
+
+# Base URL for serving images
+BASE_URL = "http://localhost:3000/uploads/processed"
 
 with mp_pose.Pose(static_image_mode=True) as pose:
     for img_path in image_paths:
@@ -72,15 +75,12 @@ with mp_pose.Pose(static_image_mode=True) as pose:
             color = (255, 255, 255)   # white text
             thickness = 2
 
-            cv2.putText(overlay_img, f"Flex Angle: {flex_angle:.2f}°", 
-            (10, 30), font, font_scale, color, thickness, cv2.LINE_AA)
-            cv2.putText(overlay_img, f"GyroY Angle: {angle:.2f}°", 
-            (10, 60), font, font_scale, color, thickness, cv2.LINE_AA)
-            cv2.putText(overlay_img, f"GyroZ Angle: {gyroZ_angle:.2f}°", 
-            (10, 90), font, font_scale, color, thickness, cv2.LINE_AA)
+            cv2.putText(overlay_img, f"Flex Angle: {flex_angle:.2f}°", (10, 30), font, font_scale, color, thickness, cv2.LINE_AA)
+            cv2.putText(overlay_img, f"GyroY Angle: {angle:.2f}°", (10, 60), font, font_scale, color, thickness, cv2.LINE_AA)
+            cv2.putText(overlay_img, f"GyroZ Angle: {gyroZ_angle:.2f}°", (10, 90), font, font_scale, color, thickness, cv2.LINE_AA)
 
             # --- Draw Skeletal Only version (black background) ---
-            skeletal_img = np.zeros_like(img)  # black background ✅
+            skeletal_img = np.zeros_like(img)
             mp_drawing.draw_landmarks(
                 skeletal_img, res.pose_landmarks, mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=drawing_spec_landmarks,
@@ -90,30 +90,27 @@ with mp_pose.Pose(static_image_mode=True) as pose:
             # Save both
             out_dir = os.path.join("uploads", "processed")
             os.makedirs(out_dir, exist_ok=True)
-
             base = os.path.splitext(os.path.basename(img_path))[0]
 
-            overlay_path = os.path.join(out_dir, f"{base}_overlay.jpg")
+            overlay_filename = f"{base}_overlay.jpg"
+            overlay_path = os.path.join(out_dir, overlay_filename)
             skeletal_filename = f"{base}_skeletal.jpg"
             skeletal_path = os.path.join(out_dir, skeletal_filename)
 
             cv2.imwrite(overlay_path, overlay_img)
             cv2.imwrite(skeletal_path, skeletal_img)
 
-            # Append local path for overlay (unchanged)
-            overlay_images.append(overlay_path)
-
-            # Append full URL for skeletal (fixed)
-            skeletal_url = f"http://localhost:3000/uploads/processed/{skeletal_filename}"
-            skeletal_images.append(skeletal_url)
+            # Append full URLs for frontend
+            overlay_images.append(f"{BASE_URL}/{overlay_filename}")
+            skeletal_images.append(f"{BASE_URL}/{skeletal_filename}")
 
 # Prepare JSON result
 output_data = {
     "flex_sensor_baseline": sum(flex_angles) / len(flex_angles) if flex_angles else None,
     "gyroY_baseline": sum(gyroY_angles) / len(gyroY_angles) if gyroY_angles else None,
     "gyroZ_baseline": sum(gyroZ_angles) / len(gyroZ_angles) if gyroZ_angles else None,
-    "processed_images": overlay_images,   # local paths
-    "skeletal_images": skeletal_images    # now full URLs
+    "processed_images": overlay_images,
+    "skeletal_images": skeletal_images
 }
 
 print(json.dumps(output_data))

@@ -12,76 +12,94 @@ import PrivateRoute from "./components/PrivateRoute";
 import AboutUsScreen from "./screens/AboutUsScreen";
 import AdminScreen from "./screens/AdminScreen";
 import DoctorRegisterScreen from "./screens/DoctorRegisterScreen";
-
+import { BluetoothProvider } from "./context/BluetoothContext";
+import { UserProvider } from "./context/UserContext";
+import PatientGraphs from "./screens/PatientGraphs";
 
 function App() {
-   return (
-    <Routes>
-      {/* Public */}
-      <Route path="/signup" element={<AuthScreen />} />
-      <Route path="/about" element={<AboutUsScreen />} />
-      <Route path="/" element={<LandingScreen />} />
-      <Route path="/doctorsignup" element={<DoctorRegisterScreen />} />
+  return (
+    <UserProvider>
+      <BluetoothProvider>
 
-      {/* Protected */}
-      <Route
-        path="/home"
-        element={
-          <PrivateRoute>
-            <HomeScreen />
-          </PrivateRoute>
-        }
-      />
-      
-      <Route
-        path="/control"
-        element={
-          <PrivateRoute>
-            <ControlScreen />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/connection"
-        element={
-          <PrivateRoute>
-            <ConnectionScreen />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/score"
-        element={
-          <PrivateRoute>
-            <ScoreScreen />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/upload"
-        element={
-          <PrivateRoute>
-            <UploadPhotos />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <PrivateRoute>
-            <SettingsScreen />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <PrivateRoute roles={["admin", "doctor"]}>
-            <AdminScreen />
-          </PrivateRoute>
-        }
-      />
-    </Routes>
+          <Routes>
+            {/* Public */}
+            <Route path="/signup" element={<AuthScreen />} />
+            <Route path="/about" element={<AboutUsScreen />} />
+            <Route path="/" element={<LandingScreen />} />
+            <Route path="/doctorsignup" element={<DoctorRegisterScreen />} />
+
+            {/* Protected */}
+            <Route
+              path="/home"
+              element={
+                <PrivateRoute>
+                  <HomeScreen />
+                </PrivateRoute>
+              }
+            />
+            
+            <Route
+              path="/control"
+              element={
+                <PrivateRoute>
+                  <ControlScreen />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/connection"
+              element={
+                <PrivateRoute>
+                  <ConnectionScreen />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/score"
+              element={
+                <PrivateRoute>
+                  <ScoreScreen />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/upload"
+              element={
+                <PrivateRoute>
+                  <UploadPhotos />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <PrivateRoute>
+                  <SettingsScreen />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute roles={["admin", "doctor"]}>
+                  <AdminScreen />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/patients/:id/graphs"
+              element={
+                <PrivateRoute roles={["admin", "doctor"]}>
+                  <PatientGraphs/>
+                </PrivateRoute>
+              }
+            />
+
+          </Routes>
+
+      </BluetoothProvider>
+    </UserProvider>
   );
 }
 

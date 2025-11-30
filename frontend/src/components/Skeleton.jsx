@@ -30,13 +30,10 @@ function SkeletonModel({ flexAngle = 0, gyroY = 0, gyroZ = 0 }) {
     const helper = new SkeletonHelper(fbx)
     fbx.remove(helper)
 
-    fbx.traverse((child) => {
-      if (child.isBone) console.log("🦴 Bone:", child.name)
-    })
+
 
     spineRef.current = fbx.getObjectByName("mixamorigSpine1")
     if (spineRef.current) {
-      console.log("✅ Spine1 bone found:", spineRef.current)
 
       const sphere = new THREE.Mesh(
         new THREE.SphereGeometry(0.05, 16, 16),

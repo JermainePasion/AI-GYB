@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     gyroY_baseline: { type: Number, default: 0 },
     gyroZ_baseline: { type: Number, default: 0 }
   },
-  posture_thresholds: { type: thresholdSchema, default: () => ({}) } // default empty object
+  posture_thresholds: { type: thresholdSchema, default: () => ({}) }
 }, { timestamps: true });
 
 // Hash password before save

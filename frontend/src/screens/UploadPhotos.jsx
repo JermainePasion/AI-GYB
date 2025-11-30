@@ -2,6 +2,10 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 export default function UploadPhotos({ userId }) {
   const [files, setFiles] = useState([]);
@@ -20,6 +24,8 @@ export default function UploadPhotos({ userId }) {
       return [...prevFiles, ...filteredNew];
     });
   };
+
+  
 
   const handleDelete = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
@@ -58,6 +64,8 @@ export default function UploadPhotos({ userId }) {
     }
   };
 
+  
+
   return (
     <DashboardLayout>
       <div className="px-4 sm:px-6 lg:px-8">
@@ -95,7 +103,7 @@ export default function UploadPhotos({ userId }) {
                       drag and drop
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
-                      JPG, PNG, GIF (max. 800×400px)
+                      JPG, PNG (max. 800×400px)
                     </p>
                   </div>
                 ) : (
@@ -138,7 +146,7 @@ export default function UploadPhotos({ userId }) {
                 className={`mt-4 px-4 py-2 rounded-lg text-white w-full sm:w-auto ${
                   loading
                     ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-blue-600 hover:bg-blue-700"
+                    : "bg-[#8DBCC7]  hover:bg-[#638f99] transition"
                 }`}
               >
                 {loading ? (
@@ -223,20 +231,38 @@ export default function UploadPhotos({ userId }) {
               </div>
             </div>
 
-            {/* Processed / Skeletal Images */}
-            <div className="w-full md:w-2/3 flex flex-wrap justify-center gap-4">
-              {(showSkeletal
-                ? resultData.skeletal_images
-                : resultData.processed_images
-              )?.map((img, i) => (
-                <img
-                  key={i}
-                  src={img}
-                  alt={`Processed ${i}`}
-                  className="w-full sm:w-64 md:w-72 h-auto rounded-lg shadow-md"
-                />
-              ))}
+            {/* Processed / Skeletal Images Carousel */}
+            <div className="w-full md:w-2/3 flex justify-center">
+              <div className="w-full sm:w-[500px]"> 
+                <Slider
+                  dots
+                  infinite
+                  speed={500}
+                  slidesToShow={1}
+                  slidesToScroll={1}
+                  centerMode
+                  centerPadding="80px"
+                  arrows
+                  adaptiveHeight
+                >
+                  {(showSkeletal
+                    ? resultData.skeletal_images
+                    : resultData.processed_images
+                  )?.map((img, i) => (
+                    <div key={i} className="flex justify-center items-center">
+                      <img
+                        src={img}
+                        alt={`Processed ${i}`}
+                        className="carousel-image"
+                      />
+                    </div>
+                  ))}
+                </Slider>
+              </div>
             </div>
+
+
+
           </div>
         )}
 
