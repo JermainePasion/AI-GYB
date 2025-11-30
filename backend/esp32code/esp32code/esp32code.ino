@@ -181,8 +181,10 @@ void loop() {
     stopVibrationMotor();
   }
 
-  char buf[50];
-  snprintf(buf,sizeof(buf),"%.2f,%.2f,%.2f,%s",flexAngle,angleY,angleZ,stage.c_str());
+  unsigned long espNow = millis();
+  char buf[70];
+  snprintf(buf, sizeof(buf), "%.2f,%.2f,%.2f,%s,%lu", 
+          flexAngle, angleY, angleZ, stage.c_str(), espNow);
   pCharacteristic->setValue(buf);
   pCharacteristic->notify();
 

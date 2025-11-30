@@ -2,10 +2,13 @@ import { useEffect, useState, useContext } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
 import CSVButton from "../components/CSVButton";
+import LatencyCSVButton from "../components/LatencyCSVButton";
+import { BluetoothContext } from "../context/BluetoothContext";
 
 function SettingsScreen() {
   const { token } = useContext(UserContext);
   const [logs, setLogs] = useState([]);
+  const { latencyLogRef } = useContext(BluetoothContext);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -53,6 +56,7 @@ function SettingsScreen() {
                 </span>
 
                 <CSVButton log={log} />
+                <LatencyCSVButton latencyData={latencyLogRef.current} />
               </div>
             );
           })}

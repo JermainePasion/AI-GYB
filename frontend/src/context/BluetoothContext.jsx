@@ -24,34 +24,61 @@ export const BluetoothProvider = ({ children }) => {
 
   // --- Session filename (one per BLE session) ---
   const sessionFilenameRef = useRef(`log-${Date.now()}.csv`);
+  
+  // pang notification ng bluetooth delay
+  let lastNotificationTime = null; 
+  const [latencyLog, setLatencyLog] = useState([]);
+  const latencyLogRef = useRef([]);
 
   // --- Notification handler ---
   const handleNotifications = (event) => {
-    const value = new TextDecoder().decode(event.target.value).trim();
+  const now = performance.now(); 
 
-    if (value.includes(",")) {
-      const [flexStr, yStr, zStr, stageStr] = value.split(",");
-      const flex = parseFloat(flexStr);
-      const y = parseFloat(yStr);
-      const z = parseFloat(zStr);
-      const stage = parseInt(stageStr, 10) || 0;
+  // 🔹 Compute BLE latency
+  if (lastNotificationTime !== null) {
+    const latency = now - lastNotificationTime;
 
-      setFlexAngle(flex);
-      setGyroY(y);
-      setGyroZ(z);
+    // Save latency
+    const latencyEntry = {
+      timestamp: new Date().toISOString(),
+      latency: latency.toFixed(2) // ms
+    };
 
-      const newEntry = {
-        timestamp: new Date().toISOString(),
-        flex,
-        gyroY: y,
-        gyroZ: z,
-        stage
-      };
+    setLatencyLog(prev => [...prev, latencyEntry]);
+    latencyLogRef.current.push(latencyEntry);
 
-      setDataLog(prev => [...prev, newEntry]);
-      dataLogRef.current.push(newEntry);
-    }
-  };
+    console.log("BLE Latency:", latencyEntry.latency, "ms");
+  }
+
+  lastNotificationTime = now;
+
+  // 🔹 Existing parsing
+  const value = new TextDecoder().decode(event.target.value).trim();
+
+  if (value.includes(",")) {
+    const [flexStr, yStr, zStr, stageStr] = value.split(",");
+    const flex = parseFloat(flexStr);
+    const y = parseFloat(yStr);
+    const z = parseFloat(zStr);
+    const stage = parseInt(stageStr, 10) || 0;
+
+    setFlexAngle(flex);
+    setGyroY(y);
+    setGyroZ(z);
+
+    const newEntry = {
+      timestamp: new Date().toISOString(),
+      flex,
+      gyroY: y,
+      gyroZ: z,
+      stage
+    };
+
+    setDataLog(prev => [...prev, newEntry]);
+    dataLogRef.current.push(newEntry);
+  }
+};
+
 
   // --- Chunked CSV upload ---
 const uploadCSVChunk = async (chunkSize = 500) => {
@@ -168,7 +195,9 @@ const uploadCSVChunk = async (chunkSize = 500) => {
         dataLog,
         connectBLE,
         uploadCSVChunk,
-        showUploadPopup
+        showUploadPopup,
+        latencyLog,            // <-- ADD THIS
+        latencyLogRef
       }}
     >
       {children}
