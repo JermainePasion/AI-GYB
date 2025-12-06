@@ -101,8 +101,8 @@ function HomeScreen() {
 
         {user?.posture_thresholds && (
           <FadeInSection>
-            <div className="max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl flex flex-col ">
-              <p className="text-white mb-4 font-semibold text-center">
+            <div className="max-w-md w-full bg-secondary rounded-2xl p-6 shadow-xl flex flex-col bg-white">
+              <p className="text-black mb-4 font-semibold text-center">
                 Your Saved Thresholds
               </p>
               <ResponsiveContainer width="100%" height={300}>
