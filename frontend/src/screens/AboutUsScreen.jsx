@@ -12,7 +12,7 @@ function AboutUsScreen() {
           Welcome to our platform! We are dedicated to providing a seamless and efficient experience for users looking to buy and sell products online. Our mission is to connect buyers and sellers in a trustworthy environment, ensuring that every transaction is smooth and satisfactory.
         </p>
       </div>
-      <div className = "max-w-6xl mx-auto px-4 py-0 text-center mb-20">
+      <div className = "max-w-6xl mx-auto px-4 py-0 text-center mb-21">
            <a href="/signup"
             className="inline-block px-8 py-4 flex justify-center text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
             Get Started
