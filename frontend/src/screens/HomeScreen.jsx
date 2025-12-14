@@ -105,26 +105,41 @@ function HomeScreen() {
         <div className="flex gap-4 mt-6">
           <button
             onClick={() => setActiveView("live")}
-            className={`px-4 py-2 rounded-xl font-semibold ${
-              activeView === "live" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
-            }`}
+            className={`px-6 py-2 rounded-xl font-semibold transition-all duration-300
+              ${activeView === "live"
+                ? "bg-blue-500 text-white shadow-md scale-105"
+                : "bg-gray-200 text-black hover:bg-gray-300 hover:scale-105"}`
+            }
           >
             Live Posture
           </button>
+
           <button
             onClick={() => setActiveView("pain")}
-            className={`px-4 py-2 rounded-xl font-semibold ${
-              activeView === "pain" ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
-            }`}
+            className={`px-6 py-2 rounded-xl font-semibold transition-all duration-300
+              ${activeView === "pain"
+                ? "bg-blue-500 text-white shadow-md scale-105"
+                : "bg-gray-200 text-black hover:bg-gray-300 hover:scale-105"}`
+            }
           >
             Pain Input
           </button>
         </div>
 
         {/* Conditional rendering */}
-        <div className="w-full flex flex-col items-center mt-6">
-          {activeView === "live" && <LivePosture />}
-          {activeView === "pain" && <PainInputPosture />}
+        <div className="w-full flex flex-col items-center mt-6 relative overflow-hidden">
+          <div
+            className={`w-full transition-transform duration-500 ease-in-out
+              ${activeView === "live" ? "translate-x-0" : "translate-x-full"}`}
+          >
+            {activeView === "live" && <LivePosture />}
+          </div>
+          <div
+            className={`w-full transition-transform duration-500 ease-in-out
+              ${activeView === "pain" ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            {activeView === "pain" && <PainInputPosture />}
+          </div>
         </div>
 
         {/* Only show thresholds/charts when LivePosture is active */}
