@@ -48,7 +48,6 @@ function ScoreScreen() {
           </div>
         </div>
       </div>
-      <PainInputPosture/>
     </DashboardLayout>
   );
 }
