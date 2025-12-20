@@ -4,7 +4,6 @@ import { usePostureLogs } from "../hooks/UsePostureLogs";
 
 import OverallScore from "../components/scores/OverallScore";
 import LongestStreak from "../components/scores/LongestStreak";
-import PainInputPosture from "../components/painPoints/PainInputPosture";
 
 
 function ScoreScreen() {

@@ -18,11 +18,13 @@ import { UserProvider } from "./context/UserContext";
 import PatientGraphs from "./screens/PatientGraphs";
 import UploadPopup from "./components/UploadPopup";
 import { BluetoothContext } from "./context/BluetoothContext";
+import ToastProvider from "./components/notification/ToastProvider";
 
 function App() {
   return (
     <UserProvider>
       <BluetoothProvider>
+        <ToastProvider />
         <UploadPopup visible={useContext(BluetoothContext).showUploadPopup} /> 
 
           <Routes>

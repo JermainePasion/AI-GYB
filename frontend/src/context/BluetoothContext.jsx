@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, useRef } from "react";
 import { UserContext } from "./UserContext";
+import { toast } from "react-toastify";
 
 export const BluetoothContext = createContext();
 
@@ -81,44 +82,40 @@ export const BluetoothProvider = ({ children }) => {
 
 
   // --- Chunked CSV upload ---
-const uploadCSVChunk = async (chunkSize = 500) => {
+  const uploadCSVChunk = async (chunkSize = 500) => {
   if (!dataLogRef.current.length) return;
 
-  const chunks = [];
-  for (let i = 0; i < dataLogRef.current.length; i += chunkSize) {
-    chunks.push(dataLogRef.current.slice(i, i + chunkSize));
-  }
+  const header = "timestamp,flex,gyroY,gyroZ,stage\n";
 
-  for (const [index, chunk] of chunks.entries()) {
-    const header = index === 0 ? "timestamp,flex,gyroY,gyroZ,stage\n" : "";
-    const rows = chunk
-      .map(r => `${r.timestamp},${r.flex},${r.gyroY},${r.gyroZ},${r.stage}`)
-      .join("\n");
-    const csvContent = header + rows;
+  const rows = dataLogRef.current
+    .map(r => `${r.timestamp},${r.flex},${r.gyroY},${r.gyroZ},${r.stage}`)
+    .join("\n");
 
-    try {
-      const res = await fetch("http://localhost:3000/api/logs/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          csv: csvContent,
-          filename: sessionFilenameRef.current,
-          append: true, // backend will append
-        }),
-      });
+  const csvContent = header + rows;
 
-      if (!res.ok) throw new Error("Upload failed");
-      await res.json();
-    } catch (err) {
-      console.error("❌ Upload chunk error:", err);
-    }
+  try {
+    const res = await fetch("http://localhost:3000/api/logs/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        csv: csvContent,
+        filename: sessionFilenameRef.current,
+        append: false, // ❗ overwrite once per session
+      }),
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+    await res.json();
+  } catch (err) {
+    console.error("❌ Upload error:", err);
   }
 
   setDataLog([]);
   dataLogRef.current = [];
+  toast.success("CSV upload completed successfully");
   setShowUploadPopup(true); 
 
   console.log("CSV uploaded! All chunks successfully sent.");
