@@ -6,7 +6,11 @@ export const BluetoothContext = createContext();
 
 export const BluetoothProvider = ({ children }) => {
   const { user, token } = useContext(UserContext);
+
   const characteristicRef = useRef(null);
+  const dataLogRef = useRef([]);
+  const sessionFilenameRef = useRef(`log-${Date.now()}.csv`);
+
   const [device, setDevice] = useState(null);
   const [server, setServer] = useState(null);
   const [connected, setConnected] = useState(false);
@@ -15,48 +19,44 @@ export const BluetoothProvider = ({ children }) => {
   const [gyroY, setGyroY] = useState(0);
   const [gyroZ, setGyroZ] = useState(0);
 
-  const dataLogRef = useRef([]);
   const [dataLog, setDataLog] = useState([]);
-
   const [showUploadPopup, setShowUploadPopup] = useState(false);
 
   const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
-  // --- Session filename (one per BLE session) ---
-  const sessionFilenameRef = useRef(`log-${Date.now()}.csv`);
-  
-  // pang notification ng bluetooth delay
-  let lastNotificationTime = null; 
-  const [latencyLog, setLatencyLog] = useState([]);
-  const latencyLogRef = useRef([]);
+  /* =========================
+     ADD PAIN POINT
+  ========================= */
+  const addPainPoint = ({ x, y }) => {
+    const painX = parseFloat(x.toFixed(3));
+    const painY = parseFloat(y.toFixed(3));
 
-  // --- Notification handler ---
-  const handleNotifications = (event) => {
-  const now = performance.now(); 
-
-  // 🔹 Compute BLE latency
-  if (lastNotificationTime !== null) {
-    const latency = now - lastNotificationTime;
-
-    // Save latency
-    const latencyEntry = {
+    // Use the latest BLE values
+    const entry = {
       timestamp: new Date().toISOString(),
-      latency: latency.toFixed(2) // ms
+      flex: flexAngle,
+      gyroY: gyroY,
+      gyroZ: gyroZ,
+      stage: 0,
+      painX,
+      painY,
     };
 
-    setLatencyLog(prev => [...prev, latencyEntry]);
-    latencyLogRef.current.push(latencyEntry);
+    // Push into the log
+    dataLogRef.current.push(entry);
+    setDataLog(prev => [...prev, entry]);
 
-    console.log("BLE Latency:", latencyEntry.latency, "ms");
-  }
+    console.log("Pain point added:", entry); // <- debug
+  };
 
-  lastNotificationTime = now;
+  /* =========================
+     BLE NOTIFICATIONS
+  ========================= */
+  const handleNotifications = (event) => {
+    const value = new TextDecoder().decode(event.target.value).trim();
+    if (!value.includes(",")) return;
 
-  // 🔹 Existing parsing
-  const value = new TextDecoder().decode(event.target.value).trim();
-
-  if (value.includes(",")) {
     const [flexStr, yStr, zStr, stageStr] = value.split(",");
     const flex = parseFloat(flexStr);
     const y = parseFloat(yStr);
@@ -67,94 +67,96 @@ export const BluetoothProvider = ({ children }) => {
     setGyroY(y);
     setGyroZ(z);
 
-    const newEntry = {
+    // Append a new BLE row (painX/painY default 0)
+    const entry = {
       timestamp: new Date().toISOString(),
       flex,
       gyroY: y,
       gyroZ: z,
-      stage
+      stage,
+      painX: null,   // prevents overwriting pain clicks
+      painY: null,
     };
 
-    setDataLog(prev => [...prev, newEntry]);
-    dataLogRef.current.push(newEntry);
-  }
-};
+    dataLogRef.current.push(entry);
+    setDataLog(prev => [...prev, entry]);
+  };
 
+  /* =========================
+     UPLOAD CSV
+  ========================= */
+  const uploadCSVChunk = async () => {
+    if (!dataLogRef.current.length) return;
 
-  // --- Chunked CSV upload ---
-  const uploadCSVChunk = async (chunkSize = 500) => {
-  if (!dataLogRef.current.length) return;
+    const header = "timestamp,flex,gyroY,gyroZ,stage,painX,painY\n";
+    const rows = dataLogRef.current
+      .map(r =>
+        `${r.timestamp},${r.flex},${r.gyroY},${r.gyroZ},${r.stage},${r.painX ?? 0},${r.painY ?? 0}`
+      )
+      .join("\n");
 
-  const header = "timestamp,flex,gyroY,gyroZ,stage\n";
+    try {
+      const res = await fetch("http://localhost:3000/api/logs/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          csv: header + rows,
+          filename: sessionFilenameRef.current,
+          append: false,
+        }),
+      });
 
-  const rows = dataLogRef.current
-    .map(r => `${r.timestamp},${r.flex},${r.gyroY},${r.gyroZ},${r.stage}`)
-    .join("\n");
+      if (!res.ok) throw new Error("Upload failed");
+      await res.json();
 
-  const csvContent = header + rows;
+      toast.success("CSV upload completed successfully");
+      setShowUploadPopup(true);
 
-  try {
-    const res = await fetch("http://localhost:3000/api/logs/upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        csv: csvContent,
-        filename: sessionFilenameRef.current,
-        append: false, // ❗ overwrite once per session
-      }),
-    });
+      setDataLog([]);
+      dataLogRef.current = [];
 
-    if (!res.ok) throw new Error("Upload failed");
-    await res.json();
-  } catch (err) {
-    console.error("❌ Upload error:", err);
-  }
+      setTimeout(() => setShowUploadPopup(false), 3000);
+    } catch (err) {
+      console.error("❌ Upload error:", err);
+    }
+  };
 
-  setDataLog([]);
-  dataLogRef.current = [];
-  toast.success("CSV upload completed successfully");
-  setShowUploadPopup(true); 
-
-  console.log("CSV uploaded! All chunks successfully sent.");
-
-  setTimeout(() => setShowUploadPopup(false), 3000);
-};
-
-  // --- Send thresholds to ESP32 ---
+  /* =========================
+     SEND THRESHOLDS
+  ========================= */
   const sendUserThresholds = async () => {
-    const char = characteristicRef.current;
-    if (!char || !user?.posture_thresholds) return;
+    if (!characteristicRef.current || !user?.posture_thresholds) return;
 
     const t = user.posture_thresholds;
     const payload = `${t.flex_min},${t.flex_max},${t.gyroY_min},${t.gyroY_max},${t.gyroZ_min},${t.gyroZ_max}`;
 
     try {
-      const encoder = new TextEncoder();
-      await char.writeValue(encoder.encode(payload));
-      console.log("✅ Thresholds sent:", payload);
+      await characteristicRef.current.writeValue(
+        new TextEncoder().encode(payload)
+      );
     } catch (err) {
       console.error("❌ Failed to send thresholds:", err);
     }
   };
 
-  // --- BLE connection ---
+  /* =========================
+     BLE CONNECT
+  ========================= */
   const connectBLE = async () => {
     try {
       const device = await navigator.bluetooth.requestDevice({
         filters: [{ name: "AI-GYB" }],
         optionalServices: [SERVICE_UUID],
       });
+
       setDevice(device);
 
       device.addEventListener("gattserverdisconnected", async () => {
         setConnected(false);
-        if (dataLogRef.current.length > 0) {
-          console.log("Uploading remaining data on disconnect.");
-          await uploadCSVChunk();
-        }
+        if (dataLogRef.current.length) await uploadCSVChunk();
       });
 
       const server = await device.gatt.connect();
@@ -165,15 +167,10 @@ export const BluetoothProvider = ({ children }) => {
       const char = await service.getCharacteristic(CHARACTERISTIC_UUID);
       characteristicRef.current = char;
 
-      char.removeEventListener("characteristicvaluechanged", handleNotifications);
       await char.startNotifications();
       char.addEventListener("characteristicvaluechanged", handleNotifications);
 
-      if (user?.posture_thresholds) {
-        await sendUserThresholds();
-      }
-
-      console.log("✅ BLE connected:", device.name);
+      if (user?.posture_thresholds) await sendUserThresholds();
     } catch (err) {
       console.error("❌ BLE connection failed:", err);
       setConnected(false);
@@ -193,8 +190,7 @@ export const BluetoothProvider = ({ children }) => {
         connectBLE,
         uploadCSVChunk,
         showUploadPopup,
-        latencyLog,            // <-- ADD THIS
-        latencyLogRef
+        addPainPoint,
       }}
     >
       {children}

@@ -13,7 +13,7 @@ const CSVButton = ({ log }) => {
     const a = document.createElement("a");
     a.href = url;
     const username = user?.username || "user";
-    a.download = `${username}-logs.csv`;
+    a.download = `${username}-logs-${new Date(log.createdAt).toISOString()}.csv`;
 
     a.click();
     URL.revokeObjectURL(url);
