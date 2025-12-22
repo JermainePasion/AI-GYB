@@ -12,6 +12,7 @@ router.post(
     const { csv, filename, append } = req.body;
     if (!csv) return res.status(400).json({ message: "CSV data is required" });
 
+    // Find existing log or create a new one
     let log = await PostureLog.findOne({ user: req.user.id, filename });
     if (!log) {
       log = await PostureLog.create({
@@ -22,29 +23,18 @@ router.post(
       });
     }
 
-    const rows = csv.split("\n");
-    const header = rows[0];
-    const dataRows = rows.slice(1);
-
-    const mergedRows = dataRows.map(row => {
-      const [timestamp, flex, gyroY, gyroZ, stage] = row.split(",");
-      const pain = log.painEvents.find(p => p.timestamp.toISOString() === timestamp);
-      const x = pain ? pain.coordinates.x : 0;
-      const y = pain ? pain.coordinates.y : 0;
-      return [timestamp, flex, gyroY, gyroZ, stage, x, y].join(",");
-    });
-
-    const finalCSV = [header.includes("painX") ? header : header + ",painX,painY", ...mergedRows].join("\n");
-
-    if (append) {
-      log.data += "\n" + finalCSV.split("\n").slice(1).join("\n");
-      await log.save();
-      return res.json({ message: "Log updated successfully (appended)", log });
+    // Use the CSV as-is; frontend already includes painX/painY
+    if (append && log.data) {
+      // Remove header from incoming CSV before appending
+      const rows = csv.split("\n").slice(1).join("\n");
+      log.data += "\n" + rows;
     } else {
-      log.data = finalCSV;
-      await log.save();
-      return res.json({ message: "Log overwritten successfully", log });
+      log.data = csv;
     }
+
+    await log.save();
+
+    return res.json({ message: append ? "Log updated successfully (appended)" : "Log overwritten successfully", log });
   })
 );
 

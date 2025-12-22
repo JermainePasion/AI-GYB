@@ -9,6 +9,7 @@ export const BluetoothProvider = ({ children }) => {
 
   const characteristicRef = useRef(null);
   const dataLogRef = useRef([]);
+  const pendingPainPointsRef = useRef([]); // <-- store clicks temporarily
   const sessionFilenameRef = useRef(`log-${Date.now()}.csv`);
 
   const [device, setDevice] = useState(null);
@@ -29,26 +30,28 @@ export const BluetoothProvider = ({ children }) => {
      ADD PAIN POINT
   ========================= */
   const addPainPoint = ({ x, y }) => {
-    const painX = parseFloat(x.toFixed(3));
-    const painY = parseFloat(y.toFixed(3));
+    const timestamp = new Date().toISOString();
 
-    // Use the latest BLE values
+    // Save to pending queue
+    pendingPainPointsRef.current.push({ timestamp, x, y });
+
+    // Optionally push a dedicated row so it's visible immediately
     const entry = {
-      timestamp: new Date().toISOString(),
+      timestamp,
       flex: flexAngle,
-      gyroY: gyroY,
-      gyroZ: gyroZ,
+      gyroY,
+      gyroZ,
       stage: 0,
-      painX,
-      painY,
+      painX: x,
+      painY: y,
     };
-
-    // Push into the log
     dataLogRef.current.push(entry);
     setDataLog(prev => [...prev, entry]);
 
-    console.log("Pain point added:", entry); // <- debug
+    console.log("Pain point added:", entry);
   };
+
+  
 
   /* =========================
      BLE NOTIFICATIONS
@@ -67,14 +70,14 @@ export const BluetoothProvider = ({ children }) => {
     setGyroY(y);
     setGyroZ(z);
 
-    // Append a new BLE row (painX/painY default 0)
+    // Append a new BLE row
     const entry = {
       timestamp: new Date().toISOString(),
       flex,
       gyroY: y,
       gyroZ: z,
       stage,
-      painX: null,   // prevents overwriting pain clicks
+      painX: null,
       painY: null,
     };
 
@@ -83,10 +86,38 @@ export const BluetoothProvider = ({ children }) => {
   };
 
   /* =========================
+     MERGE PENDING PAIN POINTS
+  ========================= */
+  const mergePendingPainPoints = () => {
+    pendingPainPointsRef.current.forEach(p => {
+      // Find the closest BLE row by timestamp
+      let closest = null;
+      let minDiff = Infinity;
+      dataLogRef.current.forEach(row => {
+        const diff = Math.abs(new Date(row.timestamp) - new Date(p.timestamp));
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = row;
+        }
+      });
+
+      if (closest) {
+        closest.painX = p.x;
+        closest.painY = p.y;
+      }
+    });
+
+    pendingPainPointsRef.current = [];
+};
+
+  /* =========================
      UPLOAD CSV
   ========================= */
-  const uploadCSVChunk = async () => {
+ const uploadCSVChunk = async () => {
     if (!dataLogRef.current.length) return;
+
+    // Merge pain clicks into BLE rows
+    mergePendingPainPoints();
 
     const header = "timestamp,flex,gyroY,gyroZ,stage,painX,painY\n";
     const rows = dataLogRef.current
@@ -117,13 +148,13 @@ export const BluetoothProvider = ({ children }) => {
 
       setDataLog([]);
       dataLogRef.current = [];
+      pendingPainPointsRef.current = [];
 
       setTimeout(() => setShowUploadPopup(false), 3000);
     } catch (err) {
       console.error("❌ Upload error:", err);
     }
   };
-
   /* =========================
      SEND THRESHOLDS
   ========================= */
