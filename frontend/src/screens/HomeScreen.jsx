@@ -96,7 +96,7 @@ function HomeScreen() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start p-3 mt-10">
+      <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start p-4 mt-10">
         <h1 className="text-6xl font-extrabold text-white text-center">
           Hello, {user?.username}!
         </h1>
