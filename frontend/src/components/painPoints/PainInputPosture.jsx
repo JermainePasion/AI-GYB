@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useFBX } from "@react-three/drei";
 import { BluetoothContext } from "../../context/BluetoothContext";
@@ -8,9 +8,6 @@ function SkeletonWithMarkers({ onPainPoint }) {
   const fbx = useFBX("/models/skeleton.fbx");
   const markerRef = useRef();
   const originRef = useRef(); // reference for the origin marker
-
-  const [painPoint, setPainPoint] = useState({ x: 0, y: 0 });
-  
 
   if (!fbx) return null;
 
@@ -59,6 +56,8 @@ function SkeletonWithMarkers({ onPainPoint }) {
 
 export default function PainInputPosture() {
   const [painPoint, setPainPoint] = useState({ x: 0, y: 0 });
+  const { addPainPoint } = useContext(BluetoothContext); 
+  const displayScale = 1000;
 
   return (
     <div className="min-h-screen bg-background text-gray-800 py-5 w-full px-4 flex flex-col items-center pt-10">
@@ -72,8 +71,14 @@ export default function PainInputPosture() {
               Click on the back of the skeleton where you feel pain while wearing the device.
             </p>
             <div className="mt-4 text-sm">
-              <div><strong>X:</strong> {painPoint.x.toFixed(3)}</div>
-              <div><strong>Y:</strong> {painPoint.y.toFixed(3)}</div>
+              <div>
+                <strong>X:</strong>{" "}
+                {(painPoint.x * displayScale).toFixed(0)}
+              </div>
+              <div>
+                <strong>Y:</strong>{" "}
+                {(painPoint.y * displayScale).toFixed(0)}
+              </div>
             </div>
           </div>
         </div>
@@ -88,7 +93,7 @@ export default function PainInputPosture() {
   <SkeletonWithMarkers
     onPainPoint={(point) => {
       setPainPoint(point);     // UI display
-      addPa    // BLE label ✅
+      addPainPoint(point);     // BLE label ✅
     }}
   />
 

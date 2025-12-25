@@ -57,10 +57,11 @@ export const BluetoothProvider = ({ children }) => {
       painY: 0,
     };
 
-    // 🩸 Attach pain to THIS BLE row if queued
+    const PAIN_SCALE = 1000;
+
     if (pendingPainRef.current) {
-      entry.painX = pendingPainRef.current.x;
-      entry.painY = pendingPainRef.current.y;
+      entry.painX = pendingPainRef.current.x * PAIN_SCALE;
+      entry.painY = pendingPainRef.current.y * PAIN_SCALE;
       pendingPainRef.current = null;
     }
 
