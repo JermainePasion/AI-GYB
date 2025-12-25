@@ -38,32 +38,22 @@ function Skeleton() {
     }
   }, [fbx]);
 
-  const handleClick = async (e) => {
+  const handleClick = (e) => {
     e.stopPropagation();
     if (!spineRef.current) return;
 
-    // Convert world coordinates to local relative to spine
     const local = spineRef.current.worldToLocal(e.point.clone());
-    const x = local.x;
-    const y = local.y;
+    addPainPoint({ x: local.x, y: local.y });
 
-    // Save pain point with current BLE values
-    addPainPoint({ x, y });
-
-    // Optionally upload immediately
-    await uploadCSVChunk();
-
-    // Visual marker
     const dot = new THREE.Mesh(
-      new THREE.SphereGeometry(0.04, 16, 16),
+      new THREE.SphereGeometry(0.04),
       new THREE.MeshBasicMaterial({ color: "red" })
     );
     dot.position.set(local.x, local.y, 0);
     spineRef.current.add(dot);
   };
-
-  return <primitive ref={rootRef} object={fbx} onPointerDown={handleClick} />;
-}
+    return <primitive ref={rootRef} object={fbx} onPointerDown={handleClick} />;
+  }
 
 export default function PainSkeleton3D() {
   return (

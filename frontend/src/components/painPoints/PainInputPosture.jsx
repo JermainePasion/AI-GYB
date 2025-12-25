@@ -1,12 +1,16 @@
 import { useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useFBX } from "@react-three/drei";
+import { BluetoothContext } from "../../context/BluetoothContext";
 import * as THREE from "three";
 
 function SkeletonWithMarkers({ onPainPoint }) {
   const fbx = useFBX("/models/skeleton.fbx");
   const markerRef = useRef();
   const originRef = useRef(); // reference for the origin marker
+
+  const [painPoint, setPainPoint] = useState({ x: 0, y: 0 });
+  
 
   if (!fbx) return null;
 
@@ -81,7 +85,12 @@ export default function PainInputPosture() {
   <ambientLight intensity={0.3} />
   <directionalLight position={[0, 3, -3]} intensity={1.5} />
 
-  <SkeletonWithMarkers onPainPoint={setPainPoint} />
+  <SkeletonWithMarkers
+    onPainPoint={(point) => {
+      setPainPoint(point);     // UI display
+      addPa    // BLE label ✅
+    }}
+  />
 
   <OrbitControls
     enablePan={false}
