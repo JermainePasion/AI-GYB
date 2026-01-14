@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
 import { BluetoothContext } from "../context/BluetoothContext";
-
- const API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+import CSVButton from "../components/CSVButton";
 
 function ConnectionScreen() {
   const navigate = useNavigate();
@@ -23,7 +21,7 @@ function ConnectionScreen() {
 
   useEffect(() => {
     const fetchLogs = async () => {
-      const res = await fetch(`${API_BASE}api/logs/my`, {
+      const res = await fetch("http://localhost:3000/api/logs/my", {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const data = await res.json();

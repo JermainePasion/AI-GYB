@@ -131,4 +131,3 @@ print(json.dumps({
     "processed_images": overlay_images,
     "skeletal_images": skeletal_images
 }))
-

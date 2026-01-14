@@ -6,8 +6,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export default function UploadPhotos({ userId }) {
   const [files, setFiles] = useState([]);
@@ -49,7 +47,7 @@ export default function UploadPhotos({ userId }) {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${API_BASE}/api/upload-photos`,
+        "http://localhost:3000/api/upload-photos",
         formData,
         {
           headers: {

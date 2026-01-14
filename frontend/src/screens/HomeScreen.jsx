@@ -24,9 +24,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-
 const BACKEND_IP = 'localhost';
 const USE_MOCK = true;
 
@@ -61,7 +58,7 @@ function HomeScreen() {
       }
       if (!token) return;
       try {
-        const res = await axios.get(`${API_BASE}/api/users/thresholds`, {
+        const res = await axios.get(`http://${BACKEND_IP}:3000/api/users/thresholds`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const src = res.data?.posture_thresholds ?? res.data ?? {};

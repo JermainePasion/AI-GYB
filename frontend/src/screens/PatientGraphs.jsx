@@ -10,9 +10,6 @@ import SummaryTable from "../components/graphs/SummaryTable";
 import FadeInSection from "../components/animation/FadeInSection";
 import { UsePatientLogs } from "../hooks/usePatientLogs";
 
-const API_BASE =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-
 const BACKEND_IP = "localhost";
 
 export default function PatientGraphs() {
@@ -31,7 +28,7 @@ export default function PatientGraphs() {
     const fetchPatient = async () => {
       setLoadingPatient(true);
       try {
-        const res = await axios.get(`${API_BASE}/api/users/${id}`, {
+        const res = await axios.get(`http://${BACKEND_IP}:3000/api/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPatientData(res.data);
