@@ -26,10 +26,9 @@ router.post(
     }
 
     if (append && log.data) {
-      const rows = csv.split("\n").slice(1).join("\n");
-      log.data += "\n" + rows;
+      log.data += "\n" + csv; // ✅ append raw rows
     } else {
-      log.data = csv;
+      log.data = csv; // first upload includes header
     }
 
     await log.save();

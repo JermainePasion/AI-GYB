@@ -37,7 +37,7 @@ export const BluetoothProvider = ({ children }) => {
 
 
   
-
+  const lastCsvLogTimeRef = useRef(0);
   /* =========================
      BLE NOTIFICATIONS
   ========================= */
@@ -47,31 +47,39 @@ export const BluetoothProvider = ({ children }) => {
 
     const [flexStr, yStr, zStr, stageStr] = value.split(",");
 
+    const flex = parseFloat(flexStr);
+    const gyroY = parseFloat(yStr);
+    const gyroZ = parseFloat(zStr);
+    const stage = parseInt(stageStr, 10) || 0;
+
+    // ✅ INSTANT UI FEEDBACK (unchanged)
+    setFlexAngle(flex);
+    setGyroY(gyroY);
+    setGyroZ(gyroZ);
+
+    // ✅ REDUCED CSV LOGGING (1 Hz)
+    const now = Date.now();
+    if (now - lastCsvLogTimeRef.current < 1000) return;
+    lastCsvLogTimeRef.current = now;
+
     const entry = {
-      timestamp: new Date().toISOString(),
-      flex: parseFloat(flexStr),
-      gyroY: parseFloat(yStr),
-      gyroZ: parseFloat(zStr),
-      stage: parseInt(stageStr, 10) || 0,
+      timestamp: new Date(now).toISOString(),
+      flex,
+      gyroY,
+      gyroZ,
+      stage,
       painX: 0,
       painY: 0,
     };
 
-    const PAIN_SCALE = 1000;
-
     if (pendingPainRef.current) {
-      entry.painX = pendingPainRef.current.x * PAIN_SCALE;
-      entry.painY = pendingPainRef.current.y * PAIN_SCALE;
+      entry.painX = pendingPainRef.current.x * 1000;
+      entry.painY = pendingPainRef.current.y * 1000;
       pendingPainRef.current = null;
     }
 
-
     dataLogRef.current.push(entry);
     setDataLog(prev => [...prev, entry]);
-
-    setFlexAngle(entry.flex);
-    setGyroY(entry.gyroY);
-    setGyroZ(entry.gyroZ);
   };
 
   /* =========================
