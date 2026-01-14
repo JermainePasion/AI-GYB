@@ -4,6 +4,9 @@ import { UserContext } from "../context/UserContext";
 import ThresholdSlider from "../components/ThresholdSlider";
 import DashboardLayout from '../layouts/DashboardLayout';
 
+ const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 const ControlPage = () => {
   const { token, user } = useContext(UserContext);
   const [thresholds, setThresholds] = useState(null);
@@ -14,7 +17,7 @@ const ControlPage = () => {
 
     const fetchThresholds = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/thresholds", {
+        const res = await axios.get(`${API_BASE}/api/users/thresholds`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setThresholds(res.data);
@@ -34,7 +37,7 @@ const ControlPage = () => {
 
   const handleSave = async () => {
     try {
-      const res = await axios.put("http://localhost:3000/api/users/thresholds", thresholds, {
+      const res = await axios.put(`${API_BASE}/api/users/thresholds`, thresholds, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setThresholds(res.data);

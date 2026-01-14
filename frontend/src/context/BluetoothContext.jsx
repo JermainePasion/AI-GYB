@@ -2,6 +2,9 @@ import { createContext, useState, useContext, useRef } from "react";
 import { UserContext } from "./UserContext";
 import { toast } from "react-toastify";
 
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 export const BluetoothContext = createContext();
 
 export const BluetoothProvider = ({ children }) => {
@@ -88,7 +91,7 @@ export const BluetoothProvider = ({ children }) => {
       .join("\n");
 
     try {
-      const res = await fetch("http://localhost:3000/api/logs/upload", {
+      const res = await fetch(`${API_BASE}/api/logs/upload`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

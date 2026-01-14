@@ -2,6 +2,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import AuthNavbar from "../layouts/AuthNavbar";
 
+ const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 export default function DoctorRegisterScreen() {
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
@@ -15,7 +18,7 @@ export default function DoctorRegisterScreen() {
     setMessage("");
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/register-doctor", {
+      const res = await fetch(`${API_BASE}/api/users/register-doctor`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -4,6 +4,9 @@ import { UserContext } from "../context/UserContext";
 import CSVButton from "../components/CSVButton";
 import { BluetoothContext } from "../context/BluetoothContext";
 
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+
 function SettingsScreen() {
   const { token } = useContext(UserContext);
   const { uploadCSVChunk, showUploadPopup } = useContext(BluetoothContext);
@@ -14,7 +17,7 @@ function SettingsScreen() {
   const fetchLogs = async () => {
     if (!token) return;
     try {
-      const res = await fetch("http://localhost:3000/api/logs/my", {
+      const res = await fetch(`${API_BASE}/api/logs/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

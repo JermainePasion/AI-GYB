@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import AuthNavbar from "../layouts/AuthNavbar";
 import { UserContext } from "../context/UserContext";
 
+ const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,8 +27,8 @@ export default function AuthScreen() {
     setError(null);
 
     const endpoint = isLogin
-      ? "http://localhost:3000/api/users/login"
-      : "http://localhost:3000/api/users/register";
+      ? `${API_BASE}/api/users/login`
+      : `${API_BASE}/api/users/register`;
 
     const payload = isLogin
       ? {

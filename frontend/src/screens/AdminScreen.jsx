@@ -15,11 +15,13 @@ export default function AdminScreen() {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
   
+  const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/", {
+        const res = await axios.get(`${API_BASE}/api/users/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsers(res.data);
