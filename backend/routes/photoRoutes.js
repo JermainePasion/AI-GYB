@@ -10,6 +10,10 @@ const crypto = require("crypto");
 
 const router = express.Router();
 
+router.options("/upload-photos", (req, res) => {
+  res.sendStatus(204);
+});
+
 // ---------------------------
 // MULTER TEMP STORAGE
 // ---------------------------

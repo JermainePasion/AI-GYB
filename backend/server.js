@@ -19,12 +19,12 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
   origin: (origin, callback) => {
-    // allow Postman / server-to-server
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
       "http://localhost:5173",
-      "https://ai-gyb.vercel.app" // add when frontend is deployed
+      "https://ai-gyb-production.up.railway.app",
+      "https://ai-gyb.vercel.app"
     ];
 
     if (allowedOrigins.includes(origin)) {
@@ -37,7 +37,6 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
-
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
