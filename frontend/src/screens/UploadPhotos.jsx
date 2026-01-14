@@ -251,7 +251,7 @@ export default function UploadPhotos({ userId }) {
                   )?.map((img, i) => (
                     <div key={i} className="flex justify-center items-center">
                       <img
-                        src={img}
+                        src={`data:image/jpeg;base64,${img}`}
                         alt={`Processed ${i}`}
                         className="carousel-image"
                       />
