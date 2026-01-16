@@ -22,6 +22,8 @@ export const BluetoothProvider = ({ children }) => {
   const [dataLog, setDataLog] = useState([]);
   const [showUploadPopup, setShowUploadPopup] = useState(false);
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const pendingPainRef = useRef(null);
 
   const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
@@ -120,7 +122,10 @@ export const BluetoothProvider = ({ children }) => {
 
       setTimeout(() => setShowUploadPopup(false), 3000);
     } catch (err) {
-      console.error(" Upload error:", err);
+      console.error("Upload error:", err);
+      toast.error("Upload failed");
+    } finally {
+      setIsUploading(false);
     }
   };
   /* =========================
@@ -190,6 +195,7 @@ export const BluetoothProvider = ({ children }) => {
         uploadCSVChunk,
         showUploadPopup,
         addPainPoint,
+        isUploading,
       }}
     >
       {children}

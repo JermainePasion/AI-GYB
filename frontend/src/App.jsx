@@ -19,13 +19,17 @@ import PatientGraphs from "./screens/PatientGraphs";
 import UploadPopup from "./components/UploadPopup";
 import { BluetoothContext } from "./context/BluetoothContext";
 import ToastProvider from "./components/notification/ToastProvider";
+import LoadingOverlay from "./components/Spinner/LoadingOverlay";
 
 function App() {
+  const { showUploadPopup, isUploading } = useContext(BluetoothContext);
   return (
     <UserProvider>
       <BluetoothProvider>
         <ToastProvider />
         <UploadPopup visible={useContext(BluetoothContext).showUploadPopup} /> 
+        <LoadingOverlay visible={isUploading} />
+         <UploadPopup visible={showUploadPopup} />
 
           <Routes>
             {/* Public */}
