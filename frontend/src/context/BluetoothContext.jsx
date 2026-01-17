@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useRef } from "react";
+import { createContext, useState, useContext, useRef, useEffect } from "react";
 import { UserContext } from "./UserContext";
 import { toast } from "react-toastify";
 
@@ -28,6 +28,7 @@ export const BluetoothProvider = ({ children }) => {
 
   const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   const CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+  const uploadStartRef = useRef(0);
 
   /* =========================
      ADD PAIN POINT
@@ -84,6 +85,20 @@ export const BluetoothProvider = ({ children }) => {
     setDataLog(prev => [...prev, entry]);
   };
 
+  useEffect(() => {
+  if (!isUploading) return;
+
+  // 🔥 Force browser to paint overlay first
+  requestAnimationFrame(() => {
+    requestAnimationFrame(async () => {
+      if (dataLogRef.current.length) {
+        await uploadCSVChunk();
+      }
+      setIsUploading(false);
+    });
+  });
+}, [isUploading]);
+
   /* =========================
      UPLOAD CSV
   ========================= */
@@ -125,7 +140,13 @@ export const BluetoothProvider = ({ children }) => {
       console.error("Upload error:", err);
       toast.error("Upload failed");
     } finally {
-      setIsUploading(false);
+      const MIN_VISIBLE_MS = 1200;
+      const elapsed = Date.now() - uploadStartRef.current;
+      const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
+
+      setTimeout(() => {
+        setIsUploading(false);
+      }, remaining);
     }
   };
   /* =========================
@@ -145,6 +166,7 @@ export const BluetoothProvider = ({ children }) => {
       console.error("❌ Failed to send thresholds:", err);
     }
   };
+  
 
   /* =========================
      BLE CONNECT
@@ -158,11 +180,10 @@ export const BluetoothProvider = ({ children }) => {
 
       setDevice(device);
 
-      device.addEventListener("gattserverdisconnected", async () => {
+      device.addEventListener("gattserverdisconnected", () => {
         setConnected(false);
-        if (dataLogRef.current.length) await uploadCSVChunk();
+        setIsUploading(true);
       });
-
       const server = await device.gatt.connect();
       setServer(server);
       setConnected(true);
