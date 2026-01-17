@@ -73,4 +73,16 @@ router.delete(
   })
 );
 
+
+router.get(
+  "/:id",
+  protect,
+  authorize("admin", "doctor"),
+  asyncHandler(async (req, res) => {
+    const logs = await PostureLog.find({ user: req.params.id }).sort({
+      createdAt: -1,
+    });
+    res.json(logs);
+  })
+);
 module.exports = router;
