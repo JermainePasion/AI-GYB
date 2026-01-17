@@ -26,9 +26,9 @@ router.post(
     }
 
     if (append && log.data) {
-      log.data += "\n" + csv; // ✅ append raw rows
+      log.data += "\n" + csv; 
     } else {
-      log.data = csv; // first upload includes header
+      log.data = csv; 
     }
 
     await log.save();
@@ -47,6 +47,29 @@ router.get(
       createdAt: -1,
     });
     res.json(logs);
+  })
+);
+
+router.delete(
+  "/:id",
+  protect,
+  asyncHandler(async (req, res) => {
+    const log = await PostureLog.findById(req.params.id);
+
+    if (!log) {
+      return res.status(404).json({ message: "Log not found" });
+    }
+
+    if (
+      log.user.toString() !== req.user.id &&
+      !["admin", "doctor"].includes(req.user.role)
+    ) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    await log.deleteOne();
+
+    res.json({ message: "Log deleted successfully" });
   })
 );
 
