@@ -12,8 +12,15 @@ const CSVButton = ({ log }) => {
 
     const a = document.createElement("a");
     a.href = url;
+
     const username = user?.username || "user";
-    a.download = `${username}-logs-${new Date(log.createdAt).toISOString()}.csv`;
+    const date = new Date(log.createdAt);
+
+    const formattedDate =
+      `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}` +
+      `_${String(date.getHours()).padStart(2, "0")}-${String(date.getMinutes()).padStart(2, "0")}-${String(date.getSeconds()).padStart(2, "0")}`;
+
+    a.download = `${username}-${formattedDate}.csv`;
 
     a.click();
     URL.revokeObjectURL(url);
