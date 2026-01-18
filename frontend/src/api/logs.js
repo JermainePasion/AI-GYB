@@ -7,3 +7,7 @@ export const uploadCsvLog = async ({ csv, filename }) => {
     append: false,
   });
 };
+
+export const fetchMyPostureLogs = () => {
+  return api.get("/logs/my");
+};
