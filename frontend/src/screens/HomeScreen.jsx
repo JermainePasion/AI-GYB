@@ -13,6 +13,8 @@ import TimeSeriesGraph from '../components/graphs/TimeSeriesGraph';
 import PostureHeatmap from '../components/graphs/PostureHeatmap';
 import FadeInSection from '../components/animation/FadeInSection';
 
+import { getThresholds } from '../api/users';
+
 import {
   BarChart,
   Bar,
@@ -53,24 +55,37 @@ function HomeScreen() {
   useEffect(() => {
     const fetchThresholds = async () => {
       if (USE_MOCK) {
-        setThresholds({ flex_min: 5, flex_max: 25, gyroY_min: -10, gyroY_max: 10, gyroZ_min: -8, gyroZ_max: 8 });
+        setThresholds({
+          flex_min: 5,
+          flex_max: 25,
+          gyroY_min: -10,
+          gyroY_max: 10,
+          gyroZ_min: -8,
+          gyroZ_max: 8,
+        });
         return;
       }
+
       if (!token) return;
+
       try {
-        const res = await axios.get(`http://${BACKEND_IP}:3000/api/users/thresholds`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await getThresholds();
+
         const src = res.data?.posture_thresholds ?? res.data ?? {};
+
         setThresholds({
-          flex_min: toNum(src.flex_min), flex_max: toNum(src.flex_max),
-          gyroY_min: toNum(src.gyroY_min), gyroY_max: toNum(src.gyroY_max),
-          gyroZ_min: toNum(src.gyroZ_min), gyroZ_max: toNum(src.gyroZ_max),
+          flex_min: toNum(src.flex_min),
+          flex_max: toNum(src.flex_max),
+          gyroY_min: toNum(src.gyroY_min),
+          gyroY_max: toNum(src.gyroY_max),
+          gyroZ_min: toNum(src.gyroZ_min),
+          gyroZ_max: toNum(src.gyroZ_max),
         });
       } catch (err) {
         console.error("Error fetching thresholds", err);
       }
     };
+
     if (token || USE_MOCK) fetchThresholds();
   }, [token]);
 

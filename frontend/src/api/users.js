@@ -16,3 +16,6 @@ export const updateThresholds = (thresholds) =>
 
 export const registerDoctor = (payload) =>
   api.post("/users/register-doctor", payload);
+
+export const getUserById = (id) =>
+  api.get(`/users/${id}`);

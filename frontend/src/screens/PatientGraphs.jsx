@@ -1,6 +1,5 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
 import TimeSeriesGraph from "../components/graphs/TimeSeriesGraph";
@@ -9,6 +8,7 @@ import PostureHeatmap from "../components/graphs/PostureHeatmap";
 import SummaryTable from "../components/graphs/SummaryTable";
 import FadeInSection from "../components/animation/FadeInSection";
 import { UsePatientLogs } from "../hooks/usePatientLogs";
+import { getUserById } from "../api/users";
 
 const BACKEND_IP = "localhost";
 
@@ -28,9 +28,7 @@ export default function PatientGraphs() {
     const fetchPatient = async () => {
       setLoadingPatient(true);
       try {
-        const res = await axios.get(`http://${BACKEND_IP}:3000/api/users/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await getUserById(id);
         setPatientData(res.data);
       } catch (err) {
         console.error("Failed to fetch patient info:", err);
