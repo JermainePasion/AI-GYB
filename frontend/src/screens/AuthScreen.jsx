@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import AuthNavbar from "../layouts/AuthNavbar";
 import { UserContext } from "../context/UserContext";
-
+import { loginUser, registerUser } from "../api/auth";
 
 export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
@@ -24,36 +24,22 @@ export default function AuthScreen() {
     e.preventDefault();
     setError(null);
 
-    const endpoint = isLogin
-      ? "http://localhost:3000/api/users/login"
-      : "http://localhost:3000/api/users/register";
-
-    const payload = isLogin
-      ? {
-          email: formData.email,
-          password: formData.password,
-        }
-      : {
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-        };
-
     try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = isLogin
+        ? await loginUser(formData.email, formData.password)
+        : await registerUser(
+            formData.username,
+            formData.email,
+            formData.password
+          );
 
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || "Something went wrong");
-
+      const data = res.data;
       login(data.token, data);
       navigate("/home");
     } catch (err) {
-      setError(err.message);
+      setError(
+        err.response?.data?.message || err.message || "Something went wrong"
+      );
     }
   };
 
@@ -87,7 +73,6 @@ export default function AuthScreen() {
             </button>
           </div>
 
-          {/* AnimatePresence for sliding effect */}
           <AnimatePresence mode="wait">
             <motion.div
               key={isLogin ? "login" : "register"}
@@ -105,52 +90,48 @@ export default function AuthScreen() {
                   : "Sign up to get started with your journey."}
               </p>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 {!isLogin && (
                   <div>
-                    <label className="block mb-1 font-medium text-black" htmlFor="username">
+                    <label className="block mb-1 font-medium text-black">
                       Username
                     </label>
                     <input
                       type="text"
-                      id="username"
                       name="username"
                       value={formData.username}
                       onChange={handleChange}
                       required
-                      className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+                      className="w-full border rounded px-3 py-2 text-black"
                     />
                   </div>
                 )}
 
                 <div>
-                  <label className="block mb-1 font-medium text-black" htmlFor="email">
+                  <label className="block mb-1 font-medium text-black">
                     Email
                   </label>
                   <input
                     type="email"
-                    id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+                    className="w-full border rounded px-3 py-2 text-black"
                   />
                 </div>
 
                 <div>
-                  <label className="block mb-1 font-medium text-black" htmlFor="password">
+                  <label className="block mb-1 font-medium text-black">
                     Password
                   </label>
                   <input
                     type="password"
-                    id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="w-full border border-gray-300 rounded px-3 py-2 text-black focus:outline-none focus:ring-2 focus:ring-[#A4CCD9]"
+                    className="w-full border rounded px-3 py-2 text-black"
                   />
                 </div>
 
@@ -158,7 +139,7 @@ export default function AuthScreen() {
 
                 <button
                   type="submit"
-                  className="w-full bg-[#A4CCD9] text-white py-2 rounded-lg font-semibold hover:bg-[#7daebd] transition"
+                  className="w-full bg-[#A4CCD9] text-white py-2 rounded-lg font-semibold"
                 >
                   {isLogin ? "Sign in" : "Sign up"}
                 </button>
@@ -172,7 +153,6 @@ export default function AuthScreen() {
                   Register as Doctor
                 </button>
               </div>
-
             </motion.div>
           </AnimatePresence>
         </div>
