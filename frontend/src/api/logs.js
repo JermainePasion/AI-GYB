@@ -11,3 +11,7 @@ export const uploadCsvLog = async ({ csv, filename }) => {
 export const fetchMyPostureLogs = () => {
   return api.get("/logs/my");
 };
+
+export const fetchPatientLogs = (patientId) => {
+  return api.get(`/logs/${patientId}`);
+};

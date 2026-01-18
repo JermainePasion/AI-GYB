@@ -1,9 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
 import { UserContext } from "../context/UserContext";
+import { fetchPatientLogs } from "../api/logs";
 import Papa from "papaparse";
-
-const BACKEND_IP = "localhost";
 
 export const UsePatientLogs = (patientId) => {
   const { token } = useContext(UserContext);
@@ -18,20 +16,22 @@ export const UsePatientLogs = (patientId) => {
     const fetchLogs = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://${BACKEND_IP}:3000/api/logs/${patientId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetchPatientLogs(patientId);
 
         if (!res.data || res.data.length === 0) {
           setLogs({ full: [], sampled: [] });
           return;
         }
 
-        // Use the latest log
+        // Use latest log
         const latestCsv = res.data[0].data;
 
-        // Parse CSV with PapaParse
-        const parsed = Papa.parse(latestCsv, { header: true, skipEmptyLines: true });
+        // Parse CSV
+        const parsed = Papa.parse(latestCsv, {
+          header: true,
+          skipEmptyLines: true,
+        });
+
         const parsedLogs = parsed.data.map((row) => ({
           timestamp: new Date(row.timestamp),
           flex: toNum(row.flex),
@@ -40,10 +40,12 @@ export const UsePatientLogs = (patientId) => {
           stage: row.stage !== undefined ? parseInt(row.stage, 10) : null,
         }));
 
-        // Sort logs by timestamp
-        const sortedLogs = parsedLogs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+        // Sort by time
+        const sortedLogs = parsedLogs.sort(
+          (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+        );
 
-        // Sample if too many points
+        // Downsample if large
         const maxPoints = 1000;
         const step = Math.max(1, Math.floor(sortedLogs.length / maxPoints));
         const sampledLogs = sortedLogs.filter((_, i) => i % step === 0);
