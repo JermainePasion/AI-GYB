@@ -1,6 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @import "tailwindcss";
-
 
 
 
@@ -239,7 +239,8 @@ body {
 .navbar-link {
   display: block;
   padding: 0.5rem 0.75rem;
-  color: #ffffff; /* text-gray-900 */
+  @apply flex items-center h-20 px-4 transition-colors duration-200 w-full md:w-auto;
+  color: #ffffff;
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -310,24 +311,34 @@ body {
 }
 /* Active state */
 .navbar-link-active {
-  background-color: #e7f3e0; /* Tailwind blue-600 */
-  color: #000000;            /* white */
+  background-color: #1f2937; /* dark gray (visible on navbar) */
+  color: #ffffff;            /* force white text */
 }
 
 /* Inactive but hoverable */
+.navbar-link-inactive {
+  color: #000000; /* light gray, visible on dark navbar */
+}
+
 .navbar-link-inactive:hover {
-  background-color: #e7f3e0; /* Tailwind blue-100 */
+  background-color: #374151;
+  color: #ffffff;
 }
 
 /* Special style for Admin (active) */
 .navbar-admin-active {
-  background-color: #DC2626; /* Tailwind red-600 */
-  color: #FFFFFF;            /* white */
+  background-color: #1f2937; /* same dark background */
+  color: #c4e1e6;            /* accent color so it stands out */
 }
 
 /* Admin inactive but hoverable */
+.navbar-admin-inactive {
+  color: #c4e1e6; /* your accent color */
+}
+
 .navbar-admin-inactive:hover {
-  background-color: #FEE2E2; /* Tailwind red-100 */
+  background-color: #374151;
+  color: #ffffff;
 }
 
 /* Show toggle below 1021px, hide at 1021px+ */
@@ -373,4 +384,12 @@ body {
 .slick-center .carousel-image {
   opacity: 1 !important;
   transform: scale(1) !important;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
 }

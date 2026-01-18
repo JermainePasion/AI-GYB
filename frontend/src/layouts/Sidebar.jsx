@@ -10,6 +10,12 @@ function Sidebar() {
   const linkClasses =
     "p-3 rounded transition-colors duration-300 ease-in-out"; // shared styles
 
+  const Icon = ({ name }) => (
+    <span className="material-symbols-outlined mr-3 text-xl">
+      {name}
+    </span>
+  );
+
   return (
     <>
       {/* Mobile Toggle Button */}
@@ -33,70 +39,48 @@ function Sidebar() {
         `}
       >
         <nav className="flex flex-col mt-4 space-y-2">
-          <NavLink
-            to="/home"
-            className={({ isActive }) =>
-              `${linkClasses} ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-700"
-              }`
-            }
-          >
+          <NavLink to="/home" className={({ isActive }) =>
+            `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+          }>
+            <Icon name="home" />
             Home
           </NavLink>
-          <NavLink
-            to="/upload"
-            className={({ isActive }) =>
-              `${linkClasses} ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-700"
-              }`
-            }
-          >
-            Upload
-          </NavLink>
-          <NavLink
-            to="/control"
-            className={({ isActive }) =>
-              `${linkClasses} ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-700"
-              }`
-            }
-          >
+
+          <NavLink to="/control" className={({ isActive }) =>
+            `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+          }>
+            <Icon name="settings_remote" />
             Control
           </NavLink>
-          <NavLink
-            to="/connection"
-            className={({ isActive }) =>
-              `${linkClasses} ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-700"
-              }`
-            }
-          >
-            Connection
+
+          <NavLink to="/upload" className={({ isActive }) =>
+            `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+          }>
+            <Icon name="accessibility_new" />
+            Accessibility
           </NavLink>
-          <NavLink
-            to="/score"
-            className={({ isActive }) =>
-              `${linkClasses} ${
-                isActive ? "bg-gray-700" : "hover:bg-gray-700"
-              }`
-            }
-          >
+
+          <NavLink to="/connection" className={({ isActive }) =>
+            `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+          }>
+            <Icon name="bluetooth" />
+            Bluetooth
+          </NavLink>
+
+          <NavLink to="/score" className={({ isActive }) =>
+            `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+          }>
+            <Icon name="score" />
             Score
           </NavLink>
 
           {(user?.role === "admin" || user?.role === "doctor") && (
-
-              <NavLink
-                to="/admin"
-                 className={({ isActive }) =>
-                `${linkClasses} ${
-                  isActive ? "bg-gray-700" : "hover:bg-gray-700"
-                }`
-              }
-            >
-                Admin
-              </NavLink>
-
+            <NavLink to="/admin" className={({ isActive }) =>
+              `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
+            }>
+              <Icon name="admin_panel_settings" />
+              Admin
+            </NavLink>
           )}
         </nav>
       </div>
