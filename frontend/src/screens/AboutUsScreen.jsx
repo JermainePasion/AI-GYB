@@ -14,7 +14,7 @@ function AboutUsScreen() {
       </div>
       <div className = "max-w-6xl mx-auto px-4 py-0 text-center mb-20">
            <a href="/signup"
-            className="inline-block px-8 py-4 flex justify-center text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+            className="px-8 py-4 flex justify-center text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
             Get Started
           </a>
       </div>
