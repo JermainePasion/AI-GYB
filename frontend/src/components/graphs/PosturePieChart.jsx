@@ -11,8 +11,8 @@ const PosturePieChart = ({ logs }) => {
 
   const data = [
     { name: "Stage 0 (Good)", value: stageCounts[0] },
-    { name: "Stage 1", value: stageCounts[1] },
-    { name: "Stage 2", value: stageCounts[2] },
+    { name: "Stage 1 (Slouching)", value: stageCounts[1] },
+    { name: "Stage 2 (Bad Posture)", value: stageCounts[2] },
   ];
 
   const COLORS = ["#60a5fa", "#facc15", "#f87171"]; // Blue, Yellow, Red

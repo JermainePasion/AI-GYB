@@ -12,9 +12,9 @@ export default function LivePosture() {
       <div className="flex flex-col md:flex-row gap-10 w-full max-w-6xl">
         {/* Gauges */}
         <div className="flex flex-col gap-6 w-full md:w-1/3">
-          <SensorGauge title="Flex Sensor" angle={flexAngle} maxAngle={45} sensor="flex" />
-          <SensorGauge title="Gyro Y" angle={gyroY} maxAngle={70} sensor="gyroY" />
-          <SensorGauge title="Gyro Z" angle={gyroZ} maxAngle={40} sensor="gyroZ" />
+          <SensorGauge title="Spine" angle={flexAngle} maxAngle={45} sensor="flex" />
+          <SensorGauge title="Left" angle={gyroY} maxAngle={70} sensor="gyroY" />
+          <SensorGauge title="Right" angle={gyroZ} maxAngle={40} sensor="gyroZ" />
         </div>
 
         {/* 3D Models */}
