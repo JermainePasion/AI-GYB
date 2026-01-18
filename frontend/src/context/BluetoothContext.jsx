@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useRef, useEffect } from "react";
 import { UserContext } from "./UserContext";
 import { toast } from "react-toastify";
+import { uploadCsvLog } from "../api/logs";
 
 export const BluetoothContext = createContext();
 
@@ -113,21 +114,10 @@ export const BluetoothProvider = ({ children }) => {
       .join("\n");
 
     try {
-      const res = await fetch("http://localhost:3000/api/logs/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          csv: header + rows,
-          filename: sessionFilenameRef.current,
-          append: false,
-        }),
+      await uploadCsvLog({
+        csv: header + rows,
+        filename: sessionFilenameRef.current,
       });
-
-      if (!res.ok) throw new Error("Upload failed");
-      await res.json();
 
       toast.success("CSV upload completed successfully");
       setShowUploadPopup(true);
