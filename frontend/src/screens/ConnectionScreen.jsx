@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { UserContext } from "../context/UserContext";
 import { BluetoothContext } from "../context/BluetoothContext";
-import CSVButton from "../components/CSVButton";
+import { getMyLogs } from "../api/logs";
 
 function ConnectionScreen() {
   const navigate = useNavigate();
-  const { user, token } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const {
     connected,
     flexAngle,
@@ -15,22 +15,23 @@ function ConnectionScreen() {
     gyroZ,
     connectBLE,
   } = useContext(BluetoothContext);
+
   const [logs, setLogs] = useState([]);
 
   const goToControl = () => navigate("/control");
 
   useEffect(() => {
     const fetchLogs = async () => {
-      const res = await fetch("http://localhost:3000/api/logs/my", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      const data = await res.json();
-      setLogs(data);
+      try {
+        const res = await getMyLogs();
+        setLogs(res.data);
+      } catch (err) {
+        console.error("Failed to fetch logs:", err);
+      }
     };
 
     fetchLogs();
   }, []);
-
 
   return (
     <DashboardLayout>
@@ -39,7 +40,10 @@ function ConnectionScreen() {
 
           {/* Bluetooth Status */}
           <p className="mt-2 text-sm text-gray-300">
-            Bluetooth Status: <span className="font-bold">{connected ? "Connected" : "Disconnected"}</span>
+            Bluetooth Status:{" "}
+            <span className="font-bold">
+              {connected ? "Connected" : "Disconnected"}
+            </span>
           </p>
 
           <div className="flex gap-2 mt-2">
@@ -47,7 +51,7 @@ function ConnectionScreen() {
               onClick={connectBLE}
               className="px-3 py-1 rounded bg-[#8DBCC7] text-sm hover:bg-[#638f99]"
             >
-            Connect
+              Connect
             </button>
           </div>
 
@@ -61,14 +65,12 @@ function ConnectionScreen() {
           <div className="pt-6">
             <button
               onClick={goToControl}
-              className="w-full py-2 rounded-lg bg-primary text-black text-sm font-semibold shadow hover:bg-[#EBFFD8]  transition duration-200"
+              className="w-full py-2 rounded-lg bg-primary text-black text-sm font-semibold shadow hover:bg-[#EBFFD8] transition duration-200"
             >
               Go to Control Page
             </button>
           </div>
         </div>
-
-        
       </div>
     </DashboardLayout>
   );

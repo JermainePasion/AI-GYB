@@ -15,3 +15,5 @@ export const fetchMyPostureLogs = () => {
 export const fetchPatientLogs = (patientId) => {
   return api.get(`/logs/${patientId}`);
 };
+
+export const getMyLogs = () => api.get("/logs/my");

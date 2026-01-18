@@ -8,3 +8,8 @@ export const getAllUsers = () => api.get("/users");
 
 export const approveDoctor = (id) =>
   api.put(`/users/approve/${id}`);
+
+export const getThresholds = () => api.get("/users/thresholds");
+
+export const updateThresholds = (thresholds) =>
+  api.put("/users/thresholds", thresholds);

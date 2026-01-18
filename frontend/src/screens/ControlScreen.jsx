@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import ThresholdSlider from "../components/ThresholdSlider";
-import DashboardLayout from '../layouts/DashboardLayout';
+import DashboardLayout from "../layouts/DashboardLayout";
+import { getThresholds, updateThresholds } from "../api/users";
 
 const ControlPage = () => {
-  const { token, user } = useContext(UserContext);
+  const { token } = useContext(UserContext);
   const [thresholds, setThresholds] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -14,9 +14,7 @@ const ControlPage = () => {
 
     const fetchThresholds = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/users/thresholds", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await getThresholds();
         setThresholds(res.data);
       } catch (err) {
         console.error("Failed to fetch thresholds:", err);
@@ -29,14 +27,15 @@ const ControlPage = () => {
   }, [token]);
 
   const handleChange = (e) => {
-    setThresholds({ ...thresholds, [e.target.name]: parseFloat(e.target.value) });
+    setThresholds({
+      ...thresholds,
+      [e.target.name]: parseFloat(e.target.value),
+    });
   };
 
   const handleSave = async () => {
     try {
-      const res = await axios.put("http://localhost:3000/api/users/thresholds", thresholds, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await updateThresholds(thresholds);
       setThresholds(res.data);
       alert("✅ Thresholds updated successfully!");
     } catch (err) {
@@ -45,9 +44,11 @@ const ControlPage = () => {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-400">Loading...</p>;
+  if (loading)
+    return <p className="text-center text-gray-400">Loading...</p>;
 
-  if (!thresholds) return <p className="text-center text-red-400">No thresholds found.</p>;
+  if (!thresholds)
+    return <p className="text-center text-red-400">No thresholds found.</p>;
 
   return (
     <DashboardLayout>
