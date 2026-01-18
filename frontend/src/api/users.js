@@ -13,3 +13,6 @@ export const getThresholds = () => api.get("/users/thresholds");
 
 export const updateThresholds = (thresholds) =>
   api.put("/users/thresholds", thresholds);
+
+export const registerDoctor = (payload) =>
+  api.post("/users/register-doctor", payload);
