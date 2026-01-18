@@ -4,6 +4,7 @@ import { UserContext } from "../context/UserContext";
 import CSVButton from "../components/CSVButton";
 import { BluetoothContext } from "../context/BluetoothContext";
 import { toast } from "react-toastify";
+import { getMyLogs, deleteLog } from "../api/logs";
 
 function SettingsScreen() {
   const { token } = useContext(UserContext);
@@ -15,11 +16,8 @@ function SettingsScreen() {
   const fetchLogs = async () => {
     if (!token) return;
     try {
-      const res = await fetch("http://localhost:3000/api/logs/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setLogs(data);
+      const res = await getMyLogs();
+      setLogs(res.data);
     } catch (err) {
       console.error("Failed to fetch logs:", err);
     }
@@ -46,18 +44,7 @@ function SettingsScreen() {
     setDeletingId(logId);
 
     try {
-      const res = await fetch(
-        `http://localhost:3000/api/logs/${logId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!res.ok) throw new Error("Delete failed");
-
+      await deleteLog(logId);
       toast.success("Log deleted");
       setLogs((prev) => prev.filter((l) => l._id !== logId));
     } catch (err) {

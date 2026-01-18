@@ -5,6 +5,7 @@ import { UserContext } from "../context/UserContext";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { uploadPhotos } from "../api/photos";
 
 
 export default function UploadPhotos({ userId }) {
@@ -33,6 +34,7 @@ export default function UploadPhotos({ userId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (files.length < 2 || files.length > 5) {
       alert("Please select between 2 to 5 images.");
       return;
@@ -46,24 +48,14 @@ export default function UploadPhotos({ userId }) {
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        "http://localhost:3000/api/upload-photos",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await uploadPhotos(formData);
       setResultData(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Photo upload failed:", err);
     } finally {
       setLoading(false);
     }
   };
-
   
 
   return (

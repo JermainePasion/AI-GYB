@@ -17,3 +17,6 @@ export const fetchPatientLogs = (patientId) => {
 };
 
 export const getMyLogs = () => api.get("/logs/my");
+
+export const deleteLog = (logId) =>
+  api.delete(`/logs/${logId}`);
