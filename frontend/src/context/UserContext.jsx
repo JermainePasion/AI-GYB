@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { fetchUserProfile } from '../api/users';
 
 export const UserContext = createContext();
 
@@ -9,7 +10,7 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
+    const loadProfile = async () => {
       if (!token) {
         setUser(null);
         setLoading(false);
@@ -17,19 +18,17 @@ export const UserProvider = ({ children }) => {
       }
 
       try {
-        const res = await axios.get('http://localhost:3000/api/users/profile', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetchUserProfile();
         setUser(res.data);
       } catch (err) {
-        console.error('Failed to fetch user profile', err);
-        logout(); // clears token & user
+        console.error("Failed to fetch user profile", err);
+        logout();
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserProfile();
+    loadProfile();
   }, [token]);
 
   const login = (token, userData) => {
