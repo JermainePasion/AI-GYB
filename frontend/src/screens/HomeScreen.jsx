@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext, useMemo } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../layouts/DashboardLayout';
 import { UserContext } from '../context/UserContext';
@@ -136,14 +135,21 @@ function HomeScreen() {
                 ${activeView === "live" ? "translate-x-0" : "translate-x-full"}`}
             >
               {activeView === "live" && (
-                <div className="relative w-full flex justify-center">
-
-                  <div className="w-full max-w-4xl">
+                <div className="relative w-full flex flex-col items-center lg:block">
+                  <div className="w-full max-w-4xl mx-auto">
                     <LivePosture />
                   </div>
-
                   {user?.posture_thresholds && (
-                    <div className="hidden lg:block absolute right-0 top-0">
+                    <div
+                      className="
+                        mt-6
+                        flex justify-center
+                        w-full
+                        max-w-[260px] sm:max-w-[280px]
+                        lg:absolute lg:right-0 lg:top-0
+                        lg:w-[300px] lg:max-w-none
+                      "
+                    >
                       <ThresholdCard data={thresholdData} />
                     </div>
                   )}
