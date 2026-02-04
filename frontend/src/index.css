@@ -317,7 +317,7 @@ body {
 
 /* Inactive but hoverable */
 .navbar-link-inactive {
-  color: #000000; /* light gray, visible on dark navbar */
+  color: #f3f4f6; /* light gray, visible on dark navbar */
 }
 
 .navbar-link-inactive:hover {
