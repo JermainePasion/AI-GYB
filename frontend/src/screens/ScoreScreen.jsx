@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { usePostureLogs } from "../hooks/UsePostureLogs";
 
 import OverallScore from "../components/scores/OverallScore";
 import LongestStreak from "../components/scores/LongestStreak";
+import DailyGoalProgress from "../components/scores/DailyGoalProgress";
+import AchievementBadges from "../components/scores/AchievementBadges";
+import ConsistencyScore from "../components/scores/ConsistencyScore";
 
+import { UserContext } from "../context/UserContext";
 
 function ScoreScreen() {
   const { logs, loading } = usePostureLogs();
   const [processedLogs, setProcessedLogs] = useState([]);
+  const { user } = useContext(UserContext);
+
 
   useEffect(() => {
     if (logs && logs.length > 0) {
@@ -30,7 +36,7 @@ function ScoreScreen() {
   }
 
   return (
-    <DashboardLayout>
+     <DashboardLayout>
       <div className="min-h-screen bg-background text-white flex flex-col items-center justify-start p-6 mt-10">
         <h1 className="text-5xl font-extrabold text-white text-center mb-8">
           Your Posture Score
@@ -44,6 +50,13 @@ function ScoreScreen() {
             <div className="transition-transform duration-300 hover:scale-105 ">
               <LongestStreak logs={processedLogs} />
             </div>
+          </div>
+          <div className="mt-10">
+           <DailyGoalProgress logs={processedLogs} goalMinutes={60} />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+            <ConsistencyScore logs={processedLogs} />
+            <AchievementBadges badges={user.achievements?.badges || []} />
           </div>
         </div>
       </div>

@@ -16,13 +16,23 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ["user", "doctor", "admin"], default: "user" },
   status: { type: String, enum: ["active", "pending"], default: "active" },
+  
   posture_baseline: {
     flex_sensor_baseline: { type: Number, default: 0 },
     gyroY_baseline: { type: Number, default: 0 },
     gyroZ_baseline: { type: Number, default: 0 }
   },
-  posture_thresholds: { type: thresholdSchema, default: () => ({}) }
+  posture_thresholds: { type: thresholdSchema, default: () => ({}) },
+
+  achievements: {
+  badges: [{ type: String }],
+  xp: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
+  lastActiveDate: { type: Date },
+  dailyGoalMinutes: { type: Number, default: 60 }
+}
 }, { timestamps: true });
+
 
 // Hash password before save
 userSchema.pre("save", async function (next) {
