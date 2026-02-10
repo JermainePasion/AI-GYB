@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import LoadingOverlay from "../components/Spinner/LoadingOverlay";
 import { BluetoothContext } from "../context/BluetoothContext";
+import BluetoothShortcut from "../components/bluetooth/BluetoothShortcut";
 
 const DashboardLayout = ({ children }) => {
   const { isUploading } = useContext(BluetoothContext);
@@ -21,8 +22,9 @@ const DashboardLayout = ({ children }) => {
 
       <div className="pt-16 flex">
         <Sidebar />
-        <main className="flex-1 md:ml-56 p-6 overflow-y-auto">
+        <main className="flex-1 md:ml-56 p-6 overflow-y-auto relative overflow-x-visible ">
           {children}
+          <BluetoothShortcut />
         </main>
       </div>
     </div>
