@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect} from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { usePostureLogs } from "../hooks/UsePostureLogs";
 
@@ -8,12 +8,10 @@ import DailyGoalProgress from "../components/scores/DailyGoalProgress";
 import AchievementBadges from "../components/scores/AchievementBadges";
 import ConsistencyScore from "../components/scores/ConsistencyScore";
 
-import { UserContext } from "../context/UserContext";
 
 function ScoreScreen() {
   const { logs, loading } = usePostureLogs();
   const [processedLogs, setProcessedLogs] = useState([]);
-  const { user } = useContext(UserContext);
 
 
   useEffect(() => {
@@ -22,11 +20,13 @@ function ScoreScreen() {
         (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
       );
       setProcessedLogs(sorted);
+      console.log("Sample timestamp:", logs[0]?.timestamp);
     }
   }, [logs]);
 
   if (loading) {
     return (
+      
       <DashboardLayout>
         <div className="min-h-screen flex items-center justify-center text-white">
           Loading posture logs...
@@ -56,7 +56,7 @@ function ScoreScreen() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
             <ConsistencyScore logs={processedLogs} />
-            <AchievementBadges badges={user.achievements?.badges || []} />
+            <AchievementBadges logs={processedLogs} />
           </div>
         </div>
       </div>
