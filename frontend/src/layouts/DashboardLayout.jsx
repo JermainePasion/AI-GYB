@@ -10,7 +10,6 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className="h-screen flex flex-col relative">
-      {/* 🔥 GLOBAL LOADING OVERLAY */}
       <LoadingOverlay
         visible={isUploading}
         text="Uploading session data..."

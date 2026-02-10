@@ -86,7 +86,6 @@ export default function BluetoothShortcut() {
     }));
   };
 
-  /* 🌍 Global listeners */
   useEffect(() => {
     window.addEventListener("mousemove", onMouseMove);
     window.addEventListener("mouseup", onMouseUp);
@@ -96,7 +95,6 @@ export default function BluetoothShortcut() {
     };
   }, []);
 
-  /* 🧠 Determine which side we're on */
   const isLeftSide =
     containerRef.current &&
     pos.x + SIZE / 2 < containerRef.current.clientWidth / 2;
@@ -107,7 +105,7 @@ export default function BluetoothShortcut() {
       style={{ left: pos.x, top: pos.y }}
     >
       <div className="relative">
-        {/* 🔵 CIRCLE ICON */}
+
         <div
           onMouseDown={onMouseDown}
           className={`
@@ -124,7 +122,6 @@ export default function BluetoothShortcut() {
           </span>
         </div>
 
-        {/* 🧩 POPUP (ATTACHED TO ICON CORNER) */}
         <div
           className={`
             absolute transition-all duration-300 ease-out
