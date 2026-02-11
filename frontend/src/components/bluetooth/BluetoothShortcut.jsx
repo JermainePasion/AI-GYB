@@ -1,174 +1,193 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { BluetoothContext } from "../../context/BluetoothContext";
 
-const HOLD_DELAY = 180;
-const SIZE = 56;
-const SNAP_MARGIN = 12;
+const SIZE = 60;
+const SNAP_MARGIN = 16;
+const NAVBAR_HEIGHT = 104;
+const SIDEBAR_WIDTH = 224;
 
 export default function BluetoothShortcut() {
-  const {
-    connected,
-    flexAngle,
-    gyroY,
-    gyroZ,
-    connectBLE,
-  } = useContext(BluetoothContext);
+  const { connected, flexAngle, gyroY, gyroZ, connectBLE } =
+    useContext(BluetoothContext);
 
-  const containerRef = useRef(null);
   const draggingRef = useRef(false);
-  const holdTimerRef = useRef(null);
   const didDragRef = useRef(false);
+  const startOffsetRef = useRef({ x: 0, y: 0 });
 
   const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState({ x: 20, y: 20 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [pos, setPos] = useState({
+    x: window.innerWidth >= 768
+      ? SIDEBAR_WIDTH + SNAP_MARGIN
+      : SNAP_MARGIN,
+    y: NAVBAR_HEIGHT + SNAP_MARGIN,
+  });
 
-  /* 🔒 Restrict movement to <main> */
-  useEffect(() => {
-    containerRef.current = document.querySelector("main");
-  }, []);
 
-  /* 🖱 Click + Hold */
-  const onMouseDown = (e) => {
-    if (open) return; // 🔒 prevent dragging while popup open
-
+  const onPointerDown = (e) => {
     e.stopPropagation();
-    didDragRef.current = false;
 
-    holdTimerRef.current = setTimeout(() => {
-      draggingRef.current = true;
-    }, HOLD_DELAY);
+    draggingRef.current = true;
+    didDragRef.current = false;
+    setIsDragging(true);
+
+    startOffsetRef.current = {
+      x: e.clientX - pos.x,
+      y: e.clientY - pos.y,
+    };
+
+    document.body.style.userSelect = "none";
   };
 
-  const onMouseUp = () => {
-    clearTimeout(holdTimerRef.current);
 
-    if (draggingRef.current) {
+  const onPointerMove = (e) => {
+    if (!draggingRef.current) return;
+
+    didDragRef.current = true;
+
+    const x = e.clientX - startOffsetRef.current.x;
+    const y = e.clientY - startOffsetRef.current.y;
+
+    const minX = window.innerWidth >= 768 ? SIDEBAR_WIDTH : 0;
+    const maxX = window.innerWidth - SIZE;
+    const minY = NAVBAR_HEIGHT;
+    const maxY = window.innerHeight - SIZE;
+
+    setPos({
+      x: Math.min(Math.max(minX, x), maxX),
+      y: Math.min(Math.max(minY, y), maxY),
+    });
+  };
+
+  const onPointerUp = () => {
+    if (!draggingRef.current) return;
+
+    if (didDragRef.current) {
       snapToEdge();
-    } else if (!didDragRef.current) {
-      setOpen(true);
+    } else {
+      setOpen((prev) => !prev);
     }
 
     draggingRef.current = false;
+    setIsDragging(false);
+    document.body.style.userSelect = "auto";
   };
 
-  const onMouseMove = (e) => {
-    if (!draggingRef.current || !containerRef.current) return;
-    didDragRef.current = true;
-
-    const rect = containerRef.current.getBoundingClientRect();
-
-    const x = Math.min(
-      Math.max(e.clientX - rect.left - SIZE / 2, 0),
-      rect.width - SIZE
-    );
-    const y = Math.min(
-      Math.max(e.clientY - rect.top - SIZE / 2, 0),
-      rect.height - SIZE
-    );
-
-    setPos({ x, y });
-  };
-
-  /* 🧲 Correct snap logic (FIXED) */
   const snapToEdge = () => {
-    if (!containerRef.current) return;
+    const minX = window.innerWidth >= 768 ? SIDEBAR_WIDTH : 0;
+    const maxX = window.innerWidth - SIZE - SNAP_MARGIN;
 
-    const containerWidth = containerRef.current.clientWidth;
     const centerX = pos.x + SIZE / 2;
+    const mid = (minX + window.innerWidth) / 2;
 
-    const snapLeft = centerX < containerWidth / 2;
+    const snapLeft = centerX < mid;
 
-    setPos((p) => ({
-      ...p,
+    setPos((prev) => ({
+      ...prev,
       x: snapLeft
-        ? SNAP_MARGIN
-        : containerWidth - SIZE - SNAP_MARGIN,
+        ? minX + SNAP_MARGIN
+        : maxX,
     }));
   };
 
   useEffect(() => {
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-  }, []);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
 
-  const isLeftSide =
-    containerRef.current &&
-    pos.x + SIZE / 2 < containerRef.current.clientWidth / 2;
+    return () => {
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+    };
+  }, [pos]);
+
+  const isLeftSide = pos.x + SIZE / 2 < window.innerWidth / 2;
+  const isNearBottom = pos.y + SIZE + 220 > window.innerHeight;
 
   return (
     <div
-      className="absolute z-40 pointer-events-auto"
+      className={`fixed z-50 pointer-events-auto ${
+        isDragging ? "" : "transition-all duration-300 ease-out"
+      }`}
       style={{ left: pos.x, top: pos.y }}
     >
-      <div className="relative">
+      <div className="relative select-none">
 
+        {/* Circle */}
         <div
-          onMouseDown={onMouseDown}
+          onPointerDown={onPointerDown}
+          style={{ width: SIZE, height: SIZE, touchAction: "none" }}
           className={`
             flex items-center justify-center rounded-full cursor-pointer
-            transition-all duration-300 ease-out
-            ${connected ? "bg-green-500" : "bg-gray-400"}
-            ${connected ? "bluetooth-pulse" : ""}
+            shadow-xl transition-transform duration-200
+            ${connected ? "bg-green-500 bluetooth-pulse" : "bg-gray-400"}
             ${open ? "scale-110" : "scale-100"}
           `}
-          style={{ width: SIZE, height: SIZE }}
         >
-          <span className="material-symbols-outlined text-white text-3xl">
+          <span className="material-symbols-outlined text-white text-3xl select-none">
             bluetooth
           </span>
         </div>
 
+        {/* Popup */}
         <div
           className={`
             absolute transition-all duration-300 ease-out
             ${open
               ? "opacity-100 scale-100"
-              : "opacity-0 scale-75 pointer-events-none"}
+              : "opacity-0 scale-95 pointer-events-none"}
           `}
           style={{
-            top: SIZE + 8,
+            top: isNearBottom ? "auto" : SIZE + 8,
+            bottom: isNearBottom ? SIZE + 8 : "auto",
             left: isLeftSide ? 0 : "auto",
             right: isLeftSide ? "auto" : 0,
-            transformOrigin: isLeftSide ? "top left" : "top right",
+            transformOrigin: `
+              ${isNearBottom ? "bottom" : "top"}
+              ${isLeftSide ? " left" : " right"}
+            `,
           }}
         >
-          <div className="bg-[#A4CCD9] rounded-2xl p-5 w-[300px] shadow-xl">
-            <p className="text-center text-sm text-gray-50 mb-3">
-              {connected ? "Connected" : "Disconnected"}
-            </p>
+          <div className="relative">
 
-            <div className="space-y-2">
-              <DataCard label="Flex" value={`${flexAngle.toFixed(2)}°`} />
-              <DataCard label="Gyro Y" value={`${gyroY.toFixed(2)}°`} />
-              <DataCard label="Gyro Z" value={`${gyroZ.toFixed(2)}°`} />
+            <div
+              className="absolute w-5 h-5 bg-[#8ec2d3] rotate-45"
+              style={{
+                top: isNearBottom ? "auto" : -10,
+                bottom: isNearBottom ? -10 : "auto",
+                left: isLeftSide ? 22 : "auto",
+                right: isLeftSide ? "auto" : 22,
+              }}
+            />
+
+            <div className="bg-[#A4CCD9]  rounded-2xl p-5 w-[300px] shadow-2xl border border-white/20 backdrop-blur-md">
+
+              <p className="text-center text-sm text-white mb-4 font-semibold">
+                {connected ? "Connected" : "Disconnected"}
+              </p>
+
+              <div className="space-y-2">
+                <DataCard label="Flex" value={`${flexAngle.toFixed(2)}°`} />
+                <DataCard label="Gyro Y" value={`${gyroY.toFixed(2)}°`} />
+                <DataCard label="Gyro Z" value={`${gyroZ.toFixed(2)}°`} />
+              </div>
+
+              <button
+                onClick={connectBLE}
+                className="mt-4 w-full py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-semibold transition"
+              >
+                Connect
+              </button>
             </div>
-
-            <button
-              onClick={connectBLE}
-              className="mt-4 w-full py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-semibold"
-            >
-              Connect
-            </button>
-
-            <button
-              onClick={() => setOpen(false)}
-              className="mt-2 w-full text-xs text-gray-700 hover:underline"
-            >
-              Close
-            </button>
           </div>
         </div>
+
       </div>
     </div>
   );
 }
 
 const DataCard = ({ label, value }) => (
-  <div className="bg-white/10 p-2 rounded-md flex justify-between text-sm">
+  <div className="bg-white/20 p-2 rounded-md flex justify-between text-sm text-white">
     <span>{label}</span>
     <span className="font-bold">{value}</span>
   </div>
