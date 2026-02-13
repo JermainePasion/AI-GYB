@@ -14,6 +14,8 @@ const {
   getUserById,
 } = require("../controllers/userController");
 
+const {adjustThresholdOnLogout} = require("../controllers/thresholdAdjustmentController")
+
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -38,5 +40,7 @@ router.get("/:id", protect, authorize("admin", "doctor"), getUserById);
 
 
 router.post("/upload-log", protect, upload.single("file"), uploadLog);
+
+router.post("/logout-adjust", protect, adjustThresholdOnLogout);
 
 module.exports = router;

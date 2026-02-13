@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import { adjustThresholdOnLogout } from "../api/auth";
 
 import "../index.css";
 
@@ -9,8 +10,15 @@ function Navbar() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (!window.confirm("Are you sure you want to logout?")) return;
+
+    try {
+      await adjustThresholdOnLogout();
+    } catch (err) {
+      console.error("Threshold adjustment failed:", err);
+    }
+
     logout();
     navigate("/");
   };

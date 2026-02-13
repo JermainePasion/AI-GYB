@@ -1,0 +1,35 @@
+{
+  "policy": {
+    "base_step": 0.5,
+    "max_step": 1.0,
+    "tighten_multiplier": 1.3244962014384307,
+    "relax_multiplier": 0.9,
+    "target_risk": 0.5,
+    "sensor_weights": {
+      "flex": 0.18695620488036616,
+      "gyroY": 0.2984717799197564,
+      "gyroZ": 0.5145720151998775
+    }
+  },
+  "risk_profile": {
+    "pain_rate": 0.025847813366575927,
+    "risk_mean": 0.025868938032859404,
+    "risk_std": 0.03244962014384306,
+    "feature_importance": {
+      "flex": 0.17898160067518126,
+      "gyroY": 0.28574048644490113,
+      "gyroZ": 0.4926229808850804,
+      "stage": 0.0426549319948372
+    }
+  },
+  "confidence_calibration": {
+    "min_samples_for_full_confidence": 600,
+    "max_risk_std": 0.2,
+    "strong_signal_delta": 0.5,
+    "weights": {
+      "volume": 0.4,
+      "consistency": 0.3,
+      "signal": 0.3
+    }
+  }
+}
