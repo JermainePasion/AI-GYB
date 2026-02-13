@@ -57,7 +57,7 @@ function Sidebar() {
             `${linkClasses} flex items-center ${isActive ? "bg-gray-700" : "hover:bg-gray-700"}`
           }>
             <Icon name="accessibility_new" />
-            Accessibility
+            Upload
           </NavLink>
 
           <NavLink to="/connection" className={({ isActive }) =>
