@@ -30,7 +30,15 @@ const userSchema = new mongoose.Schema({
   level: { type: Number, default: 1 },
   lastActiveDate: { type: Date },
   dailyGoalMinutes: { type: Number, default: 60 }
-}
+},
+
+last_threshold_adjustment: {
+  flex: { type: Number, default: 0 },
+  gyroY: { type: Number, default: 0 },
+  gyroZ: { type: Number, default: 0 },
+  updatedAt: { type: Date }
+},
+
 }, { timestamps: true });
 
 

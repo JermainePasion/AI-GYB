@@ -22,6 +22,9 @@ exports.uploadLog = asyncHandler(async (req, res) => {
     log.data = csv;
   }
 
+
+  log.createdAt = new Date();
+
   await log.save();
   res.json({ message: "CSV saved", log });
 });

@@ -8,7 +8,32 @@ const crypto = require("crypto");
 
 exports.adjustThresholdOnLogout = async (req, res) => {
   try {
-    const logs = await PostureLog.find({ user: req.user.id });
+    const PH_OFFSET = 8 * 60; 
+    const nowUTC = new Date();
+    const nowPH = new Date(nowUTC.getTime() + PH_OFFSET * 60000);
+    const startOfDayPH = new Date(nowPH);
+    startOfDayPH.setHours(0, 0, 0, 0);
+    
+    const endOfDayPH = new Date(nowPH);
+    endOfDayPH.setHours(23, 59, 59, 999);
+
+    const startOfDayUTC = new Date(startOfDayPH.getTime() - PH_OFFSET * 60000);
+    const endOfDayUTC = new Date(endOfDayPH.getTime() - PH_OFFSET * 60000);
+
+    const logs = await PostureLog.find({
+      user: req.user.id,
+      processed: false,
+      createdAt: {
+        $gte: startOfDayUTC,
+        $lte: endOfDayUTC,
+      },
+    });
+    
+
+    console.log("ALL USER LOGS:");
+    logs.forEach(log => {
+      console.log("CreatedAt (raw):", log.createdAt);
+    });
 
     if (!logs.length) {
       return res.json({ message: "No logs found. Threshold unchanged." });
@@ -69,20 +94,33 @@ exports.adjustThresholdOnLogout = async (req, res) => {
 
             const { flex, gyroY, gyroZ } = result.adjustment;
 
-            user.posture_thresholds = {
-            flex_min: current.flex_min + flex,
-            flex_max: current.flex_max + flex,
+              // Apply incremental updates
+              user.posture_thresholds = {
+                flex_min: current.flex_min + flex,
+                flex_max: current.flex_max + flex,
 
-            gyroY_min: current.gyroY_min + gyroY,
-            gyroY_max: current.gyroY_max + gyroY,
+                gyroY_min: current.gyroY_min + gyroY,
+                gyroY_max: current.gyroY_max + gyroY,
 
-            gyroZ_min: current.gyroZ_min + gyroZ,
-            gyroZ_max: current.gyroZ_max + gyroZ,
-            };
+                gyroZ_min: current.gyroZ_min + gyroZ,
+                gyroZ_max: current.gyroZ_max + gyroZ,
+              };
+
+              user.last_threshold_adjustment = {
+                flex,
+                gyroY,
+                gyroZ,
+                updatedAt: new Date()
+              };
 
             await user.save();
 
             console.log("New Thresholds Saved:", user.posture_thresholds);
+
+            await PostureLog.updateMany(
+              { _id: { $in: logs.map(log => log._id) } },
+              { $set: { processed: true } }
+            );
 
             res.json({
             message: "Thresholds adjusted incrementally",

@@ -62,11 +62,6 @@ function LandingNavbar() {
               </a>
             </li>
             <li>
-              <a href="/#contact" className="nav-link" onClick={() => setIsOpen(false)}>
-                Contact us
-              </a>
-            </li>
-            <li>
               <a href="/signup" className="nav-button" onClick={() => setIsOpen(false)}>
                 Sign in
               </a>

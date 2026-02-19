@@ -6,42 +6,84 @@ function AboutUsScreen() {
    <div className="bg-[#8dbcc7] min-h-screen scroll-smooth">
       <LandingNavbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-25 ">
-        <h1 className="text-4xl text-black font-bold text-center mb-1">About Us</h1>
-        <p className="text-lg text-black mb-0">
-          Welcome to our platform! We are dedicated to providing a seamless and efficient experience for users looking to buy and sell products online. Our mission is to connect buyers and sellers in a trustworthy environment, ensuring that every transaction is smooth and satisfactory.
+      <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+  
+        <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 mt-10">
+          About Us
+        </h1>
+
+        <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          We’re dedicated to creating a seamless and efficient platform for buying
+          and selling products online. Our mission is to connect buyers and sellers
+          in a trusted environment where every transaction feels smooth, secure,
+          and reliable.
         </p>
-      </div>
-      <div className = "max-w-6xl mx-auto px-4 py-0 text-center mb-20">
-           <a href="/signup"
-            className="px-8 py-4 flex justify-center text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+
+        <div className="mt-10">
+          <a
+            href="/signup"
+            className="inline-block px-8 py-3 text-base md:text-lg font-semibold text-white bg-blue-600 rounded-xl shadow-md hover:bg-blue-700 hover:shadow-xl transition-all duration-300"
+          >
             Get Started
           </a>
+        </div>
+
       </div>
 
-          <div className = "bg-gray-300 grid grid-cols-2 gap-4 border-1 rounded-xl max-w-6xl mx-auto px-0 py-0 mb-20">
+          <div className="max-w-6xl mx-auto px-6 space-y-16 mb-24">
 
-            <div className = "w-full h-full object-fill">
-              <img class="h-full w-full rounded-xl object-none " src="/img/mountains.jpg" />
+            {/* Section 1 */}
+            <div className="bg-white rounded-2xl shadow-md overflow-hidden grid md:grid-cols-2">
+              
+              <div className="h-72 md:h-full">
+                <img
+                  src="/team.jpg"
+                  alt="Our Team"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="flex items-center p-10">
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                    Who We Are
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    We are passionate innovators who believe in the power of technology
+                    to transform everyday experiences. Our mission is to continuously
+                    improve our platform and deliver meaningful value to our users.
+                  </p>
+                </div>
+              </div>
+
             </div>
 
-            <div className='mb-8'>
-              <p className='text-lg text-black mb-1'>
-              Our team is composed of passionate individuals who believe in the power of technology to transform the way we shop. We are committed to innovation and continuously improving our platform to meet the evolving needs of our users.
-            </p>
+            {/* Section 2 */}
+            <div className="bg-white rounded-2xl shadow-md overflow-hidden grid md:grid-cols-2">
+              
+              <div className="flex items-center p-10 order-2 md:order-1">
+                <div>
+                  <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                    Our Vision
+                  </h2>
+                  <p className="text-gray-600 leading-relaxed">
+                    We aim to create a seamless and intelligent platform that adapts
+                    to evolving user needs, ensuring innovation remains at the core
+                    of everything we build.
+                  </p>
+                </div>
+              </div>
+
+              <div className="h-72 md:h-full order-1 md:order-2">
+                <img
+                  src="/team.jpg"
+                  alt="Vision"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
             </div>
 
-          </div>
-
-          <div className = "bg-gray-300 grid grid-cols-2 gap-4 border-1 rounded-xl max-w-6xl mx-auto px-0 py-0 mb-20">
-            <div className='mb-8'>
-              <p className='text-lg text-black mb-1'>
-              Our team is composed of passionate individuals who believe in the power of technology to transform the way we shop. We are committed to innovation and continuously improving our platform to meet the evolving needs of our users.
-            </p>
-            </div>
-            <div className = "w-full h-full object-fill">
-               <img class="h-full w-full rounded-xl object-none " src="/img/mountains.jpg" />
-            </div>
           </div>
           
 

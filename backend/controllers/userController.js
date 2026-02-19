@@ -49,6 +49,8 @@ exports.loginUser = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       token: generateToken(user.id),
+      posture_thresholds: user.posture_thresholds,
+      last_threshold_adjustment: user.last_threshold_adjustment || null
     });
   } else {
     res.status(401).json({ message: "Invalid email or password" });
@@ -67,6 +69,7 @@ exports.getProfile = asyncHandler(async (req, res) => {
     email: req.user.email,
     role: req.user.role,
     posture_thresholds: req.user.posture_thresholds || {},
+    last_threshold_adjustment: req.user.last_threshold_adjustment || null
   });
 });
 
