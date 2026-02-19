@@ -74,15 +74,6 @@ export default function LandingScreen() {
               <span className="font-semibold text-blue-600"> PostureSense</span>, 
               an AI-powered wearable that monitors and corrects your sitting position in real time.
             </p>
-            <p className="text-3xl font-bold text-green-600 mb-8">$99.99</p>
-            <a
-              href="https://yourshoplink.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-8 py-4 text-white text-lg font-medium bg-gradient-to-r from-blue-600 to-green-500 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
-            >
-              Buy Now
-            </a>
           </div>
         </div>
 
