@@ -30,7 +30,7 @@ export default function LandingScreen() {
             Welcome to <span className="text-blue-400">AI-GYB</span>
           </h1>
           <p className="text-lg md:text-xl text-gray-100 mb-8 leading-relaxed">
-            PostureSense is an AI-powered wearable device designed to help you
+            AI-GYB is an AI-powered wearable device designed to help you
             maintain good posture, reduce back pain, and improve overall wellness.
           </p>
           <a
@@ -61,17 +61,17 @@ export default function LandingScreen() {
           <div className="flex justify-center">
             <img
               src="/posture-vest.jpg"
-              alt="PostureSense Wearable"
+              alt="AI-GYB Wearable"
               className="w-80 h-auto rounded-2xl shadow-md hover:scale-105 transition-transform duration-300"
             />
           </div>
 
           {/* Product Details */}
           <div className="text-center md:text-left">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">PostureSense</h2>
+            <h2 className="text-4xl font-bold text-gray-800 mb-4">AI-GYB</h2>
             <p className="text-lg text-gray-600 mb-6 leading-relaxed">
               Improve your posture, reduce back pain, and stay confident with
-              <span className="font-semibold text-blue-600"> PostureSense</span>, 
+              <span className="font-semibold text-blue-600"> AI-GYB</span>, 
               an AI-powered wearable that monitors and corrects your sitting position in real time.
             </p>
           </div>
@@ -187,7 +187,7 @@ export default function LandingScreen() {
           <p>Location: Manila, Philippines | Phone: +63 912 345 6789</p>
           <div className="border-t border-gray-700 pt-4 mt-6">
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} PostureSense. All rights reserved.
+              © {new Date().getFullYear()} AI-GYB. All rights reserved.
             </p>
           </div>
         </div>
