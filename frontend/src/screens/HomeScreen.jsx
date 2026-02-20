@@ -13,6 +13,8 @@ import TimeSeriesGraph from '../components/graphs/TimeSeriesGraph';
 import PostureHeatmap from '../components/graphs/PostureHeatmap';
 import FadeInSection from '../components/animation/FadeInSection';
 
+import GraphHeader from '../components/graphs/GraphHeader';
+
 import { getThresholds } from '../api/users';
 const USE_MOCK = true;
 
@@ -81,8 +83,8 @@ function HomeScreen() {
     if (!user?.posture_thresholds) return [];
     return [
       { name: "Spine", Min: user.posture_thresholds.flex_min.toFixed(1), Max: user.posture_thresholds.flex_max.toFixed(1) },
-      { name: "Left", Min: user.posture_thresholds.gyroY_min.toFixed(1), Max: user.posture_thresholds.gyroY_max.toFixed(1) },
-      { name: "Right", Min: user.posture_thresholds.gyroZ_min.toFixed(1), Max: user.posture_thresholds.gyroZ_max.toFixed(1) },
+      { name: "Tilt", Min: user.posture_thresholds.gyroY_min.toFixed(1), Max: user.posture_thresholds.gyroY_max.toFixed(1) },
+      { name: "Side", Min: user.posture_thresholds.gyroZ_min.toFixed(1), Max: user.posture_thresholds.gyroZ_max.toFixed(1) },
     ];
   }, [user?.posture_thresholds]);
 
@@ -168,37 +170,43 @@ function HomeScreen() {
 
         {activeView === "live" && user?.posture_thresholds && (
           <>
-            <div className="w-full flex flex-col items-center gap-8 mt-8">
+            <div className="w-full flex flex-col items-center gap-8 ">
               <FadeInSection>
                 <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl bg-white">
-                  <h2 className="text-center font-semibold mb-2 text-black">
-                    Live Posture Timeline
-                  </h2>
+                  <GraphHeader
+                    title="Live Posture Timeline"
+                    description="Displays real-time flex and gyroscope angles throughout your session. Helps detect posture imbalance trends."
+                  />
                   <TimeSeriesGraph logs={logs.sampled} />
                 </div>
               </FadeInSection>
 
               <FadeInSection>
                 <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5 bg-white">
-                  <h2 className="text-center font-semibold mb-2 text-black">Posture Summary</h2>
+                  <GraphHeader
+                    title="Posture Summary"
+                    description="Shows the distribution of good, mild, and severe posture stages for this session."
+                  />
                   <PosturePieChart logs={logs.full} />
                 </div>
               </FadeInSection>
 
               <FadeInSection>
                 <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl mt-5 bg-white">
-                  <h2 className="text-center font-semibold mb-2 text-black">
-                    Posture Rhythm Chart
-                  </h2>
+                  <GraphHeader
+                    title="Posture Rhythm Chart"
+                    description="Breaks down posture stages by hour to reveal daily posture patterns."
+                  />
                   <PostureHeatmap logs={logs.full} />
                 </div>
               </FadeInSection>
 
               <FadeInSection>
                 <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl bg-white">
-                  <h2 className="text-center font-semibold mb-2 text-black">
-                    Daily Summary & Trends
-                  </h2>
+                  <GraphHeader
+                    title="Daily Summary & Trends"
+                    description="Displays average sensor angles and total posture stage counts for the selected period."
+                  />
                   <SummaryTable logs={logs.full} />
                 </div>
               </FadeInSection>
