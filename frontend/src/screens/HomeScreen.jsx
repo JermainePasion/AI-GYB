@@ -170,7 +170,7 @@ function HomeScreen() {
 
         {activeView === "live" && user?.posture_thresholds && (
           <>
-            <div className="w-full flex flex-col items-center gap-8 ">
+            <div className="w-full flex flex-col items-center gap-8 mt-10">
               <FadeInSection>
                 <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl bg-white">
                   <GraphHeader

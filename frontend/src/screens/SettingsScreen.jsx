@@ -69,7 +69,7 @@ function SettingsScreen() {
 
         {/* Header */}
         <div className="px-6 pt-10 pb-6">
-          <h1 className="text-3xl sm:text-4xl font-bold">
+          <h1 className="text-3xl sm:text-4xl font-bold mt-11">
             Your Session Logs
           </h1>
         </div>
