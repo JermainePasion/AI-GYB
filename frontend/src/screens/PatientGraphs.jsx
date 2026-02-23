@@ -7,7 +7,7 @@ import PosturePieChart from "../components/graphs/PosturePieChart";
 import PostureHeatmap from "../components/graphs/PostureHeatmap";
 import SummaryTable from "../components/graphs/SummaryTable";
 import FadeInSection from "../components/animation/FadeInSection";
-import { UsePatientLogs } from "../hooks/usePatientLogs";
+import { UsePatientLogs } from "../hooks/UsePatientLogs";
 import { getUserById } from "../api/users";
 
 const BACKEND_IP = "localhost";
