@@ -216,7 +216,7 @@ export default function AdminScreen() {
                 </div>
               ))}
               {pendingDoctors.length === 0 && (
-                <p className="text-sm text-gray-500">No pending approvals 🎉</p>
+                <p className="text-sm text-gray-500">No pending approvals</p>
               )}
             </div>
           </div>

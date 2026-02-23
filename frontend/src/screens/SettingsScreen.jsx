@@ -5,6 +5,7 @@ import CSVButton from "../components/CSVButton";
 import { BluetoothContext } from "../context/BluetoothContext";
 import { toast } from "react-toastify";
 import { getMyLogs, deleteLog } from "../api/logs";
+import Spinner from "../components/Spinner/Spinner";
 
 function SettingsScreen() {
   const { token } = useContext(UserContext);
@@ -79,8 +80,8 @@ function SettingsScreen() {
           <div className="max-w-4xl mx-auto flex flex-col gap-4">
 
             {sortedLogs.length === 0 && (
-              <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center text-gray-300">
-                No CSV logs found.
+              <div className="min-h-screen flex items-center justify-center text-white">
+                <Spinner/>
               </div>
             )}
 

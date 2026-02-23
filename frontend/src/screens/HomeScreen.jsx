@@ -16,6 +16,7 @@ import FadeInSection from '../components/animation/FadeInSection';
 import GraphHeader from '../components/graphs/GraphHeader';
 
 import { getThresholds } from '../api/users';
+import Spinner from '../components/Spinner/Spinner';
 const USE_MOCK = true;
 
 function HomeScreen() {
@@ -92,7 +93,7 @@ function HomeScreen() {
     return (
       <DashboardLayout>
         <div className="min-h-screen flex items-center justify-center text-white">
-          Loading user info and logs...
+          <Spinner/>
         </div>
       </DashboardLayout>
     );

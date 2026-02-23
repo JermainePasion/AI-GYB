@@ -7,6 +7,7 @@ import LongestStreak from "../components/scores/LongestStreak";
 import DailyGoalProgress from "../components/scores/DailyGoalProgress";
 import AchievementBadges from "../components/scores/AchievementBadges";
 import ConsistencyScore from "../components/scores/ConsistencyScore";
+import Spinner from "../components/Spinner/Spinner";
 
 
 function ScoreScreen() {
@@ -29,7 +30,7 @@ function ScoreScreen() {
       
       <DashboardLayout>
         <div className="min-h-screen flex items-center justify-center text-white">
-          Loading posture logs...
+          <Spinner/>
         </div>
       </DashboardLayout>
     );

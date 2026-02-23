@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import ThresholdSlider from "../components/ThresholdSlider";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { getThresholds, updateThresholds } from "../api/users";
+import Spinner from "../components/Spinner/Spinner";
 
 const ControlPage = () => {
   const { token, user } = useContext(UserContext);
@@ -60,7 +61,7 @@ const ControlPage = () => {
         <h1 className="text-4xl font-bold mb-6">Control Panel</h1>
 
         {loading && (
-          <p className="text-center text-gray-400">Loading...</p>
+          <Spinner/>
         )}
 
         {!loading && !thresholds && (
