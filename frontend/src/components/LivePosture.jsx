@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { BluetoothContext } from "../context/BluetoothContext";
 import SensorGauge from "./SensorGauge";
-import Skeleton3D from "./skeleton";
+import Skeleton3D from "./Skeleton";
 
 export default function LivePosture() {
   const { flexAngle, gyroY, gyroZ } = useContext(BluetoothContext);
