@@ -29,7 +29,7 @@ exports.uploadPhotos = async (req, res) => {
   try {
     const imagePaths = req.files.map((f) => path.resolve(f.path));
 
-    const python = spawn("python", [
+    const python = spawn("python3", [
       "./python/process_photos.py",
       req.uploadDir,
       ...imagePaths,
