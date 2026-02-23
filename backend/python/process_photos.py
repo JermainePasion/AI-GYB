@@ -1,7 +1,7 @@
 import sys, os, json, math, cv2, base64
 import mediapipe as mp
 import numpy as np
-import mediapipe.python.solutions.drawing_utils as mp_drawing
+mp_drawing = mp.solutions.drawing_utils
 
 # ---------------------------
 # CONFIG
