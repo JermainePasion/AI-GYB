@@ -27,7 +27,7 @@ function Navbar() {
     <nav className="navbar-main fixed w-full top-0 z-50 shadow-md">
       <div className="w-full flex flex-wrap items-center justify-between p-0">
         {/* Logo */}
-        <a href="/home" className="flex items-center space-x-3">
+        <a className="flex items-center space-x-3">
           <span className="navbar-brand ml-2 text-sm font-bold">
             AI-Got Your Back
           </span>

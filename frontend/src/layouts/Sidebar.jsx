@@ -127,17 +127,6 @@ function Sidebar() {
                 Upload
               </NavLink>
               <NavLink
-                to="/figures"
-                className={({ isActive }) =>
-                  `${linkClasses} ${
-                    isActive ? "bg-gray-700" : "hover:bg-gray-700"
-                  }`
-                }
-                onClick={() => setIsMobileOpen(false)}
-              >
-                Figures
-              </NavLink>
-              <NavLink
                 to="/control"
                 className={({ isActive }) =>
                   `${linkClasses} ${

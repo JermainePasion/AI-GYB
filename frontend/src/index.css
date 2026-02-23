@@ -215,7 +215,7 @@ body {
 /* Menu container */
 .navbar-menu {
   border: 1px solid #111827; /* border-gray-100 */
-  background-color: #f9fafb; /* bg-gray-50 */
+  background-color: #000000; /* bg-gray-50 */
 }
 @media (min-width: 768px) {
   .navbar-menu {
