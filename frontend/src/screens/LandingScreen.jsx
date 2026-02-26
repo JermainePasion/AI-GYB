@@ -169,10 +169,10 @@ export default function LandingScreen() {
               href="mailto:support@posturesense.com"
               className="text-blue-400 hover:underline"
             >
-              support@posturesense.com
+              aigyb2025@gmail.com
             </a>
           </p>
-          <p>Manila, Philippines | +63 912 345 6789</p>
+          <p>Pampanga, Philippines | +63 912 345 6789</p>
           <div className="border-t border-gray-700 pt-4 mt-6">
             <p className="text-sm text-gray-500">
               © {new Date().getFullYear()} AI-GYB. All rights reserved.

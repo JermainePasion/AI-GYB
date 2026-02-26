@@ -12,7 +12,7 @@ function AboutUsScreen() {
           About Us
         </h1>
 
-        <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+        <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto animate-fadeIn">
           We’re dedicated to creating a seamless and efficient platform for buying
           and selling products online. Our mission is to connect buyers and sellers
           in a trusted environment where every transaction feels smooth, secure,
@@ -33,11 +33,11 @@ function AboutUsScreen() {
           <div className="max-w-6xl mx-auto px-6 space-y-16 mb-24">
 
             {/* Section 1 */}
-            <div className="bg-white rounded-2xl shadow-md overflow-hidden grid md:grid-cols-2">
+            <div className="bg-white rounded-2xl shadow-md overflow-hidden grid md:grid-cols-2 animate-fadeIn">
               
-              <div className="h-72 md:h-full">
+              <div className="h-72 sm:h-80 md:h-full md:min-h-[400px] lg:min-h-[400px]">
                 <img
-                  src="/team.jpg"
+                  src="/aigyb.gif"
                   alt="Our Team"
                   className="w-full h-full object-cover"
                 />
@@ -46,12 +46,12 @@ function AboutUsScreen() {
               <div className="flex items-center p-10">
                 <div>
                   <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Who We Are
+                    Our Vision
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
-                    We are passionate innovators who believe in the power of technology
-                    to transform everyday experiences. Our mission is to continuously
-                    improve our platform and deliver meaningful value to our users.
+                    We aim to create a seamless and intelligent platform that adapts
+                    to evolving user needs, ensuring innovation remains at the core
+                    of everything we build.
                   </p>
                 </div>
               </div>
@@ -59,17 +59,17 @@ function AboutUsScreen() {
             </div>
 
             {/* Section 2 */}
-            <div className="bg-white rounded-2xl shadow-md overflow-hidden grid md:grid-cols-2">
+            <div className="bg-white rounded-2xl shadow-md overflow-hidden grid md:grid-cols-2 animate-fadeIn">
               
               <div className="flex items-center p-10 order-2 md:order-1">
                 <div>
                   <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Our Vision
+                    Who We Are
                   </h2>
                   <p className="text-gray-600 leading-relaxed">
-                    We aim to create a seamless and intelligent platform that adapts
-                    to evolving user needs, ensuring innovation remains at the core
-                    of everything we build.
+                    We are passionate innovators who believe in the power of technology
+                    to transform everyday experiences. Our mission is to continuously
+                    improve our platform and deliver meaningful value to our users.
                   </p>
                 </div>
               </div>
