@@ -61,7 +61,7 @@ function Navbar() {
                 }
                 onClick={() => setIsOpen(false)}
               >
-                Settings
+                Logs
               </NavLink>
             </li>
 

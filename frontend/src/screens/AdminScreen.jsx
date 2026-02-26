@@ -73,114 +73,137 @@ export default function AdminScreen() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* All Users */}
-        <div className="flex flex-col">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold text-gray-800">All Users</h1>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="border rounded px-2 py-1 text-sm"
-              />
-              <button className="bg-blue-500 text-white px-3 py-1 rounded text-sm">
-                Search
-              </button>
-            </div>
+      <div className="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* ================= ALL USERS ================= */}
+        <div className="flex flex-col lg:col-span-2">
+
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+              All Users
+            </h1>
+
+            <input
+              type="text"
+              placeholder="Search username or email..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full sm:w-64 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
           </div>
 
-          <div className="overflow-y-auto max-h-[600px] pr-2 space-y-4">
-            {filteredUsers.map((patient) => (
-              <div
-                key={patient._id}
-                className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h2 className="font-semibold text-gray-700">
-                      {patient.username}
-                    </h2>
-                    <p className="text-sm text-gray-500">{patient.email}</p>
-                  </div>
-                  <button
-                    onClick={() =>
-                      setExpanded(expanded === patient._id ? null : patient._id)
-                    }
-                    className="text-blue-600 hover:underline text-sm"
-                  >
-                    {expanded === patient._id
-                      ? "Hide thresholds"
-                      : "Show thresholds"}
-                  </button>
-                </div>
+          <div className="space-y-4 overflow-y-auto max-h-[75vh] pr-2 custom-scrollbar">
 
-                {expanded === patient._id && (
-                  <div className="mt-4 space-y-4">
-                    {/* Thresholds */}
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      {[
-                        ["Flex Min", patient.posture_thresholds?.flex_min, "text-blue-600"],
-                        ["Flex Max", patient.posture_thresholds?.flex_max, "text-blue-600"],
-                        ["GyroY Min", patient.posture_thresholds?.gyroY_min, "text-green-600"],
-                        ["GyroY Max", patient.posture_thresholds?.gyroY_max, "text-green-600"],
-                        ["GyroZ Min", patient.posture_thresholds?.gyroZ_min, "text-purple-600"],
-                        ["GyroZ Max", patient.posture_thresholds?.gyroZ_max, "text-purple-600"],
-                      ].map(([label, val, color]) => (
-                        <div key={label} className="bg-gray-50 p-2 rounded">
-                          <p className="text-gray-500">{label}</p>
-                          <p className={`font-medium ${color}`}>
-                            {formatThreshold(val)}
-                          </p>
-                        </div>
-                      ))}
+            {filteredUsers.map((patient) => {
+              const isExpanded = expanded === patient._id;
+
+              return (
+                <div
+                  key={patient._id}
+                  className="bg-white shadow-sm hover:shadow-md transition rounded-xl border border-gray-200"
+                >
+                  {/* Header */}
+                  <div className="flex justify-between items-center p-5">
+                    <div>
+                      <h2 className="font-semibold text-gray-800">
+                        {patient.username}
+                      </h2>
+                      <p className="text-sm text-gray-500">
+                        {patient.email}
+                      </p>
                     </div>
-
-                    {/* Message */}
-                    <form
-                      onSubmit={(e) => handleSend(e, patient)}
-                      className="bg-gray-100 p-3 rounded-lg border border-gray-300"
-                    >
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Send a message
-                      </label>
-                      <textarea
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className="w-full border rounded-md p-2 text-sm text-black"
-                        rows="3"
-                        required
-                      />
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        className="mt-2 bg-blue-500 text-white px-3 py-1 rounded text-sm"
-                      >
-                        {loading ? "Sending..." : "Send"}
-                      </button>
-                    </form>
 
                     <button
                       onClick={() =>
-                        navigate(`/patients/${patient._id}/graphs`)
+                        setExpanded(isExpanded ? null : patient._id)
                       }
-                      className="w-full px-4 py-2 bg-[#C15353] text-white rounded-lg"
+                      className="text-blue-600 text-sm font-medium hover:underline"
                     >
-                      View Statistics
+                      {isExpanded ? "Hide Details" : "View Details"}
                     </button>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* Animated Expand Section */}
+                  <div
+                    className={`
+                      overflow-hidden transition-all duration-500 ease-in-out
+                      ${isExpanded ? "max-h-[1000px] opacity-100" : "max-h-0 opacity-0"}
+                    `}
+                  >
+                    <div className="px-5 pb-5 space-y-5">
+
+                      {/* Thresholds */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        {[
+                          ["Flex Min", patient.posture_thresholds?.flex_min],
+                          ["Flex Max", patient.posture_thresholds?.flex_max],
+                          ["GyroY Min", patient.posture_thresholds?.gyroY_min],
+                          ["GyroY Max", patient.posture_thresholds?.gyroY_max],
+                          ["GyroZ Min", patient.posture_thresholds?.gyroZ_min],
+                          ["GyroZ Max", patient.posture_thresholds?.gyroZ_max],
+                        ].map(([label, val]) => (
+                          <div
+                            key={label}
+                            className="bg-gray-50 p-3 rounded-lg border border-gray-100"
+                          >
+                            <p className="text-gray-500 text-xs">
+                              {label}
+                            </p>
+                            <p className="font-medium text-gray-800">
+                              {formatThreshold(val)}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Message Form */}
+                      <form
+                        onSubmit={(e) => handleSend(e, patient)}
+                        className="bg-gray-50 p-4 rounded-xl border border-gray-200"
+                      >
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Send a message
+                        </label>
+
+                        <textarea
+                          value={message}
+                          onChange={(e) => setMessage(e.target.value)}
+                          className="w-full border border-gray-300 rounded-md p-2 text-sm text-black focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          rows="3"
+                          required
+                        />
+
+                        <button
+                          type="submit"
+                          disabled={loading}
+                          className="mt-3 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm transition"
+                        >
+                          {loading ? "Sending..." : "Send"}
+                        </button>
+                      </form>
+
+                      {/* View Stats */}
+                      <button
+                        onClick={() =>
+                          navigate(`/patients/${patient._id}/graphs`)
+                        }
+                        className="w-full px-4 py-2 bg-[#C15353] hover:bg-[#a84343] text-white rounded-md transition"
+                      >
+                        View Statistics
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Pending Doctors */}
+        {/* ================= PENDING DOCTORS ================= */}
         {user?.role === "admin" && (
-          <div className="flex flex-col">
-            <h1 className="text-2xl font-bold mb-4 text-gray-800">
+          <div className="flex flex-col lg:col-span-1">
+
+            <h1 className="text-xl sm:text-2xl font-bold mb-6 text-gray-800">
               Pending Doctor Approvals
             </h1>
 
@@ -188,15 +211,18 @@ export default function AdminScreen() {
               {pendingDoctors.map((doc) => (
                 <div
                   key={doc._id}
-                  className="bg-white shadow-md rounded-lg p-4 border"
+                  className="bg-white shadow-sm hover:shadow-md transition rounded-xl p-5 border border-gray-200"
                 >
                   <div className="flex justify-between items-center">
                     <div>
-                      <h2 className="font-semibold text-gray-700">
+                      <h2 className="font-semibold text-gray-800">
                         {doc.username}
                       </h2>
-                      <p className="text-sm text-gray-500">{doc.email}</p>
+                      <p className="text-sm text-gray-500">
+                        {doc.email}
+                      </p>
                     </div>
+
                     <button
                       onClick={async () => {
                         await approveDoctor(doc._id);
@@ -208,19 +234,23 @@ export default function AdminScreen() {
                           )
                         );
                       }}
-                      className="bg-green-500 text-white px-3 py-1 rounded text-sm"
+                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm transition"
                     >
                       Approve
                     </button>
                   </div>
                 </div>
               ))}
+
               {pendingDoctors.length === 0 && (
-                <p className="text-sm text-gray-500">No pending approvals</p>
+                <p className="text-sm text-gray-500">
+                  No pending approvals
+                </p>
               )}
             </div>
           </div>
         )}
+
       </div>
     </DashboardLayout>
   );
