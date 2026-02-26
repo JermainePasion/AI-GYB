@@ -20,7 +20,7 @@ const DashboardLayout = ({ children }) => {
 
       <div className="pt-16 flex">
         <Sidebar />
-        <main className="flex-1 md:ml-56 p-6 overflow-y-auto relative overflow-x-visible ">
+        <main className="flex-1 lg:ml-56 p-6 overflow-y-auto relative overflow-x-visible">
           {children}
         </main>
       </div>

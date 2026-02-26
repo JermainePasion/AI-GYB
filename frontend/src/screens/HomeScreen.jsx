@@ -138,27 +138,31 @@ function HomeScreen() {
                 ${activeView === "live" ? "translate-x-0" : "translate-x-full"}`}
             >
               {activeView === "live" && (
-                <div className="relative w-full flex flex-col items-center lg:block">
-                  <div className="w-full max-w-4xl mx-auto">
-                    <LivePosture />
-                  </div>
-                  {user?.posture_thresholds && (
-                    <div
-                      className="
-                        mt-6
-                        flex justify-center
-                        w-full
-                        max-w-[260px] sm:max-w-[280px]
-                        lg:absolute lg:right-0 lg:top-0
-                        lg:w-[300px] lg:max-w-none
-                      "
-                    >
-                      <ThresholdCard data={thresholdData} />
-                    </div>
-                  )}
+              <div className="w-full max-w-7xl mx-auto px-4">
+                <div className="relative w-full max-w-7xl mx-auto px-4">
+
+  {/* Centered Live Posture */}
+  <div className="flex justify-center">
+  <div className="w-full max-w-6xl xl:max-w-7xl">
+    <LivePosture />
+  </div>
+</div>
+  {/* Threshold Card */}
+  {user?.posture_thresholds && (
+    <div className="
+      mt-8
+      flex justify-center
+      xl:absolute xl:top-0 xl:right-0
+      xl:mt-0
+    ">
+      <ThresholdCard data={thresholdData} />
+    </div>
+  )}
+
+</div>
                 </div>
-              )}
-            </div>
+                )}
+              </div>
 
             <div
               className={`w-full transition-transform duration-500 ease-in-out

@@ -15,7 +15,17 @@ function ThresholdCard({ data }) {
 
   return (
     <FadeInSection>
-      <div className="w-[380px] bg-secondary rounded-2xl p-6 shadow-xl bg-white">
+      <div className="
+  w-full
+  max-w-[300px]
+  lg:max-w-[320px]
+  xl:max-w-[360px]
+  2xl:max-w-[380px]
+  bg-white
+  rounded-2xl
+  p-6
+  shadow-xl
+">
         <p className="text-black mb-4 font-semibold text-center">
           Your Saved Thresholds
         </p>

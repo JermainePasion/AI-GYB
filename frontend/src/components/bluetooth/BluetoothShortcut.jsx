@@ -17,7 +17,7 @@ export default function BluetoothShortcut() {
   const [open, setOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [pos, setPos] = useState({
-    x: window.innerWidth >= 768
+    x: window.innerWidth >= 1024
       ? SIDEBAR_WIDTH + SNAP_MARGIN
       : SNAP_MARGIN,
     y: NAVBAR_HEIGHT + SNAP_MARGIN,
@@ -48,7 +48,7 @@ export default function BluetoothShortcut() {
     const x = e.clientX - startOffsetRef.current.x;
     const y = e.clientY - startOffsetRef.current.y;
 
-    const minX = window.innerWidth >= 768 ? SIDEBAR_WIDTH : 0;
+    const minX = window.innerWidth >= 1024 ? SIDEBAR_WIDTH : 0;
     const maxX = window.innerWidth - SIZE;
     const minY = NAVBAR_HEIGHT;
     const maxY = window.innerHeight - SIZE;
@@ -74,7 +74,7 @@ export default function BluetoothShortcut() {
   };
 
   const snapToEdge = () => {
-    const minX = window.innerWidth >= 768 ? SIDEBAR_WIDTH : 0;
+    const minX = window.innerWidth >= 1024 ? SIDEBAR_WIDTH : 0;
     const maxX = window.innerWidth - SIZE - SNAP_MARGIN;
 
     const centerX = pos.x + SIZE / 2;

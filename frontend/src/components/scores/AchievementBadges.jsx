@@ -62,7 +62,7 @@ export default function AchievementBadges({ logs = [] }) {
     },
     {
       id: "consistency_pro",
-      label: "Consistency Pro",
+      label: "Steady Pro",
       desc: "10-minute continuous good posture streak."
     },
     {
@@ -86,7 +86,7 @@ export default function AchievementBadges({ logs = [] }) {
   return (
     <div
       ref={containerRef}
-      className="grid grid-cols-2 md:grid-cols-4 gap-4"
+      className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
     >
       {all.map((b) => {
         const isUnlocked = unlocked.includes(b.id);
@@ -98,7 +98,7 @@ export default function AchievementBadges({ logs = [] }) {
             onClick={() =>
               setActive(isActive ? null : b.id)
             }
-            className={`relative group p-4 rounded-lg text-center transition cursor-pointer ${
+            className={`relative group p-3 sm:p-4 rounded-lg text-center transition cursor-pointer min-h-[110px] flex flex-col items-center justify-center ${
               isUnlocked
                 ? "bg-[#EBFFD8]"
                 : "bg-gray-300 opacity-40"
@@ -112,7 +112,14 @@ export default function AchievementBadges({ logs = [] }) {
               workspace_premium
             </span>
 
-            <p className="text-sm mt-2 text-[#012646] font-bold">
+            <p className="
+              text-xs sm:text-sm
+              mt-2
+              text-[#012646]
+              font-bold
+              leading-tight
+              break-words
+            ">
               {b.label}
             </p>
 

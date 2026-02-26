@@ -21,7 +21,7 @@ function Sidebar() {
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="md:hidden fixed top-20 left-4 z-50 p-2 text-white"
+         className="lg:hidden fixed top-20 left-4 z-50 p-2 text-white"
       >
         {isMobileOpen ? "✖" : "☰"}
       </button>
@@ -35,7 +35,7 @@ function Sidebar() {
           fixed top-16 left-0 
           transition-all duration-300 
           z-40 
-          hidden md:block
+          hidden lg:block
         `}
       >
         <nav className="flex flex-col mt-4 space-y-2">
