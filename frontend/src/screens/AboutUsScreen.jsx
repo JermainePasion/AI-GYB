@@ -13,10 +13,9 @@ function AboutUsScreen() {
         </h1>
 
         <p className="text-base md:text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto animate-fadeIn">
-          We’re dedicated to creating a seamless and efficient platform for buying
-          and selling products online. Our mission is to connect buyers and sellers
-          in a trusted environment where every transaction feels smooth, secure,
-          and reliable.
+          By combining wearable sensor technology, cloud-based infrastructure, and personalized data analytics, 
+          AI-GYB delivers continuous posture support anytime and anywhere. We are committed to creating a scalable, 
+          reliable, and clinically relevant solution that empowers users to take proactive control of their musculoskeletal health.
         </p>
 
         <div className="mt-10">

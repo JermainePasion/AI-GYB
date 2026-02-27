@@ -23,15 +23,26 @@ const CustomTooltip = ({ active, payload, label }) => {
   const data = payload[0]?.payload ?? {};
 
   return (
-    <div className="bg-white px-4 py-3 rounded-xl shadow-xl border border-gray-200 w-[380px] overflow-hidden">
-
+    <div
+      className="
+        bg-white
+        px-2 py-2
+        rounded-lg
+        shadow-lg
+        border border-gray-200
+        w-[260px]
+        sm:w-[320px]
+        md:w-[360px]
+        overflow-hidden
+      "
+    >
       {/* Timestamp */}
-      <p className="text-xs font-semibold text-gray-700 mb-2">
+      <p className="text-[10px] sm:text-xs font-semibold text-gray-700 mb-1">
         {new Date(label).toLocaleString()}
       </p>
 
       {/* Values */}
-      <div className="text-xs space-y-1 mb-3">
+      <div className="text-[10px] sm:text-xs space-y-0.5 mb-2">
         {payload.map((entry, index) => {
           const key = entry.dataKey;
           const formattedLabel = labelMap[key] || key;
@@ -40,10 +51,10 @@ const CustomTooltip = ({ active, payload, label }) => {
           return (
             <div
               key={index}
-              className="flex items-center justify-between gap-3"
+              className="flex items-center justify-between gap-2"
             >
               <span
-                className="whitespace-nowrap"
+                className="truncate"
                 style={{ color: entry.color }}
               >
                 {formattedLabel}
@@ -60,14 +71,13 @@ const CustomTooltip = ({ active, payload, label }) => {
       </div>
 
       {/* 3D Model */}
-      <div className="h-[200px] w-full">
+      <div className="h-[110px] sm:h-[150px] md:h-[190px] w-full">
         <Skeleton3D
           flexAngle={Number(data.flex) || 0}
           gyroY={Number(data.gyroY) || 0}
           gyroZ={Number(data.gyroZ) || 0}
         />
       </div>
-
     </div>
   );
 };
