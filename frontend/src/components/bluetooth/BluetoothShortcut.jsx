@@ -7,7 +7,7 @@ const NAVBAR_HEIGHT = 104;
 const SIDEBAR_WIDTH = 224;
 
 export default function BluetoothShortcut() {
-  const { connected, flexAngle, gyroY, gyroZ, connectBLE } =
+  const { connected, flexAngle, gyroY, gyroZ, connectBLE, disconnectBLE, } =
     useContext(BluetoothContext);
 
   const draggingRef = useRef(false);
@@ -172,10 +172,14 @@ export default function BluetoothShortcut() {
               </div>
 
               <button
-                onClick={connectBLE}
-                className="mt-4 w-full py-2 rounded-lg bg-green-500 hover:bg-green-600 text-white font-semibold transition"
+                onClick={connected ? disconnectBLE : connectBLE}
+                className={`mt-4 w-full py-2 rounded-lg font-semibold transition text-white ${
+                  connected
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-green-500 hover:bg-green-600"
+                }`}
               >
-                Connect
+                {connected ? "Disconnect" : "Connect"}
               </button>
             </div>
           </div>

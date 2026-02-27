@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useRef, useEffect } from "react";
+import { createContext, useState, useContext, useRef, useEffect, } from "react";
 import { UserContext } from "./UserContext";
 import { toast } from "react-toastify";
 import { uploadCsvLog } from "../api/logs";
@@ -192,6 +192,23 @@ export const BluetoothProvider = ({ children }) => {
     }
   };
 
+  const disconnectBLE = async () => {
+    try {
+      if (device && device.gatt.connected) {
+        await device.gatt.disconnect();
+      }
+
+      setConnected(false);
+      characteristicRef.current = null;
+      setServer(null);
+      setDevice(null);
+
+      console.log("🔌 Disconnected from BLE device");
+    } catch (err) {
+      console.error("❌ Disconnect failed:", err);
+    }
+  };
+
   return (
     <BluetoothContext.Provider
       value={{
@@ -207,6 +224,7 @@ export const BluetoothProvider = ({ children }) => {
         showUploadPopup,
         addPainPoint,
         isUploading,
+        disconnectBLE,
       }}
     >
       {children}
