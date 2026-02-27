@@ -85,7 +85,7 @@ function SkeletonModel({ flexAngle = 0, gyroY = 0, gyroZ = 0 }) {
 
 export default function Skeleton3D({ flexAngle, gyroY, gyroZ }) {
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-full">
       <Canvas camera={{ position: [0, 0.5, 2], fov: 50 }}>
         <ambientLight intensity={0.2} />
 

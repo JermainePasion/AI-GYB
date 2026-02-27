@@ -9,6 +9,7 @@ import SummaryTable from "../components/graphs/SummaryTable";
 import FadeInSection from "../components/animation/FadeInSection";
 import { UsePatientLogs } from "../hooks/UsePatientLogs";
 import { getUserById } from "../api/users";
+import TimeSeriesGraphWithModel from "../components/graphs/TimeSeriesGraphWithModel";
 
 const BACKEND_IP = "localhost";
 
@@ -75,7 +76,7 @@ export default function PatientGraphs() {
           <FadeInSection>
             <div className="w-full max-w-6xl bg-secondary rounded-2xl p-4 shadow-xl bg-white">
               <h2 className="text-center font-semibold mb-2 text-black">Live Posture Timeline</h2>
-              <TimeSeriesGraph logs={logs.sampled} />
+              <TimeSeriesGraphWithModel logs={logs.sampled} />
             </div>
           </FadeInSection>
 
